@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Fraunces, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import { PageTransition } from "./_components/PageTransition";
 
 // Display: Fraunces — variable serif with optical sizing. Brings the
 // editorial confidence high-end design relies on; pairs cleanly with Inter.
@@ -26,7 +27,7 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Vellum Health — modern telemedicine",
+  title: "Vellum Health",
   description:
     "Encrypted video consultations, signed digital prescriptions, and same-day pharmacy fulfilment with licensed clinicians.",
   applicationName: "Vellum Health",
@@ -51,7 +52,9 @@ export default function RootLayout({
       lang="en"
       className={`${display.variable} ${sans.variable} ${mono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <PageTransition>{children}</PageTransition>
+      </body>
     </html>
   );
 }

@@ -1,4 +1,11 @@
 import Link from "next/link";
+import { MarketingHeader, MarketingFooter, Caduceus } from "./_components/MarketingChrome";
+import {
+  SPECIALTIES,
+  CalendarIcon,
+  VideoIcon,
+  PillIcon,
+} from "./_components/icons";
 
 /**
  * Vellum Health landing page.
@@ -9,27 +16,7 @@ import Link from "next/link";
 export default function Home() {
   return (
     <main className="min-h-screen flex flex-col bg-paper text-ink">
-      {/* ============ NAV ============ */}
-      <header className="border-b border-[color:var(--rule)] bg-paper/80 backdrop-blur-sm sticky top-0 z-50">
-        <div className="mx-auto w-full max-w-[1280px] px-6 lg:px-8 py-4 flex items-center justify-between gap-6">
-          <Link href="/" className="flex items-center gap-2.5">
-            <Caduceus className="text-clay" />
-            <span className="font-display text-[24px] tracking-[-0.02em] leading-none">
-              Vellum<span className="italic-accent"> Health</span>
-            </span>
-          </Link>
-          <nav className="hidden md:flex items-center gap-9 eyebrow">
-            <Link href="/doctors" className="hover:text-clay transition-colors">Find a doctor</Link>
-            <Link href="/#how" className="hover:text-clay transition-colors">How it works</Link>
-            <Link href="/#specialties" className="hover:text-clay transition-colors">Specialties</Link>
-            <Link href="/#security" className="hover:text-clay transition-colors">Security</Link>
-          </nav>
-          <div className="flex items-center gap-4">
-            <Link href="/login" className="eyebrow hover:text-clay transition-colors">Sign in</Link>
-            <Link href="/register" className="btn btn-clay">Get care</Link>
-          </div>
-        </div>
-      </header>
+      <MarketingHeader />
 
       {/* ============ HERO ============ */}
       <section className="mx-auto w-full max-w-[1280px] px-6 lg:px-8 pt-16 lg:pt-24 pb-20 grid grid-cols-12 gap-x-10 gap-y-14">
@@ -307,49 +294,7 @@ export default function Home() {
       </section>
 
       {/* ============ FOOTER ============ */}
-      <footer className="mt-auto border-t border-[color:var(--rule-strong)]">
-        <div className="mx-auto w-full max-w-[1280px] px-6 lg:px-8 py-12 grid grid-cols-2 md:grid-cols-4 gap-10">
-          <div className="col-span-2 md:col-span-1">
-            <Link href="/" className="flex items-center gap-2.5">
-              <Caduceus className="text-clay" />
-              <span className="font-display text-[22px] tracking-[-0.02em] leading-none">
-                Vellum<span className="italic-accent"> Health</span>
-              </span>
-            </Link>
-            <p className="mt-4 text-ink-mute text-[13px] leading-[1.65] max-w-[34ch]">
-              Telemedicine done with care. Encrypted, signed, licensed.
-            </p>
-          </div>
-          <div>
-            <p className="eyebrow mb-3">Patients</p>
-            <ul className="space-y-1.5 text-[13.5px] text-ink-soft">
-              <li><Link className="hover:text-clay" href="/register">Create account</Link></li>
-              <li><Link className="hover:text-clay" href="/doctors">Find a doctor</Link></li>
-              <li><Link className="hover:text-clay" href="/dashboard">Your records</Link></li>
-            </ul>
-          </div>
-          <div>
-            <p className="eyebrow mb-3">Clinicians</p>
-            <ul className="space-y-1.5 text-[13.5px] text-ink-soft">
-              <li><Link className="hover:text-clay" href="/login">Sign in</Link></li>
-              <li><Link className="hover:text-clay" href="/register?role=doctor">Apply to practise</Link></li>
-            </ul>
-          </div>
-          <div>
-            <p className="eyebrow mb-3">Status</p>
-            <p className="mono text-[12px] text-ink-mute leading-[1.7]">
-              build · 0.1.0<br />
-              status · <span className="text-moss">all systems operational</span>
-            </p>
-          </div>
-        </div>
-        <div className="border-t border-[color:var(--rule)]">
-          <div className="mx-auto w-full max-w-[1280px] px-6 lg:px-8 py-4 flex flex-wrap items-center justify-between gap-3 eyebrow">
-            <span>© 2026 Vellum Health · all rights reserved</span>
-            <span>Portfolio implementation. Not a real medical service.</span>
-          </div>
-        </div>
-      </footer>
+      <MarketingFooter />
     </main>
   );
 }
@@ -425,17 +370,6 @@ function ConsultPreviewCard() {
    Static content
    ==================================================================== */
 
-const SPECIALTIES: Array<{ name: string; examples: string; icon: React.ReactNode }> = [
-  { name: "General practice", examples: "Cold, flu, refills, screenings", icon: <StethIcon /> },
-  { name: "Mental health", examples: "Anxiety, sleep, therapy", icon: <BrainIcon /> },
-  { name: "Dermatology", examples: "Acne, rashes, photo review", icon: <DropIcon /> },
-  { name: "Cardiology", examples: "Blood pressure, palpitations", icon: <HeartIcon /> },
-  { name: "Pediatrics", examples: "Children 2–17, sick visits", icon: <ChildIcon /> },
-  { name: "Women's health", examples: "Contraception, hormones", icon: <FlowerIcon /> },
-  { name: "Sexual health", examples: "Discreet testing & treatment", icon: <ShieldIcon /> },
-  { name: "Nutrition", examples: "Weight, diabetes, plans", icon: <AppleIcon /> },
-];
-
 const SAMPLE_DOCTORS = [
   {
     initials: "AR",
@@ -484,116 +418,3 @@ const FAQ: Array<[string, string]> = [
     "If your clinician determines an in-person exam is necessary, they will refer you to a local provider and your consultation fee is fully refunded.",
   ],
 ];
-
-/* ====================================================================
-   Inline icons
-   ==================================================================== */
-
-function Caduceus({ className = "", size = 26 }: { className?: string; size?: number }) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width={size}
-      height={size}
-      viewBox="0 0 256 256"
-      fill="currentColor"
-      className={className}
-      aria-hidden
-    >
-      <path d="M216,79v1a40,40,0,0,1-40,40H136v80h8a16,16,0,0,0,10.67-27.93,8,8,0,0,1,10.66-11.92A32,32,0,0,1,144,216h-8v16a8,8,0,0,1-16,0V216H96a8,8,0,0,1,0-16h24V120H96a16,16,0,0,0,0,32,8,8,0,0,1,0,16,32,32,0,0,1,0-64h24V24a8,8,0,0,1,16,0v80h40a24,24,0,0,0,24-24V79a23,23,0,0,0-23-23H160a8,8,0,0,1,0-16h17a39,39,0,0,1,39,39ZM56,96H32a8,8,0,0,1-8-8V80A40,40,0,0,1,64,40H96a8,8,0,0,1,0,16A40,40,0,0,1,56,96ZM80,56H64A24,24,0,0,0,40,80H56A24,24,0,0,0,80,56Z" />
-    </svg>
-  );
-}
-
-const stroke = {
-  fill: "none" as const,
-  stroke: "currentColor",
-  strokeWidth: 1.5,
-  strokeLinecap: "round" as const,
-  strokeLinejoin: "round" as const,
-};
-
-function CalendarIcon({ className = "" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" {...stroke} className={className} aria-hidden>
-      <rect x="3" y="5" width="18" height="16" rx="1" />
-      <path d="M3 9h18M8 3v4M16 3v4" />
-    </svg>
-  );
-}
-function VideoIcon({ className = "" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" {...stroke} className={className} aria-hidden>
-      <rect x="2" y="6" width="14" height="12" rx="1" />
-      <path d="M22 8l-6 4 6 4V8z" />
-    </svg>
-  );
-}
-function PillIcon({ className = "" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" {...stroke} className={className} aria-hidden>
-      <rect x="2" y="9" width="20" height="6" rx="3" transform="rotate(-30 12 12)" />
-      <path d="M12 6.5l5 8.7" />
-    </svg>
-  );
-}
-function StethIcon({ className = "" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" {...stroke} className={className} aria-hidden>
-      <path d="M5 3v6a5 5 0 0 0 10 0V3" />
-      <path d="M10 14v2a4 4 0 0 0 8 0v-2" />
-      <circle cx="18" cy="11" r="2" />
-    </svg>
-  );
-}
-function BrainIcon({ className = "" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" {...stroke} className={className} aria-hidden>
-      <path d="M9 4a3 3 0 0 0-3 3v1a3 3 0 0 0-2 5 3 3 0 0 0 2 5v1a3 3 0 0 0 3 3h.5V4H9zM15 4a3 3 0 0 1 3 3v1a3 3 0 0 1 2 5 3 3 0 0 1-2 5v1a3 3 0 0 1-3 3h-.5V4H15z" />
-    </svg>
-  );
-}
-function HeartIcon({ className = "" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" {...stroke} className={className} aria-hidden>
-      <path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z" />
-    </svg>
-  );
-}
-function DropIcon({ className = "" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" {...stroke} className={className} aria-hidden>
-      <path d="M12 3s6 7 6 11a6 6 0 0 1-12 0c0-4 6-11 6-11z" />
-    </svg>
-  );
-}
-function ChildIcon({ className = "" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" {...stroke} className={className} aria-hidden>
-      <circle cx="12" cy="6" r="3" />
-      <path d="M6 21v-3a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v3" />
-    </svg>
-  );
-}
-function FlowerIcon({ className = "" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" {...stroke} className={className} aria-hidden>
-      <circle cx="12" cy="12" r="2" />
-      <path d="M12 10V4M12 14v6M10 12H4M14 12h6" />
-    </svg>
-  );
-}
-function ShieldIcon({ className = "" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" {...stroke} className={className} aria-hidden>
-      <path d="M12 3l8 3v6c0 4-3.5 7.5-8 9-4.5-1.5-8-5-8-9V6l8-3z" />
-    </svg>
-  );
-}
-function AppleIcon({ className = "" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" {...stroke} className={className} aria-hidden>
-      <path d="M12 8c0-2 1.5-3.5 3-3.5M12 8c-3.5 0-6 2-6 6s3 7 6 7 6-3 6-7-2.5-6-6-6z" />
-    </svg>
-  );
-}
