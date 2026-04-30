@@ -59,8 +59,7 @@ export default function SpecialtiesPage() {
         <div className="col-span-12 lg:col-span-5">
           <p className="eyebrow mb-3">What we don&apos;t treat</p>
           <h2 className="font-display text-[clamp(1.6rem,5vw,3.25rem)] tracking-[-0.025em] leading-[1.04] break-words">
-            Honesty about the{" "}
-            <span className="italic-accent">limits of video.</span>
+            Honesty about the limits of video.
           </h2>
           <p className="mt-6 text-ink-soft text-[15.5px] leading-[1.65] max-w-[48ch]">
             Telemedicine is a powerful tool — but it isn&apos;t the right tool

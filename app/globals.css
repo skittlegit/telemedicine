@@ -255,6 +255,30 @@ h1.display, h2.display {
   color: #ffffff;
 }
 
+/* ===== Skip link ===================================================== */
+
+.skip-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 100;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-plex), sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 0.55rem 0.95rem;
+  border-radius: 4px;
+  transform: translateY(calc(-100% - 1rem));
+  transition: transform 160ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.skip-link:focus,
+.skip-link:focus-visible {
+  transform: translateY(0);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(91, 63, 207, 0.35);
+}
+
 * {
   scrollbar-width: thin;
   scrollbar-color: var(--ink-faint) transparent;

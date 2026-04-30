@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { MarketingHeader, MarketingFooter, Caduceus } from "./_components/MarketingChrome";
+import { MarketingHeader, MarketingFooter } from "./_components/MarketingChrome";
 import {
   SPECIALTIES,
   CalendarIcon,
@@ -21,12 +21,9 @@ export default function Home() {
       {/* ============ HERO ============ */}
       <section className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-8 pt-10 sm:pt-16 lg:pt-24 pb-20 grid grid-cols-12 gap-x-10 gap-y-14">
         <div className="col-span-12 lg:col-span-7 rise rise-1">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[color:var(--rule-strong)] bg-paper-tint">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full rounded-full bg-moss opacity-60 animate-ping" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-moss" />
-            </span>
-            <span className="eyebrow text-ink">14 doctors online now</span>
+          <div className="inline-flex items-center gap-2.5 px-3 py-1.5 border border-[color:var(--rule-strong)] bg-paper-tint">
+            <span className="h-1.5 w-1.5 rounded-full bg-moss" aria-hidden />
+            <span className="eyebrow text-ink">14 clinicians on call tonight</span>
           </div>
 
           <h1 className="mt-6 font-display text-[clamp(2rem,8vw,6.5rem)] leading-[0.98] tracking-[-0.035em] break-words">
@@ -78,8 +75,7 @@ export default function Home() {
           <div className="max-w-[42ch]">
             <p className="eyebrow mb-3">How it works</p>
             <h2 className="font-display text-[clamp(1.6rem,5vw,3.5rem)] tracking-[-0.025em] leading-[1.04] break-words">
-              Three steps from symptom{" "}
-              <span className="italic-accent">to prescription.</span>
+              Three steps from symptom to prescription.
             </h2>
           </div>
           <Link href="/register" className="eyebrow hover:text-clay transition-colors">
@@ -117,10 +113,10 @@ export default function Home() {
                 <span className="mono text-ink-mute text-[12px] tracking-[0.22em]">{s.n}</span>
               </div>
               <h3 className="font-display text-[2rem] mt-6 tracking-[-0.025em] leading-[1]">
-                {s.title}{" "}
-                <span className="italic-accent text-[1.2rem]">{s.italic}</span>
+                {s.title}
               </h3>
-              <p className="mt-4 text-ink-soft text-[14.5px] leading-[1.6] max-w-[34ch]">
+              <p className="eyebrow mt-2 text-ink-mute">{s.italic}</p>
+              <p className="mt-5 text-ink-soft text-[14.5px] leading-[1.6] max-w-[34ch]">
                 {s.body}
               </p>
             </li>
@@ -136,8 +132,7 @@ export default function Home() {
           <div className="max-w-[44ch]">
             <p className="eyebrow mb-3">What we treat</p>
             <h2 className="font-display text-[clamp(1.6rem,5vw,3.25rem)] tracking-[-0.025em] leading-[1.04] break-words">
-              50+ specialties.{" "}
-              <span className="italic-accent">One unhurried visit.</span>
+              50+ specialties. One unhurried visit.
             </h2>
           </div>
           <Link href="/doctors" className="eyebrow hover:text-clay">All specialties →</Link>
@@ -169,8 +164,7 @@ export default function Home() {
           <div className="max-w-[44ch]">
             <p className="eyebrow mb-3">Meet the clinicians</p>
             <h2 className="font-display text-[clamp(1.6rem,5vw,3.25rem)] tracking-[-0.025em] leading-[1.04] break-words">
-              Board-certified.{" "}
-              <span className="italic-accent">Background-checked.</span>
+              Board-certified. Background-checked.
             </h2>
           </div>
           <Link href="/doctors" className="btn btn-ghost">View all doctors →</Link>
@@ -178,7 +172,12 @@ export default function Home() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-[color:var(--rule)] border border-[color:var(--rule)]">
           {SAMPLE_DOCTORS.map((d) => (
-            <article key={d.name} className="bg-paper p-6 lg:p-7">
+            <Link
+              key={d.name}
+              href={`/doctors?q=${encodeURIComponent(d.name.replace(/^Dr\.\s*/, ""))}`}
+              className="group bg-paper p-6 lg:p-7 hover:bg-paper-tint transition-colors"
+              prefetch
+            >
               <div className="flex items-start justify-between gap-4">
                 <div
                   className="w-14 h-14 rounded-full bg-clay-wash text-clay font-display text-[20px] flex items-center justify-center tracking-tight"
@@ -198,7 +197,10 @@ export default function Home() {
                 <span className="text-ink-mute">{d.years} yrs · {d.languages.join(", ")}</span>
                 <span className="font-display text-[1.1rem] tracking-tight">${d.fee}</span>
               </div>
-            </article>
+              <span className="mt-4 inline-block eyebrow text-clay group-hover:translate-x-0.5 transition-transform">
+                View profile →
+              </span>
+            </Link>
           ))}
         </div>
       </section>
@@ -210,8 +212,7 @@ export default function Home() {
         <div className="col-span-12 lg:col-span-5">
           <p className="eyebrow mb-3">Privacy &amp; security</p>
           <h2 className="font-display text-[clamp(1.6rem,5vw,3.25rem)] tracking-[-0.025em] leading-[1.04] break-words">
-            Your record is read by you{" "}
-            <span className="italic-accent">and your doctor — alone.</span>
+            Your record is read by you, and your doctor. Alone.
           </h2>
           <p className="mt-6 text-ink-soft text-[15.5px] leading-[1.65] max-w-[48ch]">
             Notes, allergies, history, and addresses are encrypted at the field
@@ -251,8 +252,7 @@ export default function Home() {
           <div className="col-span-12 lg:col-span-4">
             <p className="eyebrow mb-3">Common questions</p>
             <h2 className="font-display text-[clamp(1.6rem,5vw,3rem)] tracking-[-0.025em] leading-[1.04] break-words">
-              Before you{" "}
-              <span className="italic-accent">book.</span>
+              Before you book.
             </h2>
           </div>
           <dl className="col-span-12 lg:col-span-8 divide-y divide-[color:var(--rule-strong)] border-y border-[color:var(--rule-strong)]">
@@ -273,7 +273,7 @@ export default function Home() {
       {/* ============ CTA ============ */}
       <section className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-8 py-14 sm:py-20 lg:py-28">
         <div className="border border-[color:var(--rule-strong)] bg-paper-tint p-7 sm:p-10 lg:p-16 text-center">
-          <Caduceus className="text-clay mx-auto mb-6" size={40} />
+          <p className="eyebrow mb-6">Get care</p>
           <h2 className="font-display text-[clamp(1.85rem,6vw,4.5rem)] tracking-[-0.035em] leading-[1.02] max-w-[20ch] mx-auto break-words">
             Care, today.{" "}
             <span className="italic-accent">No waiting room.</span>

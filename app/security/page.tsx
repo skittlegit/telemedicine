@@ -14,8 +14,9 @@ export default function SecurityPage() {
       <section className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-8 pt-10 sm:pt-16 lg:pt-24 pb-12">
         <p className="eyebrow mb-3">Privacy &amp; security</p>
         <h1 className="font-display text-[clamp(2rem,8vw,6rem)] leading-[0.98] tracking-[-0.035em] max-w-[22ch] break-words">
-          Your record is read by you{" "}
-          <span className="italic-accent">and your doctor — alone.</span>
+          Your record is read by you,{" "}
+          <span className="italic-accent">and your doctor.</span>{" "}
+          Alone.
         </h1>
         <p className="mt-7 text-ink-soft text-[17px] leading-[1.65] max-w-[58ch]">
           Notes, allergies, history, and addresses are encrypted at the field
@@ -41,8 +42,7 @@ export default function SecurityPage() {
       <section className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-8 py-10 sm:py-14 lg:py-20">
         <p className="eyebrow mb-3">By the layer</p>
         <h2 className="font-display text-[clamp(1.6rem,5vw,3.25rem)] tracking-[-0.025em] leading-[1.04] max-w-[34ch] mb-12 break-words">
-          Defence in depth, explained{" "}
-          <span className="italic-accent">in one table.</span>
+          Defence in depth, explained in one table.
         </h2>
 
         <dl className="grid grid-cols-1 md:grid-cols-2 gap-px bg-[color:var(--rule)] border border-[color:var(--rule)]">
@@ -75,8 +75,7 @@ export default function SecurityPage() {
         <div className="col-span-12 lg:col-span-5">
           <p className="eyebrow mb-3">Your rights</p>
           <h2 className="font-display text-[clamp(1.6rem,5vw,3.25rem)] tracking-[-0.025em] leading-[1.04] break-words">
-            Export anything.{" "}
-            <span className="italic-accent">Delete everything.</span>
+            Export anything. Delete everything.
           </h2>
         </div>
         <ul className="col-span-12 lg:col-span-7 divide-y divide-[color:var(--rule-strong)] border-y border-[color:var(--rule-strong)]">

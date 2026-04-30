@@ -53,7 +53,12 @@ export default function RootLayout({
       className={`${display.variable} ${sans.variable} ${mono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <PageTransition>{children}</PageTransition>
+        <a href="#content" className="skip-link">Skip to content</a>
+        <PageTransition>
+          <div id="content" tabIndex={-1} className="contents">
+            {children}
+          </div>
+        </PageTransition>
       </body>
     </html>
   );

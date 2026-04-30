@@ -20,8 +20,8 @@ export default function HowItWorksPage() {
         <p className="eyebrow mb-3">How it works</p>
         <h1 className="font-display text-[clamp(2rem,8vw,6rem)] leading-[0.98] tracking-[-0.035em] max-w-[20ch] break-words">
           From symptom to{" "}
-          <span className="italic-accent">prescription</span> — three steps,
-          one evening.
+          <span className="italic-accent">prescription,</span>{" "}
+          in three steps, one evening.
         </h1>
         <p className="mt-7 text-ink-soft text-[17px] leading-[1.65] max-w-[58ch]">
           No insurance hoops, no waiting rooms, no fax machines. Vellum is a
@@ -81,10 +81,10 @@ export default function HowItWorksPage() {
                 </span>
               </div>
               <h3 className="font-display text-[2rem] mt-6 tracking-[-0.025em] leading-[1]">
-                {s.title}{" "}
-                <span className="italic-accent text-[1.2rem]">{s.italic}</span>
+                {s.title}
               </h3>
-              <p className="mt-4 text-ink-soft text-[14.5px] leading-[1.6]">
+              <p className="eyebrow mt-2 text-ink-mute">{s.italic}</p>
+              <p className="mt-5 text-ink-soft text-[14.5px] leading-[1.6]">
                 {s.body}
               </p>
               <p className="mt-4 text-ink-mute text-[13px] leading-[1.65] border-t border-[color:var(--rule)] pt-4">
@@ -102,8 +102,7 @@ export default function HowItWorksPage() {
         <div className="col-span-12 lg:col-span-5">
           <p className="eyebrow mb-3">Pricing</p>
           <h2 className="font-display text-[clamp(1.6rem,5vw,3.25rem)] tracking-[-0.025em] leading-[1.04] break-words">
-            Flat fees.{" "}
-            <span className="italic-accent">No surprises.</span>
+            Flat fees. No surprises.
           </h2>
           <p className="mt-6 text-ink-soft text-[15.5px] leading-[1.65] max-w-[48ch]">
             We don&apos;t take insurance directly — we charge one flat fee per
