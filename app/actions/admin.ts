@@ -4,6 +4,8 @@ import { revalidatePath } from "next/cache";
 import { Types } from "mongoose";
 import { connectDB } from "@/lib/db";
 import { User } from "@/lib/models/User";
+import { DoctorProfile } from "@/lib/models/DoctorProfile";
+import { PharmacyProfile } from "@/lib/models/PharmacyProfile";
 import { requireRole } from "@/lib/authz";
 import { audit } from "@/lib/audit";
 
@@ -19,15 +21,38 @@ async function setUserStatus(formData: FormData, status: "active" | "disabled") 
     { returnDocument: "after" },
   ).lean<{ _id: Types.ObjectId; email: string; role: string } | null>();
 
-  if (updated) {
-    await audit({
-      actor: session.user.id,
-      actorRole: "admin",
-      action: `admin.user.${status}`,
-      target: `User:${userId}`,
-      meta: { email: updated.email, role: updated.role },
-    });
+  if (!updated) {
+    revalidatePath("/dashboard/admin");
+    return;
   }
+
+  // Verifying licensure on approval flips a date stamp on the profile so the
+  // applicant can show "verified by Vellum" in their own dashboard.
+  let licenseVerified = false;
+  if (status === "active") {
+    if (updated.role === "doctor") {
+      const r = await DoctorProfile.updateOne(
+        { user: updated._id },
+        { $set: { licenseVerifiedAt: new Date() } },
+      );
+      licenseVerified = r.matchedCount > 0;
+    } else if (updated.role === "pharmacist") {
+      const r = await PharmacyProfile.updateOne(
+        { user: updated._id },
+        { $set: { licenseVerifiedAt: new Date() } },
+      );
+      licenseVerified = r.matchedCount > 0;
+    }
+  }
+
+  await audit({
+    actor: session.user.id,
+    actorRole: "admin",
+    action: `admin.user.${status}`,
+    target: `User:${userId}`,
+    meta: { email: updated.email, role: updated.role, licenseVerified },
+  });
+
   revalidatePath("/dashboard/admin");
 }
 

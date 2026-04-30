@@ -7,6 +7,7 @@ import { User } from "@/lib/models/User";
 import { decryptPHI } from "@/lib/crypto";
 import { requireRole } from "@/lib/authz";
 import { PrescribeForm } from "./PrescribeForm";
+import { DashboardHeader } from "@/app/dashboard/_components/Shell";
 
 export const dynamic = "force-dynamic";
 
@@ -38,7 +39,8 @@ export default async function PrescribePage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen bg-paper text-ink">
-      <div className="mx-auto w-full max-w-[720px] px-8 py-12">
+      <DashboardHeader user={{ name: session.user.name ?? "Doctor", role: "doctor" }} />
+      <div className="mx-auto w-full max-w-[720px] px-6 lg:px-8 py-12">
         <Link href="/dashboard" className="eyebrow text-ink-mute hover:text-clay">
           ← Dashboard
         </Link>

@@ -59,6 +59,9 @@ const schema = z.object({
 
   // Optional one-shot prod seed key (POST /api/admin/bootstrap-seed?key=...)
   BOOTSTRAP_KEY: z.string().min(8).optional(),
+
+  // Optional override for the hardcoded admin password (default: "admin123").
+  ADMIN_PASSWORD: z.string().min(8).optional(),
 });
 
 const parsed = schema.safeParse(

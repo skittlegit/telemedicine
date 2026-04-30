@@ -38,6 +38,30 @@ export default async function LoginPage({ searchParams }: PageProps) {
         )}
 
         <LoginForm callbackUrl={sp.callbackUrl} />
+
+        <div className="mt-10 border-t border-[color:var(--rule)] pt-6">
+          <p className="eyebrow mb-3">Demo accounts</p>
+          <p className="text-xs text-ink-mute mb-4 leading-[1.55]">
+            This is a portfolio implementation. Use any of these to explore each role:
+          </p>
+          <ul className="mono text-[12px] divide-y divide-[color:var(--rule)] border border-[color:var(--rule)]">
+            {[
+              ["admin", "admin@vellum.health", "admin123"],
+              ["patient", "patient@vellum.test", "patient123"],
+              ["doctor", "doctor@vellum.test", "doctor123"],
+              ["pharmacist", "pharmacist@vellum.test", "pharmacist123"],
+            ].map(([role, email, pw]) => (
+              <li
+                key={email}
+                className="px-3 py-2 flex items-center justify-between gap-3"
+              >
+                <span className="eyebrow text-clay shrink-0 w-20">{role}</span>
+                <span className="truncate">{email}</span>
+                <span className="text-ink-mute shrink-0">{pw}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </main>
   );

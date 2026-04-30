@@ -6,6 +6,8 @@ import { AuthError } from "next-auth";
 import { connectDB } from "@/lib/db";
 import { User } from "@/lib/models/User";
 import { PatientProfile } from "@/lib/models/PatientProfile";
+import { DoctorProfile } from "@/lib/models/DoctorProfile";
+import { PharmacyProfile } from "@/lib/models/PharmacyProfile";
 import { signIn, signOut } from "@/auth";
 import { audit } from "@/lib/audit";
 import { rateLimit } from "@/lib/ratelimit";
@@ -33,15 +35,39 @@ export async function registerAction(_prev: FormState, formData: FormData): Prom
     email: formData.get("email"),
     password: formData.get("password"),
     role: formData.get("role") ?? "patient",
+    specialty: formData.get("specialty") || undefined,
+    licenseNumber: formData.get("licenseNumber") || undefined,
+    licenseRegion: formData.get("licenseRegion") || undefined,
+    pharmacyName: formData.get("pharmacyName") || undefined,
   });
   if (!parsed.success) {
     const tree = parsed.error.flatten();
     return { error: "Please fix the errors below.", fieldErrors: tree.fieldErrors };
   }
 
-  // Doctors require manual licensure verification before they can sign in.
+  // Doctors and pharmacists require manual licensure verification before they can sign in.
   const role = parsed.data.role;
-  const status = role === "doctor" ? "pending" : "active";
+  const status = role === "patient" ? "active" : "pending";
+
+  // Form-layer required-field check for licensed roles.
+  if (role === "doctor") {
+    const missing: Record<string, string[]> = {};
+    if (!parsed.data.specialty) missing.specialty = ["Required for clinicians"];
+    if (!parsed.data.licenseNumber) missing.licenseNumber = ["Required for clinicians"];
+    if (!parsed.data.licenseRegion) missing.licenseRegion = ["Required for clinicians"];
+    if (Object.keys(missing).length) {
+      return { error: "Please complete your licensure details.", fieldErrors: missing };
+    }
+  }
+  if (role === "pharmacist") {
+    const missing: Record<string, string[]> = {};
+    if (!parsed.data.pharmacyName) missing.pharmacyName = ["Required for pharmacists"];
+    if (!parsed.data.licenseNumber) missing.licenseNumber = ["Required for pharmacists"];
+    if (!parsed.data.licenseRegion) missing.licenseRegion = ["Required for pharmacists"];
+    if (Object.keys(missing).length) {
+      return { error: "Please complete your pharmacy licensure details.", fieldErrors: missing };
+    }
+  }
 
   let user;
   try {
@@ -60,6 +86,22 @@ export async function registerAction(_prev: FormState, formData: FormData): Prom
 
     if (role === "patient") {
       await PatientProfile.create({ user: user._id });
+    } else if (role === "doctor") {
+      await DoctorProfile.create({
+        user: user._id,
+        specialty: parsed.data.specialty!,
+        licenseNumber: parsed.data.licenseNumber!,
+        licenseRegion: parsed.data.licenseRegion!,
+        consultationFeeCents: 5000,
+        bio: "",
+      });
+    } else if (role === "pharmacist") {
+      await PharmacyProfile.create({
+        user: user._id,
+        pharmacyName: parsed.data.pharmacyName!,
+        licenseNumber: parsed.data.licenseNumber!,
+        licenseRegion: parsed.data.licenseRegion!,
+      });
     }
 
     await audit({

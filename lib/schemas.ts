@@ -11,8 +11,39 @@ export const RegisterSchema = z.object({
     .regex(/[a-zA-Z]/, "At least one letter")
     .regex(/[0-9]/, "At least one number"),
   role: z.enum(ROLES).default("patient"),
+  // Doctor application fields (optional; required at the form layer when role=doctor)
+  specialty: z.string().trim().min(2).max(80).optional(),
+  licenseNumber: z.string().trim().min(2).max(60).optional(),
+  licenseRegion: z.string().trim().min(2).max(80).optional(),
+  // Pharmacist application fields
+  pharmacyName: z.string().trim().min(2).max(120).optional(),
 });
 export type RegisterInput = z.infer<typeof RegisterSchema>;
+
+export const DoctorProfileUpdateSchema = z.object({
+  specialty: z.string().trim().min(2).max(80),
+  bio: z.string().trim().max(2000).optional().default(""),
+  licenseNumber: z.string().trim().min(2).max(60),
+  licenseRegion: z.string().trim().min(2).max(80),
+  yearsOfExperience: z.coerce.number().int().min(0).max(80).optional().default(0),
+  languages: z.string().trim().max(200).optional().default(""), // comma-separated on the wire
+  consultationFeeCents: z.coerce.number().int().min(0).max(100_000).optional().default(5000),
+});
+export type DoctorProfileUpdateInput = z.infer<typeof DoctorProfileUpdateSchema>;
+
+export const PharmacyProfileUpdateSchema = z.object({
+  pharmacyName: z.string().trim().min(2).max(120),
+  licenseNumber: z.string().trim().min(2).max(60),
+  licenseRegion: z.string().trim().min(2).max(80),
+  addressLine1: z.string().trim().max(200).optional().default(""),
+  addressLine2: z.string().trim().max(200).optional().default(""),
+  city: z.string().trim().max(100).optional().default(""),
+  region: z.string().trim().max(100).optional().default(""),
+  postalCode: z.string().trim().max(20).optional().default(""),
+  country: z.string().trim().max(2).toUpperCase().optional().default(""),
+  phone: z.string().trim().max(40).optional().default(""),
+});
+export type PharmacyProfileUpdateInput = z.infer<typeof PharmacyProfileUpdateSchema>;
 
 export const LoginSchema = z.object({
   email: z.email().trim().toLowerCase(),
