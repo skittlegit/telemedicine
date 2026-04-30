@@ -16,7 +16,7 @@ export default async function RegisterPage({ searchParams }: PageProps) {
         <Link href="/" className="eyebrow text-ink-mute hover:text-clay">
           ← Vellum Health
         </Link>
-        <h1 className="mt-6 font-display text-[clamp(2.75rem,7vw,4rem)] tracking-[-0.025em] leading-[0.95]">
+        <h1 className="mt-6 font-display text-[clamp(2rem,8vw,4rem)] tracking-[-0.025em] leading-[1] break-words">
           Begin <span className="italic-accent">your record.</span>
         </h1>
         <p className="mt-3 text-ink-soft text-sm">

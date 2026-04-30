@@ -109,7 +109,7 @@ export default async function AdminDashboard() {
         Approve clinicians, monitor the queue, audit every privileged action.
       </PageHeader>
 
-      <div className="mx-auto w-full max-w-[1280px] px-6 lg:px-8 pb-24">
+      <div className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-8 pb-24">
         <StatGrid cols={5}>
           <StatTile label="Patients" value={counts[0]} />
           <StatTile label="Active doctors" value={counts[1]} />
@@ -208,8 +208,8 @@ export default async function AdminDashboard() {
           {activeDoctors.length === 0 ? (
             <EmptyState message="No active doctors yet." />
           ) : (
-            <div className="border border-[color:var(--rule)] overflow-hidden">
-              <table className="w-full text-sm">
+            <div className="border border-[color:var(--rule)] overflow-x-auto">
+              <table className="w-full text-sm min-w-[640px]">
                 <thead className="bg-paper-tint border-b border-[color:var(--rule)]">
                   <tr className="eyebrow text-left">
                     <th className="px-4 py-3">Name</th>

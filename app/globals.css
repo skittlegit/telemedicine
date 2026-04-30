@@ -76,6 +76,7 @@ html {
     radial-gradient(circle at 14% 8%,  rgba(91,  63, 207, 0.05) 0, transparent 42%),
     radial-gradient(circle at 86% 92%, rgba(184, 130, 26, 0.05) 0, transparent 50%);
   background-attachment: fixed;
+  overflow-x: clip;
 }
 
 body {
@@ -86,6 +87,7 @@ body {
   letter-spacing: -0.005em;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  overflow-x: clip;
 }
 
 /* Display — Fraunces serif with strong optical sizing for big headlines */
@@ -96,6 +98,8 @@ h1.display, h2.display {
   font-weight: 500;
   letter-spacing: -0.025em;
   line-height: 0.98;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 /* Italic-accent — warm-violet italic serif emphasis. The signature touch. */
@@ -120,6 +124,7 @@ h1.display, h2.display {
   font-family: var(--font-plex-mono), ui-monospace, "SF Mono", monospace;
   font-size: 0.92em;
   letter-spacing: -0.01em;
+  overflow-wrap: anywhere;
 }
 
 /* ===== Hairline rule — the editorial backbone ======================= */

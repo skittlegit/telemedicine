@@ -94,7 +94,7 @@ export default async function PharmacyDashboard() {
         Welcome, {session.user.name}. {queue.length} orders waiting · {mine.length} in your hands.
       </PageHeader>
 
-      <div className="mx-auto w-full max-w-[1280px] px-6 lg:px-8 pb-24">
+      <div className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-8 pb-24">
         {profile && (
           <div
             className={`mb-10 border p-4 flex flex-wrap items-center justify-between gap-3 ${

@@ -125,7 +125,7 @@ async function PatientView({
         Everything you need for your next visit, your prescriptions, and your pharmacy in one place.
       </PageHeader>
 
-      <div className="mx-auto w-full max-w-[1280px] px-6 lg:px-8 pb-24">
+      <div className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-8 pb-24">
         <StatGrid cols={3}>
           <StatTile label="Upcoming visits" value={upcoming.length} hint="Scheduled or in progress" />
           <StatTile label="Active prescriptions" value={activeRx.length} hint="Not yet fulfilled" />
@@ -439,7 +439,7 @@ async function ClinicianView({
         ${(profile?.consultationFeeCents ?? 5000) / 100} per consult
       </PageHeader>
 
-      <div className="mx-auto w-full max-w-[1280px] px-6 lg:px-8 pb-24">
+      <div className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-8 pb-24">
         {profile && (
           <div
             className={`mb-10 border p-4 flex flex-wrap items-center justify-between gap-3 ${

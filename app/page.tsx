@@ -19,7 +19,7 @@ export default function Home() {
       <MarketingHeader />
 
       {/* ============ HERO ============ */}
-      <section className="mx-auto w-full max-w-[1280px] px-6 lg:px-8 pt-16 lg:pt-24 pb-20 grid grid-cols-12 gap-x-10 gap-y-14">
+      <section className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-8 pt-10 sm:pt-16 lg:pt-24 pb-20 grid grid-cols-12 gap-x-10 gap-y-14">
         <div className="col-span-12 lg:col-span-7 rise rise-1">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[color:var(--rule-strong)] bg-paper-tint">
             <span className="relative flex h-2 w-2">
@@ -29,7 +29,7 @@ export default function Home() {
             <span className="eyebrow text-ink">14 doctors online now</span>
           </div>
 
-          <h1 className="mt-6 font-display text-[clamp(2.75rem,7.5vw,6.5rem)] leading-[0.96] tracking-[-0.035em]">
+          <h1 className="mt-6 font-display text-[clamp(2rem,8vw,6.5rem)] leading-[0.98] tracking-[-0.035em] break-words">
             See a licensed doctor{" "}
             <span className="italic-accent">in minutes,</span>{" "}
             from anywhere.
@@ -57,9 +57,9 @@ export default function Home() {
               ["50+", "specialties"],
               ["HIPAA", "aligned"],
             ].map(([k, v]) => (
-              <div key={k} className="bg-paper px-5 py-4">
-                <p className="font-display text-[26px] leading-none tracking-[-0.02em]">{k}</p>
-                <p className="eyebrow mt-1.5">{v}</p>
+              <div key={k} className="bg-paper px-3 sm:px-5 py-4">
+                <p className="font-display text-[20px] sm:text-[26px] leading-none tracking-[-0.02em]">{k}</p>
+                <p className="eyebrow mt-1.5 text-[10px] sm:text-[11px]">{v}</p>
               </div>
             ))}
           </div>
@@ -70,14 +70,14 @@ export default function Home() {
         </aside>
       </section>
 
-      <hr className="rule mx-6 lg:mx-8" />
+      <hr className="rule mx-5 sm:mx-6 lg:mx-8" />
 
       {/* ============ HOW IT WORKS ============ */}
-      <section id="how" className="mx-auto w-full max-w-[1280px] px-6 lg:px-8 py-20 lg:py-24">
+      <section id="how" className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-24">
         <div className="flex flex-wrap items-end justify-between gap-6 mb-14">
           <div className="max-w-[42ch]">
             <p className="eyebrow mb-3">How it works</p>
-            <h2 className="font-display text-[clamp(2rem,4vw,3.5rem)] tracking-[-0.025em] leading-[1.02]">
+            <h2 className="font-display text-[clamp(1.6rem,5vw,3.5rem)] tracking-[-0.025em] leading-[1.04] break-words">
               Three steps from symptom{" "}
               <span className="italic-accent">to prescription.</span>
             </h2>
@@ -128,14 +128,14 @@ export default function Home() {
         </ol>
       </section>
 
-      <hr className="rule mx-6 lg:mx-8" />
+      <hr className="rule mx-5 sm:mx-6 lg:mx-8" />
 
       {/* ============ SPECIALTIES ============ */}
-      <section id="specialties" className="mx-auto w-full max-w-[1280px] px-6 lg:px-8 py-20 lg:py-24">
+      <section id="specialties" className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-24">
         <div className="flex flex-wrap items-end justify-between gap-6 mb-12">
           <div className="max-w-[44ch]">
             <p className="eyebrow mb-3">What we treat</p>
-            <h2 className="font-display text-[clamp(2rem,4vw,3.25rem)] tracking-[-0.025em] leading-[1.02]">
+            <h2 className="font-display text-[clamp(1.6rem,5vw,3.25rem)] tracking-[-0.025em] leading-[1.04] break-words">
               50+ specialties.{" "}
               <span className="italic-accent">One unhurried visit.</span>
             </h2>
@@ -161,14 +161,14 @@ export default function Home() {
         </div>
       </section>
 
-      <hr className="rule mx-6 lg:mx-8" />
+      <hr className="rule mx-5 sm:mx-6 lg:mx-8" />
 
       {/* ============ DOCTORS ============ */}
-      <section className="mx-auto w-full max-w-[1280px] px-6 lg:px-8 py-20 lg:py-24">
+      <section className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-24">
         <div className="flex flex-wrap items-end justify-between gap-6 mb-12">
           <div className="max-w-[44ch]">
             <p className="eyebrow mb-3">Meet the clinicians</p>
-            <h2 className="font-display text-[clamp(2rem,4vw,3.25rem)] tracking-[-0.025em] leading-[1.02]">
+            <h2 className="font-display text-[clamp(1.6rem,5vw,3.25rem)] tracking-[-0.025em] leading-[1.04] break-words">
               Board-certified.{" "}
               <span className="italic-accent">Background-checked.</span>
             </h2>
@@ -203,13 +203,13 @@ export default function Home() {
         </div>
       </section>
 
-      <hr className="rule mx-6 lg:mx-8" />
+      <hr className="rule mx-5 sm:mx-6 lg:mx-8" />
 
       {/* ============ SECURITY ============ */}
-      <section id="security" className="mx-auto w-full max-w-[1280px] px-6 lg:px-8 py-20 lg:py-24 grid grid-cols-12 gap-x-10 gap-y-10">
+      <section id="security" className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-24 grid grid-cols-12 gap-x-10 gap-y-10">
         <div className="col-span-12 lg:col-span-5">
           <p className="eyebrow mb-3">Privacy &amp; security</p>
-          <h2 className="font-display text-[clamp(2rem,4vw,3.25rem)] tracking-[-0.025em] leading-[1.02]">
+          <h2 className="font-display text-[clamp(1.6rem,5vw,3.25rem)] tracking-[-0.025em] leading-[1.04] break-words">
             Your record is read by you{" "}
             <span className="italic-accent">and your doctor — alone.</span>
           </h2>
@@ -243,14 +243,14 @@ export default function Home() {
         </dl>
       </section>
 
-      <hr className="rule mx-6 lg:mx-8" />
+      <hr className="rule mx-5 sm:mx-6 lg:mx-8" />
 
       {/* ============ FAQ ============ */}
-      <section className="mx-auto w-full max-w-[1280px] px-6 lg:px-8 py-20 lg:py-24">
+      <section className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-24">
         <div className="grid grid-cols-12 gap-10">
           <div className="col-span-12 lg:col-span-4">
             <p className="eyebrow mb-3">Common questions</p>
-            <h2 className="font-display text-[clamp(2rem,4vw,3rem)] tracking-[-0.025em] leading-[1.02]">
+            <h2 className="font-display text-[clamp(1.6rem,5vw,3rem)] tracking-[-0.025em] leading-[1.04] break-words">
               Before you{" "}
               <span className="italic-accent">book.</span>
             </h2>
@@ -271,10 +271,10 @@ export default function Home() {
       </section>
 
       {/* ============ CTA ============ */}
-      <section className="mx-auto w-full max-w-[1280px] px-6 lg:px-8 py-20 lg:py-28">
-        <div className="border border-[color:var(--rule-strong)] bg-paper-tint p-10 lg:p-16 text-center">
+      <section className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-8 py-14 sm:py-20 lg:py-28">
+        <div className="border border-[color:var(--rule-strong)] bg-paper-tint p-7 sm:p-10 lg:p-16 text-center">
           <Caduceus className="text-clay mx-auto mb-6" size={40} />
-          <h2 className="font-display text-[clamp(2.25rem,5vw,4.5rem)] tracking-[-0.035em] leading-[1] max-w-[20ch] mx-auto">
+          <h2 className="font-display text-[clamp(1.85rem,6vw,4.5rem)] tracking-[-0.035em] leading-[1.02] max-w-[20ch] mx-auto break-words">
             Care, today.{" "}
             <span className="italic-accent">No waiting room.</span>
           </h2>

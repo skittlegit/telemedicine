@@ -91,9 +91,9 @@ export function PageHeader({
   children?: ReactNode;
 }) {
   return (
-    <div className="mx-auto w-full max-w-[1280px] px-6 lg:px-8 pt-12 pb-10">
+    <div className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-8 pt-10 sm:pt-12 pb-8 sm:pb-10">
       <p className="eyebrow mb-3">{eyebrow}</p>
-      <h1 className="font-display text-[clamp(2.5rem,5.5vw,4.5rem)] tracking-[-0.03em] leading-[1]">
+      <h1 className="font-display text-[clamp(2rem,7vw,4.5rem)] tracking-[-0.03em] leading-[1.02] break-words">
         {title}
         {italic && (
           <>

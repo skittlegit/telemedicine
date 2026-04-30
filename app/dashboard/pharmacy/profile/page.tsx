@@ -42,7 +42,7 @@ export default async function PharmacyProfilePage() {
         triggers a fresh admin verification.
       </PageHeader>
 
-      <div className="mx-auto w-full max-w-[820px] px-6 lg:px-8 pb-24">
+      <div className="mx-auto w-full max-w-[820px] px-5 sm:px-6 lg:px-8 pb-24">
         <div
           className={`mb-10 border p-4 ${
             verified ? "border-moss/40 bg-moss/5" : "border-amber/40 bg-amber/10"

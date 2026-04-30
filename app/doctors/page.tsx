@@ -68,9 +68,9 @@ export default async function DoctorsPage({ searchParams }: PageProps) {
       <MarketingHeader />
 
       {/* HERO */}
-      <section className="mx-auto w-full max-w-[1280px] px-6 lg:px-8 pt-14 lg:pt-20 pb-10">
+      <section className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-8 pt-10 sm:pt-14 lg:pt-20 pb-10">
         <p className="eyebrow mb-3">The directory</p>
-        <h1 className="font-display text-[clamp(2.75rem,7vw,6rem)] leading-[0.96] tracking-[-0.035em] max-w-[20ch]">
+        <h1 className="font-display text-[clamp(2rem,8vw,6rem)] leading-[0.98] tracking-[-0.035em] max-w-[20ch] break-words">
           Practitioners{" "}
           <span className="italic-accent">in residence.</span>
         </h1>
@@ -84,7 +84,7 @@ export default async function DoctorsPage({ searchParams }: PageProps) {
           className="mt-8 flex flex-wrap gap-3 items-end max-w-[640px]"
           action="/doctors"
         >
-          <div className="flex-1 min-w-[260px]">
+          <div className="flex-1 min-w-0 w-full">
             <label className="eyebrow block mb-1.5" htmlFor="q">
               Search by name, specialty, or language
             </label>
@@ -105,10 +105,10 @@ export default async function DoctorsPage({ searchParams }: PageProps) {
         </form>
       </section>
 
-      <hr className="rule mx-6 lg:mx-8" />
+      <hr className="rule mx-5 sm:mx-6 lg:mx-8" />
 
       {/* FILTER CHIPS */}
-      <section className="mx-auto w-full max-w-[1280px] px-6 lg:px-8 py-8">
+      <section className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-8 py-8">
         <p className="eyebrow mb-3">Filter by specialty</p>
         <div className="flex flex-wrap gap-2">
           <FilterChip
@@ -133,7 +133,7 @@ export default async function DoctorsPage({ searchParams }: PageProps) {
       </section>
 
       {/* RESULTS */}
-      <section className="mx-auto w-full max-w-[1280px] px-6 lg:px-8 pb-24">
+      <section className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-8 pb-24">
         <div className="flex items-baseline justify-between mb-6">
           <p className="eyebrow">
             {visible.length} {visible.length === 1 ? "result" : "results"}

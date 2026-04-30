@@ -12,9 +12,9 @@ export default function SpecialtiesPage() {
     <main className="min-h-screen flex flex-col bg-paper text-ink">
       <MarketingHeader />
 
-      <section className="mx-auto w-full max-w-[1280px] px-6 lg:px-8 pt-16 lg:pt-24 pb-12">
+      <section className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-8 pt-10 sm:pt-16 lg:pt-24 pb-12">
         <p className="eyebrow mb-3">What we treat</p>
-        <h1 className="font-display text-[clamp(2.75rem,7vw,6rem)] leading-[0.96] tracking-[-0.035em] max-w-[20ch]">
+        <h1 className="font-display text-[clamp(2rem,8vw,6rem)] leading-[0.98] tracking-[-0.035em] max-w-[20ch] break-words">
           50+ specialties.{" "}
           <span className="italic-accent">One unhurried visit.</span>
         </h1>
@@ -25,9 +25,9 @@ export default function SpecialtiesPage() {
         </p>
       </section>
 
-      <hr className="rule mx-6 lg:mx-8" />
+      <hr className="rule mx-5 sm:mx-6 lg:mx-8" />
 
-      <section className="mx-auto w-full max-w-[1280px] px-6 lg:px-8 py-12 lg:py-16">
+      <section className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-8 py-12 lg:py-16">
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-px bg-[color:var(--rule)] border border-[color:var(--rule)]">
           {SPECIALTIES.map((s) => (
             <Link
@@ -53,12 +53,12 @@ export default function SpecialtiesPage() {
         </div>
       </section>
 
-      <hr className="rule mx-6 lg:mx-8" />
+      <hr className="rule mx-5 sm:mx-6 lg:mx-8" />
 
-      <section className="mx-auto w-full max-w-[1280px] px-6 lg:px-8 py-16 lg:py-20 grid grid-cols-12 gap-x-10 gap-y-10">
+      <section className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-8 py-10 sm:py-14 lg:py-20 grid grid-cols-12 gap-x-10 gap-y-10">
         <div className="col-span-12 lg:col-span-5">
           <p className="eyebrow mb-3">What we don&apos;t treat</p>
-          <h2 className="font-display text-[clamp(2rem,4vw,3.25rem)] tracking-[-0.025em] leading-[1.02]">
+          <h2 className="font-display text-[clamp(1.6rem,5vw,3.25rem)] tracking-[-0.025em] leading-[1.04] break-words">
             Honesty about the{" "}
             <span className="italic-accent">limits of video.</span>
           </h2>
@@ -83,9 +83,9 @@ export default function SpecialtiesPage() {
         </dl>
       </section>
 
-      <section className="mx-auto w-full max-w-[1280px] px-6 lg:px-8 pb-24">
-        <div className="border border-[color:var(--rule-strong)] bg-paper-tint p-10 lg:p-14 text-center">
-          <h2 className="font-display text-[clamp(2rem,4.5vw,3.5rem)] tracking-[-0.03em] leading-[1] max-w-[22ch] mx-auto">
+      <section className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-8 pb-24">
+        <div className="border border-[color:var(--rule-strong)] bg-paper-tint p-7 sm:p-10 lg:p-14 text-center">
+          <h2 className="font-display text-[clamp(1.85rem,6vw,3.5rem)] tracking-[-0.03em] leading-[1.02] max-w-[22ch] mx-auto break-words">
             Find your match.{" "}
             <span className="italic-accent">In one search.</span>
           </h2>
