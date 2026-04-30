@@ -29,6 +29,16 @@ export const metadata: Metadata = {
   title: "Vellum Health — modern telemedicine",
   description:
     "Encrypted video consultations, signed digital prescriptions, and same-day pharmacy fulfilment with licensed clinicians.",
+  applicationName: "Vellum Health",
+  appleWebApp: {
+    title: "Vellum",
+    capable: true,
+    statusBarStyle: "default",
+  },
+};
+
+export const viewport = {
+  themeColor: "#F6F2E9",
 };
 
 export default function RootLayout({
