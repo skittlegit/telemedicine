@@ -56,6 +56,9 @@ const schema = z.object({
   // Rate limit
   UPSTASH_REDIS_REST_URL: z.string().url().optional(),
   UPSTASH_REDIS_REST_TOKEN: z.string().optional(),
+
+  // Optional one-shot prod seed key (POST /api/admin/bootstrap-seed?key=...)
+  BOOTSTRAP_KEY: z.string().min(8).optional(),
 });
 
 const parsed = schema.safeParse(

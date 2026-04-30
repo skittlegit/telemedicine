@@ -42,29 +42,38 @@ export const authConfig: NextAuthConfig = {
         const parsed = LoginSchema.safeParse(raw);
         if (!parsed.success) return null;
         const { email, password } = parsed.data;
-        await connectDB();
-        const user = await User.findOne({ email })
-          .select("+passwordHash name email role status image")
-          .lean<{
-            _id: Types.ObjectId;
-            name: string;
-            email: string;
-            role: Role;
-            status: string;
-            image?: string;
-            passwordHash: string;
-          } | null>();
-        if (!user) return null;
-        if (user.status !== "active") return null;
-        const ok = await bcrypt.compare(password, user.passwordHash);
-        if (!ok) return null;
-        return {
-          id: String(user._id),
-          name: user.name,
-          email: user.email,
-          image: user.image ?? null,
-          role: user.role,
-        };
+        try {
+          await connectDB();
+          const user = await User.findOne({ email })
+            .select("+passwordHash name email role status image")
+            .lean<{
+              _id: Types.ObjectId;
+              name: string;
+              email: string;
+              role: Role;
+              status: string;
+              image?: string;
+              passwordHash: string;
+            } | null>();
+          if (!user) return null;
+          if (user.status !== "active") return null;
+          const ok = await bcrypt.compare(password, user.passwordHash);
+          if (!ok) return null;
+          return {
+            id: String(user._id),
+            name: user.name,
+            email: user.email,
+            image: user.image ?? null,
+            role: user.role,
+          };
+        } catch (err) {
+          // Surface DB / network / config failures to server logs so they're
+          // visible in Vercel runtime logs. Auth.js wraps the throw as a
+          // CallbackRouteError, which the action layer maps to a user-safe
+          // message.
+          console.error("[authorize] failed:", err);
+          throw err;
+        }
       },
     }),
   ],
