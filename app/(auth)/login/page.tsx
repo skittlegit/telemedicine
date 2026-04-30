@@ -15,10 +15,12 @@ export default async function LoginPage({ searchParams }: PageProps) {
         <Link href="/" className="eyebrow text-ink-mute hover:text-clay">
           ← Vellum Health
         </Link>
-        <h1 className="mt-4 font-display text-5xl tracking-tight">Sign in</h1>
-        <p className="mt-2 text-ink-soft text-sm">
+        <h1 className="mt-6 font-display text-[clamp(2.75rem,7vw,4rem)] tracking-[-0.025em] leading-[0.95]">
+          Sign <span className="italic-accent">in.</span>
+        </h1>
+        <p className="mt-3 text-ink-soft text-sm">
           Don&apos;t have an account?{" "}
-          <Link href="/register" className="text-clay underline">
+          <Link href="/register" className="text-clay underline underline-offset-2">
             Register
           </Link>
         </p>

@@ -72,22 +72,23 @@ export async function registerAction(_prev: FormState, formData: FormData): Prom
     redirect("/login?pending=1");
   }
 
-  // Auto sign-in patients. Per Auth.js v5: passing `redirectTo` makes signIn
-  // convert AuthError into a redirect, swallowing form error state. Use
-  // `redirect: false`, then redirect manually on success.
+  // Auto sign-in patients. In Auth.js v5 server actions, signIn must use
+  // redirectTo so the framework sets the session cookie via the redirect
+  // response. AuthError is thrown on credential failure; the success path
+  // throws NEXT_REDIRECT which must propagate.
   try {
     await signIn("credentials", {
       email: parsed.data.email,
       password: parsed.data.password,
-      redirect: false,
+      redirectTo: "/dashboard",
     });
+    return { ok: true };
   } catch (err) {
     if (err instanceof AuthError) {
       return { error: "Account created — please sign in." };
     }
     throw err;
   }
-  redirect("/dashboard");
 }
 
 export async function loginAction(_prev: FormState, formData: FormData): Promise<FormState> {
@@ -106,8 +107,9 @@ export async function loginAction(_prev: FormState, formData: FormData): Promise
     await signIn("credentials", {
       email: parsed.data.email,
       password: parsed.data.password,
-      redirect: false,
+      redirectTo: callbackUrl,
     });
+    return { ok: true };
   } catch (err) {
     if (err instanceof AuthError) {
       switch (err.type) {
@@ -117,9 +119,9 @@ export async function loginAction(_prev: FormState, formData: FormData): Promise
           return { error: "Could not sign in. Please try again." };
       }
     }
+    // NEXT_REDIRECT (success) must propagate.
     throw err;
   }
-  redirect(callbackUrl);
 }
 
 export async function signOutAction(): Promise<void> {

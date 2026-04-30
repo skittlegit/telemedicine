@@ -42,19 +42,21 @@ export default async function DoctorsPage({ searchParams }: PageProps) {
 
   return (
     <main className="min-h-screen bg-paper text-ink">
-      <header className="border-b border-[color:var(--rule-strong)]">
-        <div className="mx-auto w-full max-w-[1200px] px-8 py-8 flex items-baseline justify-between">
-          <Link href="/" className="eyebrow text-ink-mute hover:text-clay">
-            ← Vellum Health
+      <header className="border-b border-[color:var(--rule)]">
+        <div className="mx-auto w-full max-w-[1240px] px-8 py-6 flex items-baseline justify-between">
+          <Link href="/" className="font-display text-[20px] tracking-[-0.02em] leading-none">
+            Vellum<span className="italic-accent"> Health</span>
           </Link>
-          <nav className="eyebrow flex gap-6">
+          <nav className="eyebrow flex gap-7">
             <Link href="/login" className="hover:text-clay">Sign in</Link>
             <Link href="/register" className="hover:text-clay">Register</Link>
           </nav>
         </div>
-        <div className="mx-auto w-full max-w-[1200px] px-8 pb-10">
-          <p className="eyebrow">§ Directory</p>
-          <h1 className="font-display text-6xl tracking-tight mt-2">Practitioners</h1>
+        <div className="mx-auto w-full max-w-[1240px] px-8 pt-10 pb-12">
+          <p className="eyebrow">The directory</p>
+          <h1 className="mt-4 font-display text-[clamp(3rem,7vw,6rem)] tracking-[-0.03em] leading-[0.95]">
+            Practitioners <span className="italic-accent">in residence.</span>
+          </h1>
         </div>
       </header>
 

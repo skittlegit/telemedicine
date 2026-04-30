@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
-import { Inter, Inter_Tight, JetBrains_Mono } from "next/font/google";
+import { Fraunces, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-// Display font (kept under the legacy --font-fraunces variable name so token
-// mappings in globals.css continue to work without per-page edits).
-const display = Inter_Tight({
+// Display: Fraunces — variable serif with optical sizing. Brings the
+// editorial confidence high-end design relies on; pairs cleanly with Inter.
+const display = Fraunces({
   variable: "--font-fraunces",
   subsets: ["latin"],
-  weight: ["500", "600", "700"],
+  axes: ["opsz", "SOFT"],
   display: "swap",
 });
 

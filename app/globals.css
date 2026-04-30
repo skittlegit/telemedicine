@@ -1,37 +1,42 @@
 @import "tailwindcss";
 
 /* =====================================================================
-   VELLUM HEALTH — modern violet brand
-   White surfaces, deep indigo text, violet primary, emerald success.
-   Token names retain their legacy identifiers (paper / ink / clay /
-   moss / amber / oxblood) so all consuming pages inherit the new
-   palette automatically — only the values change.
+   VELLUM HEALTH — designer warm-bone palette
+   Bone surfaces, aubergine ink, plum-violet primary, ochre highlight.
+   Editorial typography: Fraunces (display, with optical sizing) over
+   Inter (body) over JetBrains Mono (clinical IDs / codes / status).
+
+   Token names (paper / ink / clay / moss / amber / oxblood) are kept
+   so all consuming pages inherit the new palette automatically.
    ===================================================================== */
 
 :root {
-  /* Surface */
-  --paper:        #FFFFFF;
-  --paper-tint:   #F7F5FB;
-  --paper-deep:   #EDE9F7;
+  /* Surface — warm bone, not white */
+  --paper:        #F6F2E9;
+  --paper-tint:   #EFEAE0;
+  --paper-deep:   #E5DECF;
 
-  /* Ink (deep indigo near-black) */
-  --ink:          #0F0B1F;
-  --ink-soft:     #2B2547;
-  --ink-mute:     #6B6488;
-  --ink-faint:    #A8A2C0;
+  /* Ink — deep aubergine-near-black */
+  --ink:          #1F1A2E;
+  --ink-soft:     #3D3450;
+  --ink-mute:     #7A6F8A;
+  --ink-faint:    #B0A8BF;
 
-  /* Brand — Violet primary */
-  --clay:         #6D4AFF;
-  --clay-deep:    #4C2FD7;
-  --clay-wash:    #EFEAFF;
+  /* Brand — refined plum-violet (less SaaS, more designer) */
+  --clay:         #5B3FCF;
+  --clay-deep:    #3D2899;
+  --clay-wash:    #ECE5FF;
 
-  /* Status */
-  --oxblood:      #DC2626;   /* danger */
-  --moss:         #10B981;   /* success */
-  --amber:        #F59E0B;   /* warning */
+  /* Highlight (used by .italic-accent) — warm aubergine, paired with violet */
+  --accent:       #6D3F8E;
 
-  --rule:         rgba(15, 11, 31, 0.08);
-  --rule-strong:  rgba(15, 11, 31, 0.16);
+  /* Status — muted, designer rather than candy */
+  --moss:         #4D7D5A;   /* sage success */
+  --amber:        #B8821A;   /* ochre warning */
+  --oxblood:      #8B2E2E;   /* oxblood danger */
+
+  --rule:         rgba(31, 26, 46, 0.10);
+  --rule-strong:  rgba(31, 26, 46, 0.20);
 
   --background:   var(--paper);
   --foreground:   var(--ink);
@@ -51,6 +56,7 @@
   --color-clay:         var(--clay);
   --color-clay-deep:    var(--clay-deep);
   --color-clay-wash:    var(--clay-wash);
+  --color-accent:       var(--accent);
   --color-oxblood:      var(--oxblood);
   --color-moss:         var(--moss);
   --color-amber:        var(--amber);
@@ -67,8 +73,8 @@ html {
   background: var(--paper);
   color: var(--ink);
   background-image:
-    radial-gradient(circle at 18% 8%,  rgba(109, 74, 255, 0.06) 0, transparent 42%),
-    radial-gradient(circle at 82% 92%, rgba(76,  47, 215, 0.045) 0, transparent 50%);
+    radial-gradient(circle at 14% 8%,  rgba(91,  63, 207, 0.05) 0, transparent 42%),
+    radial-gradient(circle at 86% 92%, rgba(184, 130, 26, 0.05) 0, transparent 50%);
   background-attachment: fixed;
 }
 
@@ -82,27 +88,29 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+/* Display — Fraunces serif with strong optical sizing for big headlines */
 .font-display,
 h1.display, h2.display {
-  font-family: var(--font-fraunces), ui-sans-serif, system-ui, sans-serif;
-  font-weight: 600;
-  letter-spacing: -0.03em;
-  line-height: 1.05;
+  font-family: var(--font-fraunces), "Times New Roman", serif;
+  font-variation-settings: "opsz" 144, "SOFT" 50;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  line-height: 0.98;
 }
 
-/* Brand-emphasis class — kept named .italic-accent so existing pages
-   inherit it. No longer italic; now a violet-weighted emphasis. */
+/* Italic-accent — warm-violet italic serif emphasis. The signature touch. */
 .italic-accent {
-  font-family: var(--font-fraunces), ui-sans-serif, system-ui, sans-serif;
-  font-style: normal;
-  font-weight: 600;
-  color: var(--clay);
+  font-family: var(--font-fraunces), serif;
+  font-style: italic;
+  font-variation-settings: "opsz" 144, "SOFT" 100;
+  font-weight: 400;
+  color: var(--accent);
 }
 
 .eyebrow {
   font-family: var(--font-plex-mono), ui-monospace, monospace;
   font-size: 11px;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--ink-mute);
   font-weight: 500;
@@ -114,7 +122,7 @@ h1.display, h2.display {
   letter-spacing: -0.01em;
 }
 
-/* ===== Hairline rule ================================================ */
+/* ===== Hairline rule — the editorial backbone ======================= */
 
 .rule {
   border: 0;
@@ -124,40 +132,39 @@ h1.display, h2.display {
 
 .rule-double {
   border: 0;
-  border-top: 1px solid var(--rule);
-  height: 1px;
+  border-top: 1px solid var(--rule-strong);
+  border-bottom: 1px solid var(--rule);
+  height: 4px;
 }
 
-/* ===== Buttons ====================================================== */
+/* ===== Buttons — sharp, confident, slightly rounded ================ */
 
 .btn {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.65rem 1.15rem;
+  padding: 0.7rem 1.2rem;
   font-family: var(--font-plex), sans-serif;
-  font-size: 13.5px;
+  font-size: 13px;
   font-weight: 500;
   letter-spacing: 0.01em;
-  border-radius: 10px;
-  border: 1px solid var(--clay);
-  background: var(--clay);
-  color: #ffffff;
+  border-radius: 4px;
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  color: var(--paper);
   cursor: pointer;
-  box-shadow: 0 1px 2px rgba(15, 11, 31, 0.06);
-  transition: background 140ms ease, border-color 140ms ease, transform 140ms ease, box-shadow 140ms ease;
+  transition: background 140ms ease, border-color 140ms ease, color 140ms ease, transform 140ms ease;
 }
-.btn:hover { background: var(--clay-deep); border-color: var(--clay-deep); box-shadow: 0 4px 14px rgba(109, 74, 255, 0.25); }
+.btn:hover { background: var(--clay-deep); border-color: var(--clay-deep); }
 .btn:active { transform: translateY(1px); }
-.btn:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(109, 74, 255, 0.28); }
+.btn:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(91, 63, 207, 0.25); }
 
 .btn-ghost {
   background: transparent;
   color: var(--ink);
   border: 1px solid var(--rule-strong);
-  box-shadow: none;
 }
-.btn-ghost:hover { background: var(--paper-tint); border-color: var(--clay); color: var(--clay-deep); box-shadow: none; }
+.btn-ghost:hover { background: var(--paper-tint); border-color: var(--ink); color: var(--ink); }
 
 .btn-clay {
   background: var(--clay);
@@ -166,52 +173,52 @@ h1.display, h2.display {
 }
 .btn-clay:hover { background: var(--clay-deep); border-color: var(--clay-deep); }
 
-/* ===== Inputs ======================================================= */
+/* ===== Inputs — bottom-rule editorial style ======================== */
 
 .field {
   width: 100%;
-  background: var(--paper);
-  border: 1px solid var(--rule-strong);
-  border-radius: 8px;
-  padding: 0.65rem 0.85rem;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--rule-strong);
+  border-radius: 0;
+  padding: 0.6rem 0;
   font-family: inherit;
   font-size: 15px;
   color: var(--ink);
   outline: none;
-  transition: border-color 160ms ease, box-shadow 160ms ease;
+  transition: border-color 160ms ease;
 }
-.field:focus { border-color: var(--clay); box-shadow: 0 0 0 3px rgba(109, 74, 255, 0.18); }
+.field:focus { border-bottom-color: var(--clay); }
 .field::placeholder { color: var(--ink-faint); }
 
-/* ===== Cards / wells ================================================ */
+/* ===== Cards / wells =============================================== */
 
 .well {
   background: var(--paper-tint);
   border: 1px solid var(--rule);
-  border-radius: 12px;
+  border-radius: 4px;
   padding: 1.5rem;
 }
 
 .card {
   background: var(--paper);
   border: 1px solid var(--rule-strong);
-  border-radius: 14px;
+  border-radius: 4px;
   padding: 1.75rem;
   position: relative;
-  box-shadow: 0 1px 2px rgba(15, 11, 31, 0.04);
 }
 
 .stamp {
   display: inline-block;
-  border: 1px solid var(--clay);
-  background: var(--clay-wash);
-  color: var(--clay-deep);
-  border-radius: 999px;
-  padding: 0.3rem 0.85rem;
+  border: 1.5px solid var(--clay);
+  color: var(--clay);
+  background: transparent;
+  padding: 0.35rem 0.85rem;
   font-family: var(--font-plex-mono), monospace;
   font-size: 10.5px;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
+  transform: rotate(-1.5deg);
 }
 
 /* ===== Animations =================================================== */
