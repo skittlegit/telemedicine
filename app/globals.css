@@ -1,26 +1,247 @@
 @import "tailwindcss";
 
+/* =====================================================================
+   CLINICAL EDITORIAL — telemedicine platform
+   A Swiss medical-journal aesthetic. Warm paper, deep ink, terracotta
+   accent, monospace for clinical IDs/codes, italic serif for headlines.
+   ===================================================================== */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Surface */
+  --paper:        #F5F1E8;
+  --paper-tint:   #EDE7D9;
+  --paper-deep:   #E2DAC6;
+
+  /* Ink */
+  --ink:          #1A1814;
+  --ink-soft:     #3D3933;
+  --ink-mute:     #7A736A;
+  --ink-faint:    #A8A092;
+
+  /* Accent */
+  --clay:         #C2502E;
+  --clay-deep:    #9A3D20;
+  --clay-wash:    #F2E0D6;
+
+  /* Status */
+  --oxblood:      #7A1E18;
+  --moss:         #5A6B3F;
+  --amber:        #B8821A;
+
+  --rule:         rgba(26, 24, 20, 0.14);
+  --rule-strong:  rgba(26, 24, 20, 0.28);
+
+  --background:   var(--paper);
+  --foreground:   var(--ink);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-background:   var(--background);
+  --color-foreground:   var(--foreground);
+
+  --color-paper:        var(--paper);
+  --color-paper-tint:   var(--paper-tint);
+  --color-paper-deep:   var(--paper-deep);
+  --color-ink:          var(--ink);
+  --color-ink-soft:     var(--ink-soft);
+  --color-ink-mute:     var(--ink-mute);
+  --color-ink-faint:    var(--ink-faint);
+  --color-clay:         var(--clay);
+  --color-clay-deep:    var(--clay-deep);
+  --color-clay-wash:    var(--clay-wash);
+  --color-oxblood:      var(--oxblood);
+  --color-moss:         var(--moss);
+  --color-amber:        var(--amber);
+  --color-rule:         var(--rule);
+
+  --font-display:       var(--font-fraunces);
+  --font-sans:          var(--font-plex);
+  --font-mono:          var(--font-plex-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ===== Base typography ============================================== */
+
+html {
+  background: var(--paper);
+  color: var(--ink);
+  background-image:
+    radial-gradient(circle at 20% 10%, rgba(194, 80, 46, 0.04) 0, transparent 40%),
+    radial-gradient(circle at 80% 90%, rgba(26, 24, 20, 0.05) 0, transparent 50%);
+  background-attachment: fixed;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-plex), ui-sans-serif, system-ui, sans-serif;
+  font-feature-settings: "ss01", "cv11";
+  font-size: 15px;
+  line-height: 1.55;
+  letter-spacing: -0.005em;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.font-display,
+h1.display, h2.display {
+  font-family: var(--font-fraunces), "Times New Roman", serif;
+  font-variation-settings: "opsz" 144, "SOFT" 50;
+  font-weight: 400;
+  letter-spacing: -0.025em;
+  line-height: 0.98;
+}
+
+.italic-accent {
+  font-family: var(--font-fraunces), serif;
+  font-style: italic;
+  font-variation-settings: "opsz" 144, "SOFT" 100;
+  color: var(--clay);
+}
+
+.eyebrow {
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  font-weight: 500;
+}
+
+.mono, code, kbd, samp {
+  font-family: var(--font-plex-mono), ui-monospace, "SF Mono", monospace;
+  font-size: 0.92em;
+  letter-spacing: -0.01em;
+}
+
+/* ===== Hairline rule (the design system) ============================ */
+
+.rule {
+  border: 0;
+  border-top: 1px solid var(--rule);
+  margin: 0;
+}
+
+.rule-double {
+  border: 0;
+  border-top: 1px solid var(--rule-strong);
+  border-bottom: 1px solid var(--rule);
+  height: 4px;
+}
+
+/* ===== Buttons ====================================================== */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.2rem;
+  font-family: var(--font-plex), sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+  cursor: pointer;
+  transition: background 140ms ease, color 140ms ease, transform 140ms ease;
+}
+.btn:hover { background: var(--clay-deep); border-color: var(--clay-deep); }
+.btn:active { transform: translateY(1px); }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--rule-strong);
+}
+.btn-ghost:hover { background: var(--paper-tint); border-color: var(--ink); }
+
+.btn-clay {
+  background: var(--clay);
+  border-color: var(--clay);
+  color: var(--paper);
+}
+.btn-clay:hover { background: var(--clay-deep); border-color: var(--clay-deep); }
+
+/* ===== Inputs ======================================================= */
+
+.field {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--rule-strong);
+  padding: 0.6rem 0;
+  font-family: inherit;
+  font-size: 15px;
+  color: var(--ink);
+  outline: none;
+  transition: border-color 160ms ease;
+}
+.field:focus { border-bottom-color: var(--clay); }
+.field::placeholder { color: var(--ink-faint); }
+
+/* ===== Cards / wells ================================================ */
+
+.well {
+  background: var(--paper-tint);
+  border: 1px solid var(--rule);
+  padding: 1.5rem;
+}
+
+.card {
+  background: var(--paper);
+  border: 1px solid var(--rule-strong);
+  padding: 1.75rem;
+  position: relative;
+}
+
+.stamp {
+  display: inline-block;
+  border: 1.5px solid var(--clay);
+  color: var(--clay);
+  padding: 0.35rem 0.85rem;
+  font-family: var(--font-plex-mono), monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  transform: rotate(-2deg);
+}
+
+/* ===== Animations =================================================== */
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes draw {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+.rise { animation: rise 700ms cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.rise-1 { animation-delay: 80ms; }
+.rise-2 { animation-delay: 180ms; }
+.rise-3 { animation-delay: 320ms; }
+.rise-4 { animation-delay: 480ms; }
+.rise-5 { animation-delay: 640ms; }
+
+.draw {
+  transform-origin: left;
+  animation: draw 900ms cubic-bezier(0.7, 0, 0.2, 1) both;
+}
+
+::selection {
+  background: var(--clay);
+  color: var(--paper);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--ink-faint) transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
