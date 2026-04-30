@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { requireEnv } from "@/lib/env";
+import { env } from "@/lib/env";
 
 /**
  * Mongoose connection cache.
@@ -27,7 +27,7 @@ export async function connectDB(): Promise<typeof mongoose> {
   if (cache.conn) return cache.conn;
 
   if (!cache.promise) {
-    const uri = requireEnv("MONGODB_URI");
+    const uri = env.MONGODB_URI;
     cache.promise = mongoose
       .connect(uri, {
         bufferCommands: false,

@@ -1,160 +1,231 @@
 import Link from "next/link";
 
 /**
- * Landing page — set as a fictional medical journal "masthead".
- * Clinical Editorial aesthetic. No purple gradients. No cookie-cutter SaaS hero.
+ * Vellum Health landing page — modern violet brand.
  */
 export default function Home() {
   return (
     <main className="min-h-screen flex flex-col bg-paper text-ink">
-      {/* ============ MASTHEAD ============ */}
-      <header className="border-b border-[color:var(--rule-strong)]">
-        <div className="mx-auto w-full max-w-[1320px] px-8 pt-6 pb-3 flex items-baseline justify-between gap-6">
-          <span className="eyebrow">Vol. I &nbsp;·&nbsp; Issue I &nbsp;·&nbsp; Est. MMXXVI</span>
-          <span className="eyebrow hidden md:inline">A licensed practice of remote medicine</span>
-          <span className="eyebrow tabular-nums">№ 0001</span>
-        </div>
-        <div className="mx-auto w-full max-w-[1320px] px-8 pb-6">
-          <h1 className="font-display text-[clamp(3.5rem,11vw,11rem)] leading-[0.85] tracking-[-0.04em] rise rise-1">
-            Vellum<span className="italic-accent"> Health</span>
-          </h1>
-        </div>
-        <div className="mx-auto w-full max-w-[1320px] px-8 pb-3 flex flex-wrap items-center justify-between gap-4 border-t border-[color:var(--rule)] pt-3">
-          <span className="eyebrow">A periodical of remote consultation</span>
-          <nav className="flex gap-7 eyebrow">
-            <Link href="/doctors" className="hover:text-clay transition-colors">Practitioners</Link>
-            <Link href="/login" className="hover:text-clay transition-colors">Sign in</Link>
-            <Link href="/register" className="hover:text-clay transition-colors">Register</Link>
+      {/* ============ NAV ============ */}
+      <header className="border-b border-[color:var(--rule)]">
+        <div className="mx-auto w-full max-w-[1240px] px-8 py-5 flex items-center justify-between gap-6">
+          <Link href="/" className="flex items-center gap-2">
+            <span aria-hidden className="inline-block h-7 w-7 rounded-lg bg-clay" />
+            <span className="font-display text-xl tracking-tight">Vellum<span className="italic-accent"> Health</span></span>
+          </Link>
+          <nav className="hidden md:flex items-center gap-8 text-[14px] text-ink-soft">
+            <Link href="/doctors" className="hover:text-clay transition-colors">Clinicians</Link>
+            <Link href="/#how" className="hover:text-clay transition-colors">How it works</Link>
+            <Link href="/#security" className="hover:text-clay transition-colors">Security</Link>
           </nav>
+          <div className="flex items-center gap-3">
+            <Link href="/login" className="text-[14px] text-ink-soft hover:text-clay transition-colors">Sign in</Link>
+            <Link href="/register" className="btn">Get started</Link>
+          </div>
         </div>
       </header>
 
-      {/* ============ LEDE ============ */}
-      <section className="mx-auto w-full max-w-[1320px] px-8 pt-16 pb-20 grid grid-cols-12 gap-8">
-        <div className="col-span-12 md:col-span-7 rise rise-2">
-          <p className="eyebrow mb-6">§ I &nbsp; The proposition</p>
-          <p className="font-display text-[clamp(1.75rem,3.2vw,3rem)] leading-[1.05] tracking-[-0.02em] text-ink">
-            A clinic without a waiting room.{" "}
-            <span className="italic-accent">A pharmacy without a queue.</span>{" "}
-            A record that <span className="italic-accent">remembers you</span>—and is read by no
-            one else.
+      {/* ============ HERO ============ */}
+      <section className="mx-auto w-full max-w-[1240px] px-8 pt-20 pb-24 grid grid-cols-12 gap-10">
+        <div className="col-span-12 lg:col-span-7 rise rise-1">
+          <span className="stamp mb-6">Telemedicine, modernised</span>
+          <h1 className="font-display text-[clamp(2.75rem,6.4vw,5.25rem)] leading-[1.02] tracking-[-0.035em]">
+            Care that meets you{" "}
+            <span className="italic-accent">where you are.</span>
+          </h1>
+          <p className="mt-6 max-w-[54ch] text-ink-soft text-[17px] leading-[1.6]">
+            Book a licensed clinician, meet over end-to-end encrypted video, and receive a
+            cryptographically signed prescription you can fill at any participating pharmacy —
+            often the same day.
           </p>
-          <p className="mt-8 max-w-[44ch] text-ink-soft text-[17px] leading-[1.55]">
-            Vellum Health is a closed circuit between you and licensed clinicians. Book a
-            thirty-minute consultation, meet over encrypted video, receive a digital prescription
-            authenticated by signature and cipher, and—if you choose—have it filled by a verified
-            pharmacist within the hour.
-          </p>
-
-          <div className="mt-10 flex flex-wrap gap-3 rise rise-3">
-            <Link href="/register" className="btn btn-clay">
-              Begin a consultation
+          <div className="mt-9 flex flex-wrap gap-3 rise rise-2">
+            <Link href="/register" className="btn">
+              Start a consultation
               <span aria-hidden>→</span>
             </Link>
             <Link href="/doctors" className="btn btn-ghost">
-              Read the directory
+              Browse clinicians
             </Link>
+          </div>
+          <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-3 text-[13px] text-ink-mute">
+            <span className="flex items-center gap-2"><span className="h-1.5 w-1.5 rounded-full bg-moss" /> HIPAA-aligned</span>
+            <span className="flex items-center gap-2"><span className="h-1.5 w-1.5 rounded-full bg-moss" /> AES-256-GCM at rest</span>
+            <span className="flex items-center gap-2"><span className="h-1.5 w-1.5 rounded-full bg-moss" /> Licensed clinicians</span>
           </div>
         </div>
 
-        {/* Editorial side-column: clinical notes */}
-        <aside className="col-span-12 md:col-span-5 md:pl-8 md:border-l md:border-[color:var(--rule)] rise rise-3">
-          <p className="eyebrow mb-4">Editor’s note</p>
-          <p className="text-[15px] leading-[1.7] text-ink-soft">
-            Most telemedicine reads like a pharmaceutical advertisement. We have set ours in a
-            serif, in the tradition of <em>The Lancet</em> and <em>The New England Journal</em>—on
-            the conviction that gravity, in matters of one’s own body, is a feature.
-          </p>
-          <hr className="rule my-6" />
-          <dl className="grid grid-cols-2 gap-y-4 gap-x-6 text-[13px]">
-            <dt className="eyebrow">Encryption</dt>
-            <dd className="mono">AES-256-GCM</dd>
-            <dt className="eyebrow">Signalling</dt>
-            <dd className="mono">WebRTC · DTLS-SRTP</dd>
-            <dt className="eyebrow">Compliance</dt>
-            <dd className="mono">HIPAA-aligned</dd>
-            <dt className="eyebrow">Audit</dt>
-            <dd className="mono">Immutable log</dd>
-          </dl>
+        {/* Right column: product preview card */}
+        <aside className="col-span-12 lg:col-span-5 lg:pl-4 rise rise-3">
+          <div className="card">
+            <div className="flex items-center justify-between">
+              <p className="eyebrow">Today · 14:30</p>
+              <span className="stamp">Live</span>
+            </div>
+            <hr className="rule my-5" />
+            <div className="flex items-center gap-4">
+              <div aria-hidden className="h-12 w-12 rounded-full bg-clay-wash flex items-center justify-center font-display text-clay-deep">AM</div>
+              <div>
+                <p className="font-display text-lg leading-tight">Dr. Amelia Marston</p>
+                <p className="text-[13px] text-ink-mute">Internal Medicine · 30 min</p>
+              </div>
+            </div>
+            <div className="mt-5 grid grid-cols-2 gap-3 text-[13px]">
+              <div className="rounded-lg bg-paper-tint border border-[color:var(--rule)] p-3">
+                <p className="eyebrow mb-1">Encryption</p>
+                <p className="mono text-ink">AES-256-GCM</p>
+              </div>
+              <div className="rounded-lg bg-paper-tint border border-[color:var(--rule)] p-3">
+                <p className="eyebrow mb-1">Signalling</p>
+                <p className="mono text-ink">DTLS-SRTP</p>
+              </div>
+              <div className="rounded-lg bg-paper-tint border border-[color:var(--rule)] p-3">
+                <p className="eyebrow mb-1">Identity</p>
+                <p className="mono text-ink">Verified</p>
+              </div>
+              <div className="rounded-lg bg-paper-tint border border-[color:var(--rule)] p-3">
+                <p className="eyebrow mb-1">Audit</p>
+                <p className="mono text-ink">Immutable</p>
+              </div>
+            </div>
+            <div className="mt-6 flex gap-3">
+              <Link href="/register" className="btn flex-1 justify-center">Join call</Link>
+              <Link href="/doctors" className="btn btn-ghost flex-1 justify-center">Reschedule</Link>
+            </div>
+          </div>
         </aside>
       </section>
 
-      <hr className="rule mx-8" />
+      {/* ============ HOW IT WORKS ============ */}
+      <section id="how" className="border-t border-[color:var(--rule)]">
+        <div className="mx-auto w-full max-w-[1240px] px-8 py-20">
+          <div className="flex items-baseline justify-between mb-12">
+            <div>
+              <p className="eyebrow mb-3">How it works</p>
+              <h2 className="font-display text-[clamp(1.75rem,3.4vw,2.75rem)] tracking-[-0.025em] max-w-[18ch]">
+                From booking to medication, in one continuous flow.
+              </h2>
+            </div>
+          </div>
 
-      {/* ============ TABLE OF CONTENTS ============ */}
-      <section className="mx-auto w-full max-w-[1320px] px-8 py-20">
-        <div className="flex items-baseline justify-between mb-12 rise rise-3">
-          <p className="eyebrow">§ II &nbsp; Contents of the practice</p>
-          <p className="eyebrow tabular-nums">06 / 06</p>
+          <ol className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              {
+                n: "01",
+                title: "Book",
+                body: "Choose a clinician by specialty and availability. Thirty-minute appointments, no waiting room.",
+              },
+              {
+                n: "02",
+                title: "Consult",
+                body: "Meet over end-to-end encrypted video. Your clinician documents the visit directly into your record.",
+              },
+              {
+                n: "03",
+                title: "Fulfil",
+                body: "Prescriptions are HMAC-signed and routed to a verified pharmacy. Pay in escrow; receive at your door.",
+              },
+            ].map((s) => (
+              <li key={s.n} className="card">
+                <p className="mono text-clay-deep text-[13px] tracking-[0.18em]">{s.n}</p>
+                <h3 className="font-display text-2xl mt-3 tracking-[-0.02em]">{s.title}</h3>
+                <p className="mt-3 text-ink-soft text-[14.5px] leading-[1.6]">{s.body}</p>
+              </li>
+            ))}
+          </ol>
         </div>
-
-        <ol className="grid grid-cols-1 md:grid-cols-2 gap-y-2">
-          {[
-            { n: "01", title: "Consultation", italic: "by appointment", body: "Thirty-minute encrypted video sessions with the practitioner of your choice." },
-            { n: "02", title: "Prescription", italic: "issued in cipher", body: "Digitally signed, HMAC-verified, scannable by any participating pharmacist." },
-            { n: "03", title: "Pharmacy", italic: "filled the same day", body: "Direct-to-door dispatch from a verified pharmacist queue, payment in escrow." },
-            { n: "04", title: "Records", italic: "kept in confidence", body: "Field-level encryption of every clinical note, allergen, history, and address." },
-            { n: "05", title: "Insurance", italic: "claim-ready", body: "Itemised invoices in CMS-1500 form, with ICD-10 coding and policy attachment." },
-            { n: "06", title: "Audit", italic: "without amnesia", body: "Every action against your record is timestamped, attributed, and unforgeable." },
-          ].map((item, i) => (
-            <li
-              key={item.n}
-              className={`group grid grid-cols-[3.5rem_1fr] gap-x-5 py-6 border-t border-[color:var(--rule)] ${i === 5 ? "border-b" : ""} rise`}
-              style={{ animationDelay: `${300 + i * 80}ms` }}
-            >
-              <span className="mono text-ink-mute text-[14px] pt-1 tabular-nums">{item.n}</span>
-              <div>
-                <h3 className="font-display text-[2rem] leading-[1] tracking-[-0.02em]">
-                  {item.title}{" "}
-                  <span className="italic-accent text-[1.4rem]">{item.italic}</span>
-                </h3>
-                <p className="mt-3 max-w-[42ch] text-ink-soft text-[14.5px] leading-[1.55]">
-                  {item.body}
-                </p>
-              </div>
-            </li>
-          ))}
-        </ol>
       </section>
 
-      {/* ============ COLOPHON ============ */}
-      <footer className="mt-auto border-t border-[color:var(--rule-strong)]">
-        <div className="mx-auto w-full max-w-[1320px] px-8 py-10 grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div>
-            <p className="eyebrow mb-3">Colophon</p>
-            <p className="text-ink-soft text-[13.5px] leading-[1.65] max-w-[34ch]">
-              Set in <span className="italic-accent not-italic">Fraunces</span> and{" "}
-              <em>IBM Plex</em>. Printed for the screen, on warm paper, in MMXXVI.
+      {/* ============ SECURITY ============ */}
+      <section id="security" className="border-t border-[color:var(--rule)] bg-paper-tint">
+        <div className="mx-auto w-full max-w-[1240px] px-8 py-20 grid grid-cols-12 gap-10">
+          <div className="col-span-12 lg:col-span-5">
+            <p className="eyebrow mb-3">Security &amp; privacy</p>
+            <h2 className="font-display text-[clamp(1.75rem,3.4vw,2.75rem)] tracking-[-0.025em]">
+              Built so your records are read only by you and your clinician.
+            </h2>
+            <p className="mt-5 text-ink-soft text-[15.5px] leading-[1.65] max-w-[48ch]">
+              Every clinical note, allergy, history, and address is encrypted at the field level
+              before it touches the database. Prescriptions carry a per-record HMAC any pharmacist
+              can verify independently.
+            </p>
+          </div>
+          <dl className="col-span-12 lg:col-span-7 grid grid-cols-2 gap-4">
+            {[
+              ["Encryption", "AES-256-GCM"],
+              ["Transport", "TLS 1.3"],
+              ["Signalling", "WebRTC · DTLS-SRTP"],
+              ["Compliance", "HIPAA-aligned"],
+              ["Prescriptions", "HMAC-SHA256 signed"],
+              ["Audit", "Immutable log"],
+            ].map(([k, v]) => (
+              <div key={k} className="rounded-xl bg-paper border border-[color:var(--rule)] p-5">
+                <dt className="eyebrow mb-2">{k}</dt>
+                <dd className="mono text-ink">{v}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </section>
+
+      {/* ============ CTA ============ */}
+      <section className="border-t border-[color:var(--rule)]">
+        <div className="mx-auto w-full max-w-[1240px] px-8 py-20 text-center">
+          <h2 className="font-display text-[clamp(2rem,4.4vw,3.5rem)] tracking-[-0.03em] max-w-[20ch] mx-auto">
+            Ready when you are.{" "}
+            <span className="italic-accent">No waiting room.</span>
+          </h2>
+          <p className="mt-5 text-ink-soft text-[16px] max-w-[52ch] mx-auto">
+            Create an account in under a minute. Your first consultation can be tonight.
+          </p>
+          <div className="mt-8 flex justify-center gap-3">
+            <Link href="/register" className="btn">
+              Create account
+              <span aria-hidden>→</span>
+            </Link>
+            <Link href="/doctors" className="btn btn-ghost">See clinicians</Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ============ FOOTER ============ */}
+      <footer className="mt-auto border-t border-[color:var(--rule)] bg-paper-tint">
+        <div className="mx-auto w-full max-w-[1240px] px-8 py-12 grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="col-span-2 md:col-span-1">
+            <Link href="/" className="flex items-center gap-2">
+              <span aria-hidden className="inline-block h-6 w-6 rounded-md bg-clay" />
+              <span className="font-display text-lg tracking-tight">Vellum<span className="italic-accent"> Health</span></span>
+            </Link>
+            <p className="mt-3 text-ink-mute text-[13px] leading-[1.6] max-w-[34ch]">
+              Modern telemedicine — encrypted, signed, and licensed.
             </p>
           </div>
           <div>
             <p className="eyebrow mb-3">Patients</p>
-            <ul className="space-y-1.5 text-[13.5px]">
-              <li><Link className="hover:text-clay" href="/register">Register</Link></li>
+            <ul className="space-y-1.5 text-[13.5px] text-ink-soft">
+              <li><Link className="hover:text-clay" href="/register">Create account</Link></li>
               <li><Link className="hover:text-clay" href="/doctors">Find a clinician</Link></li>
-              <li><Link className="hover:text-clay" href="/dashboard">Patient ledger</Link></li>
+              <li><Link className="hover:text-clay" href="/dashboard">Your dashboard</Link></li>
             </ul>
           </div>
           <div>
             <p className="eyebrow mb-3">Clinicians</p>
-            <ul className="space-y-1.5 text-[13.5px]">
+            <ul className="space-y-1.5 text-[13.5px] text-ink-soft">
               <li><Link className="hover:text-clay" href="/login">Practitioner sign-in</Link></li>
-              <li><Link className="hover:text-clay" href="/register?role=doctor">Apply for licensure review</Link></li>
+              <li><Link className="hover:text-clay" href="/register?role=doctor">Apply to practise</Link></li>
             </ul>
           </div>
           <div>
-            <p className="eyebrow mb-3">In the foundry</p>
+            <p className="eyebrow mb-3">Status</p>
             <p className="mono text-[12px] text-ink-mute leading-[1.7]">
               build · 0.1.0<br />
-              region · localhost<br />
               status · <span className="text-moss">operational</span>
             </p>
           </div>
         </div>
         <div className="border-t border-[color:var(--rule)]">
-          <div className="mx-auto w-full max-w-[1320px] px-8 py-4 flex flex-wrap items-center justify-between gap-3 eyebrow">
-            <span>© MMXXVI Vellum Health · all rights reserved</span>
-            <span>This site is a portfolio implementation. Not a real medical service.</span>
+          <div className="mx-auto w-full max-w-[1240px] px-8 py-4 flex flex-wrap items-center justify-between gap-3 text-[12px] text-ink-mute">
+            <span>© 2026 Vellum Health · all rights reserved</span>
+            <span>Portfolio implementation. Not a real medical service.</span>
           </div>
         </div>
       </footer>

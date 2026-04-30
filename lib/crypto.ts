@@ -5,7 +5,7 @@ import {
   randomBytes,
   timingSafeEqual,
 } from "node:crypto";
-import { requireEnv } from "@/lib/env";
+import { env } from "@/lib/env";
 
 /**
  * AES-256-GCM field-level encryption for PHI.
@@ -19,7 +19,7 @@ const TAG_LEN = 16;
 let cachedKey: Buffer | null = null;
 function key(): Buffer {
   if (cachedKey) return cachedKey;
-  const raw = requireEnv("PHI_ENCRYPTION_KEY");
+  const raw = env.PHI_ENCRYPTION_KEY;
   const buf = Buffer.from(raw, "base64");
   if (buf.length !== 32) {
     throw new Error("PHI_ENCRYPTION_KEY must decode to 32 bytes (base64)");
@@ -55,7 +55,7 @@ export function decryptPHI(payload: string | null | undefined): string | null {
 let cachedHmacKey: Buffer | null = null;
 function hmacKey(): Buffer {
   if (cachedHmacKey) return cachedHmacKey;
-  const raw = requireEnv("PRESCRIPTION_HMAC_KEY");
+  const raw = env.PRESCRIPTION_HMAC_KEY;
   const buf = Buffer.from(raw, "base64");
   if (buf.length < 32) throw new Error("PRESCRIPTION_HMAC_KEY must be ≥32 bytes (base64)");
   cachedHmacKey = buf;

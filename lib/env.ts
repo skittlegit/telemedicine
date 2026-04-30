@@ -10,15 +10,15 @@ import { z } from "zod";
 const schema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
 
-  // Core
-  MONGODB_URI: z.string().url().optional(),
+  // Core (required — app cannot serve without these)
+  MONGODB_URI: z.string().url(),
   NEXTAUTH_URL: z.string().url().optional(),
-  NEXTAUTH_SECRET: z.string().min(16).optional(),
+  NEXTAUTH_SECRET: z.string().min(16),
   APP_URL: z.string().url().default("http://localhost:3000"),
 
-  // Crypto (32-byte base64 keys)
-  PHI_ENCRYPTION_KEY: z.string().optional(),
-  PRESCRIPTION_HMAC_KEY: z.string().optional(),
+  // Crypto (32-byte base64 keys — required, PHI is encrypted at rest)
+  PHI_ENCRYPTION_KEY: z.string().min(32),
+  PRESCRIPTION_HMAC_KEY: z.string().min(32),
 
   // Stripe
   STRIPE_SECRET_KEY: z.string().optional(),

@@ -1,35 +1,37 @@
 @import "tailwindcss";
 
 /* =====================================================================
-   CLINICAL EDITORIAL — telemedicine platform
-   A Swiss medical-journal aesthetic. Warm paper, deep ink, terracotta
-   accent, monospace for clinical IDs/codes, italic serif for headlines.
+   VELLUM HEALTH — modern violet brand
+   White surfaces, deep indigo text, violet primary, emerald success.
+   Token names retain their legacy identifiers (paper / ink / clay /
+   moss / amber / oxblood) so all consuming pages inherit the new
+   palette automatically — only the values change.
    ===================================================================== */
 
 :root {
   /* Surface */
-  --paper:        #F5F1E8;
-  --paper-tint:   #EDE7D9;
-  --paper-deep:   #E2DAC6;
+  --paper:        #FFFFFF;
+  --paper-tint:   #F7F5FB;
+  --paper-deep:   #EDE9F7;
 
-  /* Ink */
-  --ink:          #1A1814;
-  --ink-soft:     #3D3933;
-  --ink-mute:     #7A736A;
-  --ink-faint:    #A8A092;
+  /* Ink (deep indigo near-black) */
+  --ink:          #0F0B1F;
+  --ink-soft:     #2B2547;
+  --ink-mute:     #6B6488;
+  --ink-faint:    #A8A2C0;
 
-  /* Accent */
-  --clay:         #C2502E;
-  --clay-deep:    #9A3D20;
-  --clay-wash:    #F2E0D6;
+  /* Brand — Violet primary */
+  --clay:         #6D4AFF;
+  --clay-deep:    #4C2FD7;
+  --clay-wash:    #EFEAFF;
 
   /* Status */
-  --oxblood:      #7A1E18;
-  --moss:         #5A6B3F;
-  --amber:        #B8821A;
+  --oxblood:      #DC2626;   /* danger */
+  --moss:         #10B981;   /* success */
+  --amber:        #F59E0B;   /* warning */
 
-  --rule:         rgba(26, 24, 20, 0.14);
-  --rule-strong:  rgba(26, 24, 20, 0.28);
+  --rule:         rgba(15, 11, 31, 0.08);
+  --rule-strong:  rgba(15, 11, 31, 0.16);
 
   --background:   var(--paper);
   --foreground:   var(--ink);
@@ -65,8 +67,8 @@ html {
   background: var(--paper);
   color: var(--ink);
   background-image:
-    radial-gradient(circle at 20% 10%, rgba(194, 80, 46, 0.04) 0, transparent 40%),
-    radial-gradient(circle at 80% 90%, rgba(26, 24, 20, 0.05) 0, transparent 50%);
+    radial-gradient(circle at 18% 8%,  rgba(109, 74, 255, 0.06) 0, transparent 42%),
+    radial-gradient(circle at 82% 92%, rgba(76,  47, 215, 0.045) 0, transparent 50%);
   background-attachment: fixed;
 }
 
@@ -82,24 +84,25 @@ body {
 
 .font-display,
 h1.display, h2.display {
-  font-family: var(--font-fraunces), "Times New Roman", serif;
-  font-variation-settings: "opsz" 144, "SOFT" 50;
-  font-weight: 400;
-  letter-spacing: -0.025em;
-  line-height: 0.98;
+  font-family: var(--font-fraunces), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
 }
 
+/* Brand-emphasis class — kept named .italic-accent so existing pages
+   inherit it. No longer italic; now a violet-weighted emphasis. */
 .italic-accent {
-  font-family: var(--font-fraunces), serif;
-  font-style: italic;
-  font-variation-settings: "opsz" 144, "SOFT" 100;
+  font-family: var(--font-fraunces), ui-sans-serif, system-ui, sans-serif;
+  font-style: normal;
+  font-weight: 600;
   color: var(--clay);
 }
 
 .eyebrow {
   font-family: var(--font-plex-mono), ui-monospace, monospace;
   font-size: 11px;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--ink-mute);
   font-weight: 500;
@@ -111,7 +114,7 @@ h1.display, h2.display {
   letter-spacing: -0.01em;
 }
 
-/* ===== Hairline rule (the design system) ============================ */
+/* ===== Hairline rule ================================================ */
 
 .rule {
   border: 0;
@@ -121,9 +124,8 @@ h1.display, h2.display {
 
 .rule-double {
   border: 0;
-  border-top: 1px solid var(--rule-strong);
-  border-bottom: 1px solid var(--rule);
-  height: 4px;
+  border-top: 1px solid var(--rule);
+  height: 1px;
 }
 
 /* ===== Buttons ====================================================== */
@@ -132,31 +134,35 @@ h1.display, h2.display {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.7rem 1.2rem;
+  padding: 0.65rem 1.15rem;
   font-family: var(--font-plex), sans-serif;
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 500;
-  letter-spacing: 0.02em;
-  border: 1px solid var(--ink);
-  background: var(--ink);
-  color: var(--paper);
+  letter-spacing: 0.01em;
+  border-radius: 10px;
+  border: 1px solid var(--clay);
+  background: var(--clay);
+  color: #ffffff;
   cursor: pointer;
-  transition: background 140ms ease, color 140ms ease, transform 140ms ease;
+  box-shadow: 0 1px 2px rgba(15, 11, 31, 0.06);
+  transition: background 140ms ease, border-color 140ms ease, transform 140ms ease, box-shadow 140ms ease;
 }
-.btn:hover { background: var(--clay-deep); border-color: var(--clay-deep); }
+.btn:hover { background: var(--clay-deep); border-color: var(--clay-deep); box-shadow: 0 4px 14px rgba(109, 74, 255, 0.25); }
 .btn:active { transform: translateY(1px); }
+.btn:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(109, 74, 255, 0.28); }
 
 .btn-ghost {
   background: transparent;
   color: var(--ink);
   border: 1px solid var(--rule-strong);
+  box-shadow: none;
 }
-.btn-ghost:hover { background: var(--paper-tint); border-color: var(--ink); }
+.btn-ghost:hover { background: var(--paper-tint); border-color: var(--clay); color: var(--clay-deep); box-shadow: none; }
 
 .btn-clay {
   background: var(--clay);
   border-color: var(--clay);
-  color: var(--paper);
+  color: #ffffff;
 }
 .btn-clay:hover { background: var(--clay-deep); border-color: var(--clay-deep); }
 
@@ -164,17 +170,17 @@ h1.display, h2.display {
 
 .field {
   width: 100%;
-  background: transparent;
-  border: 0;
-  border-bottom: 1px solid var(--rule-strong);
-  padding: 0.6rem 0;
+  background: var(--paper);
+  border: 1px solid var(--rule-strong);
+  border-radius: 8px;
+  padding: 0.65rem 0.85rem;
   font-family: inherit;
   font-size: 15px;
   color: var(--ink);
   outline: none;
-  transition: border-color 160ms ease;
+  transition: border-color 160ms ease, box-shadow 160ms ease;
 }
-.field:focus { border-bottom-color: var(--clay); }
+.field:focus { border-color: var(--clay); box-shadow: 0 0 0 3px rgba(109, 74, 255, 0.18); }
 .field::placeholder { color: var(--ink-faint); }
 
 /* ===== Cards / wells ================================================ */
@@ -182,26 +188,30 @@ h1.display, h2.display {
 .well {
   background: var(--paper-tint);
   border: 1px solid var(--rule);
+  border-radius: 12px;
   padding: 1.5rem;
 }
 
 .card {
   background: var(--paper);
   border: 1px solid var(--rule-strong);
+  border-radius: 14px;
   padding: 1.75rem;
   position: relative;
+  box-shadow: 0 1px 2px rgba(15, 11, 31, 0.04);
 }
 
 .stamp {
   display: inline-block;
-  border: 1.5px solid var(--clay);
-  color: var(--clay);
-  padding: 0.35rem 0.85rem;
+  border: 1px solid var(--clay);
+  background: var(--clay-wash);
+  color: var(--clay-deep);
+  border-radius: 999px;
+  padding: 0.3rem 0.85rem;
   font-family: var(--font-plex-mono), monospace;
   font-size: 10.5px;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  transform: rotate(-2deg);
 }
 
 /* ===== Animations =================================================== */
@@ -230,7 +240,7 @@ h1.display, h2.display {
 
 ::selection {
   background: var(--clay);
-  color: var(--paper);
+  color: #ffffff;
 }
 
 * {

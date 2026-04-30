@@ -1,22 +1,24 @@
 import type { Metadata } from "next";
-import { Fraunces, IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
+import { Inter, Inter_Tight, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-const fraunces = Fraunces({
+// Display font (kept under the legacy --font-fraunces variable name so token
+// mappings in globals.css continue to work without per-page edits).
+const display = Inter_Tight({
   variable: "--font-fraunces",
   subsets: ["latin"],
-  axes: ["opsz", "SOFT"],
+  weight: ["500", "600", "700"],
   display: "swap",
 });
 
-const plex = IBM_Plex_Sans({
+const sans = Inter({
   variable: "--font-plex",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
+  weight: ["400", "500", "600"],
   display: "swap",
 });
 
-const plexMono = IBM_Plex_Mono({
+const mono = JetBrains_Mono({
   variable: "--font-plex-mono",
   subsets: ["latin"],
   weight: ["400", "500"],
@@ -24,9 +26,9 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Vellum Health — telemedicine, in the editorial tradition",
+  title: "Vellum Health — modern telemedicine",
   description:
-    "Confidential consultations, prescriptions, and pharmacy fulfilment between you and licensed clinicians.",
+    "Encrypted video consultations, signed digital prescriptions, and same-day pharmacy fulfilment with licensed clinicians.",
 };
 
 export default function RootLayout({
@@ -37,7 +39,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${fraunces.variable} ${plex.variable} ${plexMono.variable} h-full antialiased`}
+      className={`${display.variable} ${sans.variable} ${mono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
