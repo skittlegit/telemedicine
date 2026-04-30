@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { signOutAction } from "@/app/actions/auth";
+import { DashboardMobileNav } from "./DashboardMobileNav";
 
 /**
  * Shared chrome for every authenticated page so the dashboards read as part
@@ -41,10 +42,10 @@ export function DashboardHeader({
   const links = NAV[user.role] ?? [];
   return (
     <header className="border-b border-[color:var(--rule)] bg-paper/80 backdrop-blur-sm sticky top-0 z-50">
-      <div className="mx-auto w-full max-w-[1280px] px-6 lg:px-8 py-4 flex items-center justify-between gap-6">
-        <Link href="/" className="flex items-center gap-2.5 shrink-0">
+      <div className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-8 py-3.5 sm:py-4 flex items-center justify-between gap-3 sm:gap-6">
+        <Link href="/" className="flex items-center gap-2 sm:gap-2.5 shrink-0">
           <Caduceus className="text-clay" />
-          <span className="font-display text-[24px] tracking-[-0.02em] leading-none">
+          <span className="font-display text-[20px] sm:text-[24px] tracking-[-0.02em] leading-none">
             Vellum<span className="italic-accent"> Health</span>
           </span>
         </Link>
@@ -66,11 +67,12 @@ export function DashboardHeader({
             </span>
             <span className="hidden lg:inline">{user.name}</span>
           </span>
-          <form action={signOutAction}>
+          <form action={signOutAction} className="hidden md:block">
             <button type="submit" className="btn btn-ghost text-xs">
               Sign out
             </button>
           </form>
+          <DashboardMobileNav links={links} user={user} />
         </div>
       </div>
     </header>

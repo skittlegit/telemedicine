@@ -1,4 +1,9 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+import { AnimatePresence, motion } from "motion/react";
 
 export function Caduceus({ size = 22, className = "" }: { size?: number; className?: string }) {
   return (
@@ -23,31 +28,49 @@ export function Caduceus({ size = 22, className = "" }: { size?: number; classNa
   );
 }
 
+const NAV_LINKS: ReadonlyArray<readonly [string, string]> = [
+  ["/doctors", "Find a doctor"],
+  ["/how-it-works", "How it works"],
+  ["/specialties", "Specialties"],
+  ["/security", "Security"],
+];
+
 export function MarketingHeader() {
+  const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    const original = document.body.style.overflow;
+    if (open) document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = original;
+    };
+  }, [open]);
+
   return (
-    <header className="border-b border-[color:var(--rule)] bg-paper/80 backdrop-blur-sm sticky top-0 z-50">
-      <div className="mx-auto w-full max-w-[1280px] px-6 lg:px-8 py-4 flex items-center justify-between gap-6">
-        <Link href="/" className="flex items-center gap-2.5">
+    <header className="border-b border-[color:var(--rule)] bg-paper/85 backdrop-blur-sm sticky top-0 z-50">
+      <div className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-8 py-3.5 sm:py-4 flex items-center justify-between gap-3">
+        <Link href="/" className="flex items-center gap-2 sm:gap-2.5 shrink-0">
           <Caduceus className="text-clay" />
-          <span className="font-display text-[24px] tracking-[-0.02em] leading-none">
+          <span className="font-display text-[20px] sm:text-[24px] tracking-[-0.02em] leading-none">
             Vellum<span className="italic-accent"> Health</span>
           </span>
         </Link>
-        <nav className="hidden md:flex items-center gap-9 eyebrow">
-          <Link href="/doctors" className="hover:text-clay transition-colors">
-            Find a doctor
-          </Link>
-          <Link href="/how-it-works" className="hover:text-clay transition-colors">
-            How it works
-          </Link>
-          <Link href="/specialties" className="hover:text-clay transition-colors">
-            Specialties
-          </Link>
-          <Link href="/security" className="hover:text-clay transition-colors">
-            Security
-          </Link>
+
+        <nav className="hidden md:flex items-center gap-7 lg:gap-9 eyebrow">
+          {NAV_LINKS.map(([href, label]) => (
+            <Link key={href} href={href} className="hover:text-clay transition-colors" prefetch>
+              {label}
+            </Link>
+          ))}
         </nav>
-        <div className="flex items-center gap-4">
+
+        <div className="hidden sm:flex items-center gap-3 lg:gap-4">
           <Link href="/login" className="eyebrow hover:text-clay transition-colors" prefetch>
             Sign in
           </Link>
@@ -55,7 +78,72 @@ export function MarketingHeader() {
             Get care
           </Link>
         </div>
+
+        <button
+          type="button"
+          aria-label={open ? "Close menu" : "Open menu"}
+          aria-expanded={open}
+          aria-controls="mobile-nav"
+          onClick={() => setOpen((v) => !v)}
+          className="sm:hidden inline-flex items-center justify-center w-10 h-10 -mr-2 text-ink"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" aria-hidden>
+            {open ? (
+              <>
+                <path d="M5 5l14 14" />
+                <path d="M19 5L5 19" />
+              </>
+            ) : (
+              <>
+                <path d="M4 7h16" />
+                <path d="M4 12h16" />
+                <path d="M4 17h16" />
+              </>
+            )}
+          </svg>
+        </button>
       </div>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            id="mobile-nav"
+            key="mobile-nav"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.18 }}
+            className="sm:hidden border-t border-[color:var(--rule)] bg-paper"
+          >
+            <motion.nav
+              initial={{ y: -8 }}
+              animate={{ y: 0 }}
+              exit={{ y: -8 }}
+              transition={{ duration: 0.22, ease: [0.22, 0.61, 0.36, 1] }}
+              className="px-5 py-4 flex flex-col"
+            >
+              {NAV_LINKS.map(([href, label]) => (
+                <Link
+                  key={href}
+                  href={href}
+                  prefetch
+                  className="font-display text-[1.6rem] tracking-[-0.02em] py-2.5 border-b border-[color:var(--rule)] last:border-b-0 hover:text-clay transition-colors"
+                >
+                  {label}
+                </Link>
+              ))}
+              <div className="mt-5 flex flex-col gap-3">
+                <Link href="/login" prefetch className="btn btn-ghost justify-center">
+                  Sign in
+                </Link>
+                <Link href="/register" prefetch className="btn btn-clay justify-center">
+                  Get care →
+                </Link>
+              </div>
+            </motion.nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }
@@ -63,7 +151,7 @@ export function MarketingHeader() {
 export function MarketingFooter() {
   return (
     <footer className="mt-auto border-t border-[color:var(--rule-strong)]">
-      <div className="mx-auto w-full max-w-[1280px] px-6 lg:px-8 py-12 grid grid-cols-2 md:grid-cols-4 gap-10">
+      <div className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-8 py-10 sm:py-12 grid grid-cols-2 md:grid-cols-4 gap-8 sm:gap-10">
         <div className="col-span-2 md:col-span-1">
           <Link href="/" className="flex items-center gap-2.5">
             <Caduceus className="text-clay" />
@@ -91,7 +179,7 @@ export function MarketingFooter() {
             <li><Link className="hover:text-clay" href="/security">Security</Link></li>
           </ul>
         </div>
-        <div>
+        <div className="col-span-2 md:col-span-1">
           <p className="eyebrow mb-3">Status</p>
           <p className="mono text-[12px] text-ink-mute leading-[1.7]">
             build · 0.1.0<br />
@@ -100,7 +188,7 @@ export function MarketingFooter() {
         </div>
       </div>
       <div className="border-t border-[color:var(--rule)]">
-        <div className="mx-auto w-full max-w-[1280px] px-6 lg:px-8 py-4 flex flex-wrap items-center justify-between gap-3 eyebrow">
+        <div className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-8 py-4 flex flex-wrap items-center justify-between gap-2 eyebrow text-[10.5px]">
           <span>© 2026 Vellum Health · all rights reserved</span>
           <span>Portfolio implementation. Not a real medical service.</span>
         </div>
