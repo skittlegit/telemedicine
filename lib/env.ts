@@ -32,6 +32,9 @@ const schema = z.object({
   SMTP_PASS: z.string().optional(),
   SMTP_FROM: z.string().optional(),
 
+  // Resend (preferred over raw SMTP if both are set)
+  RESEND_API_KEY: z.string().optional(),
+
   // WebRTC
   NEXT_PUBLIC_STUN_URLS: z.string().default("stun:stun.l.google.com:19302"),
   TURN_URL: z.string().optional(),
@@ -55,7 +58,11 @@ const schema = z.object({
   UPSTASH_REDIS_REST_TOKEN: z.string().optional(),
 });
 
-const parsed = schema.safeParse(process.env);
+const parsed = schema.safeParse(
+  Object.fromEntries(
+    Object.entries(process.env).map(([k, v]) => [k, v === "" ? undefined : v]),
+  ),
+);
 
 if (!parsed.success) {
   const issues = parsed.error.issues

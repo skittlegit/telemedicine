@@ -1,38 +1,66 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { getToken } from "next-auth/jwt";
 
-/**
- * Proxy (formerly `middleware.ts` in Next.js ≤15).
- * Coarse role-gating only: any deeper authz happens inside the matching
- * Route Handler / Server Component via `requireSession()` from `lib/authz.ts`.
- *
- * Phase 2 will read the Auth.js v5 session token here. For now, this file
- * exists so subsequent phases can plug in without a routing rewrite.
- */
-export default function proxy(req: NextRequest) {
+const PUBLIC_PREFIXES = [
+  "/_next",
+  "/favicon",
+  "/api/auth",
+  "/api/health",
+  "/api/webhooks",
+  "/api/socket",
+  "/api/files",
+  "/verify",
+  "/login",
+  "/register",
+  "/doctors", // public directory; booking checked server-side
+];
+
+const ROLE_RULES: Array<{ prefix: string; roles: string[] }> = [
+  { prefix: "/dashboard/clinician", roles: ["doctor"] },
+  { prefix: "/dashboard/pharmacy", roles: ["pharmacist"] },
+  { prefix: "/dashboard/admin", roles: ["admin"] },
+  { prefix: "/consult", roles: ["patient", "doctor"] },
+  { prefix: "/book", roles: ["patient"] },
+  { prefix: "/dashboard", roles: ["patient", "doctor", "pharmacist", "admin"] },
+];
+
+export default async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // Always allow public assets, the auth flow itself, the Stripe webhook,
-  // the Socket.IO upgrade, and Rx verification links.
-  const PUBLIC_PREFIXES = [
-    "/_next",
-    "/favicon",
-    "/api/auth",
-    "/api/health",
-    "/api/webhooks",
-    "/api/socket",
-    "/verify",
-    "/login",
-    "/register",
-  ];
-  if (PUBLIC_PREFIXES.some((p) => pathname.startsWith(p)) || pathname === "/") {
+  if (pathname === "/" || PUBLIC_PREFIXES.some((p) => pathname.startsWith(p))) {
     return NextResponse.next();
   }
 
-  // Stub: actual session-based gating wired up in Phase 2.
+  const rule = ROLE_RULES.find((r) => pathname.startsWith(r.prefix));
+  if (!rule) return NextResponse.next();
+
+  const token = await getToken({
+    req,
+    secret: process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET,
+    salt:
+      process.env.NODE_ENV === "production"
+        ? "__Secure-authjs.session-token"
+        : "authjs.session-token",
+  });
+
+  if (!token) {
+    const url = req.nextUrl.clone();
+    url.pathname = "/login";
+    url.searchParams.set("callbackUrl", pathname);
+    return NextResponse.redirect(url);
+  }
+
+  const role = (token as { role?: string }).role;
+  if (!role || !rule.roles.includes(role)) {
+    const url = req.nextUrl.clone();
+    url.pathname = "/login";
+    url.searchParams.set("error", "forbidden");
+    return NextResponse.redirect(url);
+  }
+
   return NextResponse.next();
 }
 
 export const config = {
-  // Run on every request except static files & images.
   matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)"],
 };
