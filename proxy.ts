@@ -34,13 +34,19 @@ export default async function proxy(req: NextRequest) {
   const rule = ROLE_RULES.find((r) => pathname.startsWith(r.prefix));
   if (!rule) return NextResponse.next();
 
+  // Auth.js v5 prefixes the session cookie with `__Secure-` only when the
+  // request is HTTPS. Detect from the request itself rather than NODE_ENV so
+  // local production builds (HTTP) still match.
+  const secure = req.nextUrl.protocol === "https:";
+  const cookieName = secure
+    ? "__Secure-authjs.session-token"
+    : "authjs.session-token";
   const token = await getToken({
     req,
     secret: process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET,
-    salt:
-      process.env.NODE_ENV === "production"
-        ? "__Secure-authjs.session-token"
-        : "authjs.session-token",
+    salt: cookieName,
+    cookieName,
+    secureCookie: secure,
   });
 
   if (!token) {

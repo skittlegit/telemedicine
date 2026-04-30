@@ -9,7 +9,7 @@ const ContentSecurityPolicy = [
   "img-src 'self' data: blob: https:",
   "font-src 'self' https://fonts.gstatic.com",
   "media-src 'self' blob:",
-  "connect-src 'self' ws: wss: https://api.stripe.com https://fonts.googleapis.com",
+  "connect-src 'self' ws: wss: https://api.stripe.com https://r.stripe.com https://*.stripe.network https://fonts.googleapis.com",
   "frame-src https://js.stripe.com https://hooks.stripe.com",
   "worker-src 'self' blob:",
   "object-src 'none'",

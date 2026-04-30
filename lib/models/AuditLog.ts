@@ -12,9 +12,8 @@ const AuditLogSchema = new Schema(
     ip: { type: String },
     userAgent: { type: String },
     meta: { type: Schema.Types.Mixed }, // never include PHI
-    at: { type: Date, default: Date.now, index: true },
   },
-  { timestamps: false, capped: false },
+  { timestamps: true, capped: false },
 );
 
 export type AuditLogDoc = InferSchemaType<typeof AuditLogSchema> & { _id: string };

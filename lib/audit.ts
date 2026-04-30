@@ -25,7 +25,6 @@ export async function audit(evt: AuditEvent): Promise<void> {
       ip: h.get("x-forwarded-for")?.split(",")[0]?.trim() ?? h.get("x-real-ip") ?? undefined,
       userAgent: h.get("user-agent") ?? undefined,
       meta: evt.meta,
-      at: new Date(),
     });
   } catch (err) {
     console.error("[audit] failed:", err);

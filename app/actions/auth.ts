@@ -72,18 +72,22 @@ export async function registerAction(_prev: FormState, formData: FormData): Prom
     redirect("/login?pending=1");
   }
 
-  // Auto sign-in patients.
+  // Auto sign-in patients. Per Auth.js v5: passing `redirectTo` makes signIn
+  // convert AuthError into a redirect, swallowing form error state. Use
+  // `redirect: false`, then redirect manually on success.
   try {
     await signIn("credentials", {
       email: parsed.data.email,
       password: parsed.data.password,
-      redirectTo: "/dashboard",
+      redirect: false,
     });
   } catch (err) {
-    if (err instanceof Error && err.message === "NEXT_REDIRECT") throw err;
-    return { error: "Account created — please sign in." };
+    if (err instanceof AuthError) {
+      return { error: "Account created — please sign in." };
+    }
+    throw err;
   }
-  return { ok: true };
+  redirect("/dashboard");
 }
 
 export async function loginAction(_prev: FormState, formData: FormData): Promise<FormState> {
@@ -96,20 +100,26 @@ export async function loginAction(_prev: FormState, formData: FormData): Promise
   });
   if (!parsed.success) return { error: "Email and password are required." };
 
+  const callbackUrl = (formData.get("callbackUrl") as string) || "/dashboard";
+
   try {
     await signIn("credentials", {
       email: parsed.data.email,
       password: parsed.data.password,
-      redirectTo: (formData.get("callbackUrl") as string) || "/dashboard",
+      redirect: false,
     });
   } catch (err) {
-    if (err instanceof Error && err.message === "NEXT_REDIRECT") throw err;
     if (err instanceof AuthError) {
-      return { error: "Invalid email or password." };
+      switch (err.type) {
+        case "CredentialsSignin":
+          return { error: "Invalid email or password." };
+        default:
+          return { error: "Could not sign in. Please try again." };
+      }
     }
     throw err;
   }
-  return { ok: true };
+  redirect(callbackUrl);
 }
 
 export async function signOutAction(): Promise<void> {

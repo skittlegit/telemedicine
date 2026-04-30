@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { io, type Socket } from "socket.io-client";
-import SimplePeer from "simple-peer";
+import type SimplePeerType from "simple-peer";
 import type { Role } from "@/lib/models/User";
 
 interface ChatMsg {
@@ -36,7 +36,8 @@ export function ConsultRoom({
   const localVideo = useRef<HTMLVideoElement>(null);
   const remoteVideo = useRef<HTMLVideoElement>(null);
   const socketRef = useRef<Socket | null>(null);
-  const peerRef = useRef<InstanceType<typeof SimplePeer> | null>(null);
+  const peerRef = useRef<InstanceType<typeof SimplePeerType> | null>(null);
+  const SimplePeerCtorRef = useRef<typeof SimplePeerType | null>(null);
   const localStreamRef = useRef<MediaStream | null>(null);
   const peerSocketIdRef = useRef<string | null>(null);
 
@@ -54,6 +55,8 @@ export function ConsultRoom({
 
     async function init() {
       try {
+        const mod = await import("simple-peer");
+        SimplePeerCtorRef.current = (mod.default ?? mod) as typeof SimplePeerType;
         const stream = await navigator.mediaDevices.getUserMedia({
           video: { width: 1280, height: 720 },
           audio: true,
@@ -97,7 +100,7 @@ export function ConsultRoom({
 
         socket.on(
           "signal",
-          ({ from, data }: { from: string; data: SimplePeer.SignalData }) => {
+          ({ from, data }: { from: string; data: SimplePeerType.SignalData }) => {
             if (!peerRef.current) {
               peerSocketIdRef.current = from;
               createPeer(false, from);
@@ -128,7 +131,9 @@ export function ConsultRoom({
     }
 
     function createPeer(initiator: boolean, peerSocketId: string) {
-      const peer = new SimplePeer({
+      const Ctor = SimplePeerCtorRef.current;
+      if (!Ctor) return;
+      const peer = new Ctor({
         initiator,
         trickle: true,
         stream: localStreamRef.current ?? undefined,
