@@ -38,8 +38,8 @@ export async function createPharmacyOrderAction(
 
   await connectDB();
   const rx = await Prescription.findById(prescriptionId).lean<{
-    _id: unknown;
-    patient: unknown;
+    _id: Types.ObjectId;
+    patient: Types.ObjectId;
     revokedAt?: Date;
     fulfilledAt?: Date;
   } | null>();
@@ -52,7 +52,7 @@ export async function createPharmacyOrderAction(
     prescription: rx._id,
     patient: session.user.id,
     status: "queued",
-    deliveryAddressEnc: encryptPHI(JSON.stringify(addr.data)),
+    deliveryAddressEnc: encryptPHI(JSON.stringify(addr.data)) ?? "",
     totalCents: FULFILMENT_FEE_CENTS,
   });
 

@@ -8,11 +8,9 @@ export function stripe(): Stripe {
   if (!env.STRIPE_SECRET_KEY) {
     throw new Error("STRIPE_SECRET_KEY is not configured");
   }
-  cached = new Stripe(env.STRIPE_SECRET_KEY, {
-    // Pin a recent stable API version; the typed default may not exist on all SDK builds.
-    apiVersion: "2024-12-18.acacia" as Stripe.LatestApiVersion,
-    typescript: true,
-  });
+  // Use the SDK's pinned default API version. Avoid hardcoding so the
+  // installed @types/stripe stays the source of truth.
+  cached = new Stripe(env.STRIPE_SECRET_KEY, { typescript: true });
   return cached;
 }
 

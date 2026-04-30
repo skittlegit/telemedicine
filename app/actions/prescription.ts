@@ -43,9 +43,9 @@ export async function issuePrescriptionAction(
   await connectDB();
 
   const appt = await Appointment.findById(parsed.data.appointmentId).lean<{
-    _id: unknown;
-    doctor: unknown;
-    patient: unknown;
+    _id: Types.ObjectId;
+    doctor: Types.ObjectId;
+    patient: Types.ObjectId;
     status: string;
   } | null>();
   if (!appt) return { error: "Appointment not found." };
@@ -71,11 +71,11 @@ export async function issuePrescriptionAction(
     doctor: appt.doctor,
     patient: appt.patient,
     drugs: parsed.data.drugs,
-    diagnosisEnc: encryptPHI(parsed.data.diagnosis),
+    diagnosisEnc: encryptPHI(parsed.data.diagnosis) ?? undefined,
     issuedAt: new Date(issuedAt),
     signature,
     verifyToken,
-  });
+  } as unknown as Parameters<typeof Prescription.create>[0]);
 
   await audit({
     actor: session.user.id,

@@ -77,10 +77,18 @@ async function main() {
     password: "password123",
   });
 
+  await upsertUser({
+    email: "admin@vellum.test",
+    name: "Ada Admin",
+    role: "admin",
+    password: "password123",
+  });
+
   console.log("✔ Seed complete. Demo accounts (password: password123):");
   console.log("  patient@vellum.test");
   console.log("  doc.cardio@vellum.test, doc.gp@vellum.test, doc.derm@vellum.test");
   console.log("  pharmacist@vellum.test");
+  console.log("  admin@vellum.test");
   process.exit(0);
 }
 

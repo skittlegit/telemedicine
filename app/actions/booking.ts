@@ -52,9 +52,9 @@ export async function bookAppointmentAction(
   const doctorProfile = await DoctorProfile.findById(parsed.data.doctorId)
     .populate("user", "_id status")
     .lean<{
-      _id: unknown;
+      _id: Types.ObjectId;
       consultationFeeCents: number;
-      user: { _id: unknown; status: string };
+      user: { _id: Types.ObjectId; status: string };
     } | null>();
   if (!doctorProfile || !doctorProfile.user || doctorProfile.user.status !== "active") {
     return { error: "That clinician is not available for booking." };

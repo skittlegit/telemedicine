@@ -37,6 +37,7 @@ export default async function DashboardPage() {
 
   // Pharmacists have their own dashboard.
   if (role === "pharmacist") redirect("/dashboard/pharmacy");
+  if (role === "admin") redirect("/dashboard/admin");
 
   await connectDB();
   void User;

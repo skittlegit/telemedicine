@@ -7,6 +7,7 @@ import { User } from "@/lib/models/User";
 import { decryptPHI } from "@/lib/crypto";
 import { requireSession } from "@/lib/authz";
 import { ConsultRoom } from "./ConsultRoom";
+import { ProcessShim } from "./ProcessShim";
 import { env } from "@/lib/env";
 
 export const dynamic = "force-dynamic";
@@ -68,14 +69,17 @@ export default async function ConsultPage({ params }: PageProps) {
     role === "doctor" ? appt.patient.name : `Dr. ${appt.doctor.name}`;
 
   return (
-    <ConsultRoom
-      appointmentId={String(appt._id)}
-      roomId={appt.roomId}
-      peerName={peerName}
-      role={role}
-      reason={reason}
-      stunUrls={env.NEXT_PUBLIC_STUN_URLS}
-      socketPath={env.SOCKET_PATH}
-    />
+    <>
+      <ProcessShim />
+      <ConsultRoom
+        appointmentId={String(appt._id)}
+        roomId={appt.roomId}
+        peerName={peerName}
+        role={role}
+        reason={reason}
+        stunUrls={env.NEXT_PUBLIC_STUN_URLS}
+        socketPath={env.SOCKET_PATH}
+      />
+    </>
   );
 }

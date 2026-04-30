@@ -58,6 +58,8 @@ export async function GET(
   const diagnosis = decryptPHI(rx.diagnosisEnc) ?? "";
 
   const pdf = await renderToBuffer(
+    // The @react-pdf/renderer Document type is awkward to align with React's
+    // generic `ReactElement<DocumentProps>`; cast through unknown.
     createElement(PrescriptionPdf, {
       id: String(rx._id),
       doctorName: rx.doctor.name,
@@ -68,7 +70,7 @@ export async function GET(
       signature: rx.signature,
       qrDataUrl: qr,
       verifyUrl: `${env.APP_URL}/verify/${rx.verifyToken}`,
-    }),
+    }) as unknown as Parameters<typeof renderToBuffer>[0],
   );
 
   return new NextResponse(pdf as unknown as BodyInit, {
