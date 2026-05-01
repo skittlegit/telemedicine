@@ -223,11 +223,8 @@ export function MarketingHeader() {
 
           <div className="hidden sm:flex items-center gap-1">
             <ThemeToggle />
-            <Link href="/login" prefetch className="nav-link px-2">
-              Sign in
-            </Link>
-            <Link href="/register" prefetch className="btn btn-clay btn-sm">
-              Get care →
+            <Link href="/login" prefetch className="btn btn-clay btn-sm">
+              Login →
             </Link>
           </div>
 
@@ -291,7 +288,7 @@ export function MarketingHeader() {
                 {SPECIALTIES.slice(0, 9).map((s) => (
                   <Link
                     key={s.name}
-                    href={`/doctors?specialty=${encodeURIComponent(s.name)}`}
+                    href={`/specialties/${s.slug}`}
                     prefetch
                     className="flex items-start gap-3 p-2 -mx-2 rounded-md hover:bg-paper-tint transition-colors"
                   >
@@ -350,12 +347,9 @@ export function MarketingHeader() {
                   {l.label}
                 </Link>
               ))}
-              <div className="mt-6 grid grid-cols-2 gap-2">
-                <Link href="/login" prefetch className="btn btn-ghost w-full">
-                  Sign in
-                </Link>
-                <Link href="/register" prefetch className="btn btn-clay w-full">
-                  Get care →
+              <div className="mt-6">
+                <Link href="/login" prefetch className="btn btn-clay w-full justify-center">
+                  Login →
                 </Link>
               </div>
               <div className="mt-6 flex items-center justify-between text-[13px] text-ink-mute">

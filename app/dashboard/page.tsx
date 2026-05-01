@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
 import { connectDB } from "@/lib/db";
 import { Appointment } from "@/lib/models/Appointment";
 import { Prescription } from "@/lib/models/Prescription";
@@ -13,6 +14,7 @@ import {
   Section,
   EmptyState,
 } from "@/app/dashboard/_components/Shell";
+import { BookedBanner } from "@/app/dashboard/_components/BookedBanner";
 import {
   ApptRowItem,
   NextConsultationCard,
@@ -79,6 +81,9 @@ async function PatientView({
 
   return (
     <>
+      <Suspense fallback={null}>
+        <BookedBanner />
+      </Suspense>
       <PageHeader
         eyebrow="Today"
         title="Welcome back,"
@@ -115,7 +120,7 @@ async function PatientView({
           <EmptyState
             message="No upcoming visits. Find a doctor and book your first."
             cta={
-              <Link href="/doctors" className="btn btn-clay text-xs">
+              <Link href="/dashboard/doctors" className="btn btn-clay text-xs">
                 Find a doctor →
               </Link>
             }
@@ -159,7 +164,7 @@ async function PatientView({
             </p>
           </Link>
           <Link
-            href="/doctors"
+            href="/dashboard/doctors"
             className="bg-paper p-5 hover:bg-paper-tint transition-colors"
           >
             <p className="font-display text-[1.2rem] tracking-tight">

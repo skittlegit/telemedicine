@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type React from "react";
 import { MarketingHeader, MarketingFooter } from "./_components/MarketingChrome";
 import {
   SPECIALTIES,
@@ -61,7 +62,7 @@ export default function Home() {
         </div>
 
         <aside className="col-span-12 lg:col-span-5">
-          <ConsultPreviewCard />
+          <HeroCalloutCard />
         </aside>
       </section>
 
@@ -136,7 +137,7 @@ export default function Home() {
           {SPECIALTIES.map((s) => (
             <Link
               key={s.name}
-              href={`/doctors?specialty=${encodeURIComponent(s.name)}`}
+              href={`/specialties/${s.slug}`}
               className="bg-paper p-5 group hover:bg-paper-tint transition-colors"
             >
               <div className="flex items-center justify-between mb-3">
@@ -287,10 +288,15 @@ export default function Home() {
 }
 
 /* ====================================================================
-   In-hero "consult" preview card
+   In-hero callout card — what you get with Vellum, no fake account state.
    ==================================================================== */
 
-function ConsultPreviewCard() {
+function HeroCalloutCard() {
+  const features: Array<[React.ReactNode, string, string]> = [
+    [<CalendarIcon key="c" />, "Same-day booking", "Slots open every 30 minutes, evenings and weekends."],
+    [<VideoIcon key="v" />, "Encrypted video", "HIPAA-aligned, no install — runs in your browser."],
+    [<PillIcon key="p" />, "Pharmacy fulfilment", "We route signed scripts to a verified pharmacy near you."],
+  ];
   return (
     <div className="relative">
       <div
@@ -299,54 +305,34 @@ function ConsultPreviewCard() {
       />
       <div className="relative bg-paper border border-[color:var(--rule-strong)]">
         <div className="px-5 py-3.5 border-b border-[color:var(--rule)] flex items-center justify-between">
-          <span className="eyebrow">Upcoming consultation</span>
+          <span className="eyebrow">What you get</span>
           <span className="inline-flex items-center gap-1.5 eyebrow text-moss">
             <span className="h-1.5 w-1.5 rounded-full bg-moss" />
-            Confirmed
+            Live tonight
           </span>
         </div>
-
-        <div className="p-4 flex items-start gap-3 border-b border-[color:var(--rule)]">
-          <div className="w-11 h-11 rounded-full bg-clay-wash text-clay text-[14px] font-semibold flex items-center justify-center">
-            AR
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-[15px] font-semibold tracking-[-0.012em] leading-tight">Dr. Amelia Reyes</p>
-            <p className="eyebrow mt-1">Internal medicine</p>
-          </div>
-          <span className="text-[15px] font-semibold">$50</span>
-        </div>
-
-        <div className="p-5 grid grid-cols-2 gap-4 border-b border-[color:var(--rule)]">
-          <div>
-            <p className="eyebrow mb-1">Date</p>
-            <p className="text-[14px] text-ink">Tonight, 7:30 PM</p>
-          </div>
-          <div>
-            <p className="eyebrow mb-1">Duration</p>
-            <p className="text-[14px] text-ink">30 minutes</p>
-          </div>
-          <div>
-            <p className="eyebrow mb-1">Channel</p>
-            <p className="text-[14px] text-ink flex items-center gap-1.5">
-              <VideoIcon className="w-3.5 h-3.5 text-clay" />
-              Encrypted video
-            </p>
-          </div>
-          <div>
-            <p className="eyebrow mb-1">Reason</p>
-            <p className="text-[14px] text-ink">Follow-up · BP</p>
-          </div>
-        </div>
-
-        <div className="p-4 flex items-center justify-between gap-3">
-          <span className="mono text-[11px] text-ink-mute">RX-9F2C-3A41</span>
-          <div className="flex gap-2">
-            <button type="button" className="btn btn-ghost btn-sm">Reschedule</button>
-            <button type="button" className="btn btn-clay btn-sm">
-              Join call
-            </button>
-          </div>
+        <ul className="divide-y divide-[color:var(--rule)]">
+          {features.map(([icon, title, body]) => (
+            <li key={title} className="p-5 flex items-start gap-4">
+              <span className="text-clay [&>svg]:w-5 [&>svg]:h-5 mt-0.5 shrink-0">
+                {icon}
+              </span>
+              <div>
+                <p className="text-[15px] font-semibold tracking-[-0.012em] leading-tight">
+                  {title}
+                </p>
+                <p className="text-ink-soft text-[13px] mt-1.5 leading-[1.55] max-w-[40ch]">
+                  {body}
+                </p>
+              </div>
+            </li>
+          ))}
+        </ul>
+        <div className="p-4 flex items-center justify-between gap-3 border-t border-[color:var(--rule)]">
+          <span className="mono text-[11px] text-ink-mute">From $45 / consult</span>
+          <Link href="/register" className="btn btn-clay btn-sm">
+            Get started →
+          </Link>
         </div>
       </div>
     </div>

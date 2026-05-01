@@ -4,11 +4,14 @@ import { revalidatePath } from "next/cache";
 import { connectDB } from "@/lib/db";
 import { DoctorProfile } from "@/lib/models/DoctorProfile";
 import { PharmacyProfile } from "@/lib/models/PharmacyProfile";
+import { PatientProfile } from "@/lib/models/PatientProfile";
 import { requireRole } from "@/lib/authz";
 import { audit } from "@/lib/audit";
+import { encryptPHI } from "@/lib/crypto";
 import {
   DoctorProfileUpdateSchema,
   PharmacyProfileUpdateSchema,
+  PatientProfileUpdateSchema,
 } from "@/lib/schemas";
 
 export type ProfileFormState = {
@@ -141,5 +144,78 @@ export async function updatePharmacyProfileAction(
 
   revalidatePath("/dashboard/pharmacy/profile");
   revalidatePath("/dashboard/pharmacy");
+  return { ok: true };
+}
+
+export async function updatePatientProfileAction(
+  _prev: ProfileFormState,
+  formData: FormData,
+): Promise<ProfileFormState> {
+  const session = await requireRole("patient");
+  const parsed = PatientProfileUpdateSchema.safeParse({
+    dob: formData.get("dob") ?? "",
+    sex: formData.get("sex") ?? "unspecified",
+    phone: formData.get("phone") ?? "",
+    addressLine1: formData.get("addressLine1") ?? "",
+    addressLine2: formData.get("addressLine2") ?? "",
+    city: formData.get("city") ?? "",
+    region: formData.get("region") ?? "",
+    postalCode: formData.get("postalCode") ?? "",
+    country: formData.get("country") ?? "",
+    allergies: formData.get("allergies") ?? "",
+    conditions: formData.get("conditions") ?? "",
+    medications: formData.get("medications") ?? "",
+    insurance: formData.get("insurance") ?? "",
+    emergencyContact: formData.get("emergencyContact") ?? "",
+  });
+  if (!parsed.success) {
+    return {
+      error: "Please fix the errors below.",
+      fieldErrors: parsed.error.flatten().fieldErrors,
+    };
+  }
+
+  try {
+    await connectDB();
+    const d = parsed.data;
+    const address = {
+      line1: d.addressLine1,
+      line2: d.addressLine2,
+      city: d.city,
+      region: d.region,
+      postalCode: d.postalCode,
+      country: d.country,
+    };
+    const hasAddress = Object.values(address).some((v) => v && v.length);
+    const update: Record<string, unknown> = {
+      sex: d.sex,
+      dobEnc: d.dob ? encryptPHI(d.dob) : null,
+      phoneEnc: d.phone ? encryptPHI(d.phone) : null,
+      addressEnc: hasAddress ? encryptPHI(JSON.stringify(address)) : null,
+      allergiesEnc: d.allergies ? encryptPHI(d.allergies) : null,
+      conditionsEnc: d.conditions ? encryptPHI(d.conditions) : null,
+      medicationsEnc: d.medications ? encryptPHI(d.medications) : null,
+      insuranceEnc: d.insurance ? encryptPHI(d.insurance) : null,
+      emergencyContactEnc: d.emergencyContact
+        ? encryptPHI(d.emergencyContact)
+        : null,
+    };
+    await PatientProfile.updateOne(
+      { user: session.user.id },
+      { $set: update },
+      { upsert: true },
+    );
+    await audit({
+      actor: session.user.id,
+      actorRole: "patient",
+      action: "patient.profile.update",
+      target: `User:${session.user.id}`,
+    });
+  } catch (err) {
+    console.error("[updatePatientProfileAction] failed:", err);
+    return { error: "Could not save your profile right now." };
+  }
+
+  revalidatePath("/dashboard/profile");
   return { ok: true };
 }

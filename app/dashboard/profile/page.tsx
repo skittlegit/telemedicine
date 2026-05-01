@@ -1,48 +1,102 @@
 import { connectDB } from "@/lib/db";
 import { User } from "@/lib/models/User";
+import { PatientProfile } from "@/lib/models/PatientProfile";
 import { requireRole } from "@/lib/authz";
+import { decryptPHI } from "@/lib/crypto";
 import { PageHeader, Section } from "@/app/dashboard/_components/Shell";
+import {
+  PatientProfileForm,
+  type PatientFormInitial,
+} from "./PatientProfileForm";
 
 export const dynamic = "force-dynamic";
+
+interface AddressShape {
+  line1?: string;
+  line2?: string;
+  city?: string;
+  region?: string;
+  postalCode?: string;
+  country?: string;
+}
+
+function safeParseAddress(json: string | null): AddressShape {
+  if (!json) return {};
+  try {
+    const parsed = JSON.parse(json) as unknown;
+    if (parsed && typeof parsed === "object") return parsed as AddressShape;
+  } catch {
+    // ignore
+  }
+  return {};
+}
 
 export default async function PatientProfilePage() {
   const session = await requireRole("patient");
 
   await connectDB();
-  const me = await User.findById(session.user.id)
-    .lean<{
-      _id: string;
-      name: string;
-      email: string;
-      role: string;
-      emailVerifiedAt?: Date;
-      createdAt?: Date;
-    } | null>();
+  const me = await User.findById(session.user.id).lean<{
+    _id: string;
+    name: string;
+    email: string;
+    role: string;
+    emailVerifiedAt?: Date;
+    createdAt?: Date;
+  } | null>();
 
   if (!me) {
     return (
-      <>
-        <PageHeader eyebrow="Account" title="Profile">
-          We couldn&apos;t load your account.
-        </PageHeader>
-      </>
+      <PageHeader eyebrow="Account" title="Profile">
+        We couldn&apos;t load your account.
+      </PageHeader>
     );
   }
+
+  const profile = await PatientProfile.findOne({ user: session.user.id }).lean<{
+    dobEnc?: string | null;
+    sex?: "male" | "female" | "other" | "unspecified";
+    phoneEnc?: string | null;
+    addressEnc?: string | null;
+    allergiesEnc?: string | null;
+    conditionsEnc?: string | null;
+    medicationsEnc?: string | null;
+    insuranceEnc?: string | null;
+    emergencyContactEnc?: string | null;
+  } | null>();
+
+  const address = safeParseAddress(decryptPHI(profile?.addressEnc));
+
+  const initial: PatientFormInitial = {
+    dob: decryptPHI(profile?.dobEnc) ?? "",
+    sex: profile?.sex ?? "unspecified",
+    phone: decryptPHI(profile?.phoneEnc) ?? "",
+    addressLine1: address.line1 ?? "",
+    addressLine2: address.line2 ?? "",
+    city: address.city ?? "",
+    region: address.region ?? "",
+    postalCode: address.postalCode ?? "",
+    country: address.country ?? "",
+    allergies: decryptPHI(profile?.allergiesEnc) ?? "",
+    conditions: decryptPHI(profile?.conditionsEnc) ?? "",
+    medications: decryptPHI(profile?.medicationsEnc) ?? "",
+    insurance: decryptPHI(profile?.insuranceEnc) ?? "",
+    emergencyContact: decryptPHI(profile?.emergencyContactEnc) ?? "",
+  };
 
   const verified = !!me.emailVerifiedAt;
 
   return (
     <>
-      <PageHeader eyebrow="Account" title="Profile">
-        Your contact details and account state. Address & insurance editing is
-        coming in a later release.
+      <PageHeader eyebrow="Account" title="Your profile">
+        Contact details, medical history, and insurance — all encrypted at
+        rest. Visible only to clinicians involved in your care.
       </PageHeader>
 
-      <Section eyebrow="Identity" title="Contact details">
+      <Section eyebrow="Identity" title="Account">
         <dl className="border border-[color:var(--rule)] divide-y divide-[color:var(--rule)]">
-          <Field label="Name" value={me.name} />
-          <Field label="Email" value={me.email} />
-          <Field
+          <Row label="Name" value={me.name} />
+          <Row label="Email" value={me.email} />
+          <Row
             label="Email verified"
             value={
               verified
@@ -51,14 +105,17 @@ export default async function PatientProfilePage() {
             }
             tone={verified ? "moss" : "amber"}
           />
-          <Field label="Role" value={me.role} />
           {me.createdAt && (
-            <Field
+            <Row
               label="Member since"
               value={new Date(me.createdAt).toLocaleDateString()}
             />
           )}
         </dl>
+      </Section>
+
+      <Section eyebrow="Edit" title="Personal & medical details">
+        <PatientProfileForm initial={initial} />
       </Section>
 
       <Section eyebrow="Privacy" title="Your data">
@@ -75,7 +132,7 @@ export default async function PatientProfilePage() {
   );
 }
 
-function Field({
+function Row({
   label,
   value,
   tone,

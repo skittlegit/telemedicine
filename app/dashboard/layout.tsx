@@ -136,7 +136,7 @@ const NAV_BY_ROLE: Record<string, SidebarSection[]> = {
       heading: "Account",
       items: [
         { href: "/dashboard/profile", label: "Profile", icon: <UserIcon /> },
-        { href: "/doctors", label: "Find a doctor", icon: <StethIcon /> },
+        { href: "/dashboard/doctors", label: "Find a doctor", icon: <StethIcon /> },
       ],
     },
   ],

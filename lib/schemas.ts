@@ -45,6 +45,35 @@ export const PharmacyProfileUpdateSchema = z.object({
 });
 export type PharmacyProfileUpdateInput = z.infer<typeof PharmacyProfileUpdateSchema>;
 
+export const PatientProfileUpdateSchema = z.object({
+  dob: z
+    .string()
+    .trim()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "Use YYYY-MM-DD")
+    .optional()
+    .or(z.literal("")),
+  sex: z.enum(["male", "female", "other", "unspecified"]).default("unspecified"),
+  phone: z.string().trim().max(40).optional().default(""),
+  addressLine1: z.string().trim().max(200).optional().default(""),
+  addressLine2: z.string().trim().max(200).optional().default(""),
+  city: z.string().trim().max(100).optional().default(""),
+  region: z.string().trim().max(100).optional().default(""),
+  postalCode: z.string().trim().max(20).optional().default(""),
+  country: z
+    .string()
+    .trim()
+    .max(2)
+    .toUpperCase()
+    .optional()
+    .default(""),
+  allergies: z.string().trim().max(2000).optional().default(""),
+  conditions: z.string().trim().max(2000).optional().default(""),
+  medications: z.string().trim().max(2000).optional().default(""),
+  insurance: z.string().trim().max(500).optional().default(""),
+  emergencyContact: z.string().trim().max(500).optional().default(""),
+});
+export type PatientProfileUpdateInput = z.infer<typeof PatientProfileUpdateSchema>;
+
 export const LoginSchema = z.object({
   email: z.email().trim().toLowerCase(),
   password: z.string().min(1),

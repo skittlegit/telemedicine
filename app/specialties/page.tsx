@@ -29,7 +29,7 @@ export default function SpecialtiesPage() {
           {SPECIALTIES.map((s) => (
             <Link
               key={s.name}
-              href={`/doctors?specialty=${encodeURIComponent(s.name)}`}
+              href={`/specialties/${s.slug}`}
               className="bg-paper p-5 group hover:bg-paper-tint transition-colors"
               prefetch
             >

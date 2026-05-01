@@ -39,8 +39,8 @@ export default async function PatientOrdersPage() {
         eyebrow="In progress"
         title="Active orders"
         action={
-          <Link href="/pharmacy" className="btn btn-ghost text-xs">
-            Browse pharmacy →
+          <Link href="/dashboard/prescriptions" className="btn btn-ghost text-xs">
+            Your prescriptions →
           </Link>
         }
       >
