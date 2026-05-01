@@ -6,6 +6,7 @@ import { Appointment } from "@/lib/models/Appointment";
 import { Prescription } from "@/lib/models/Prescription";
 import { PharmacyOrder } from "@/lib/models/PharmacyOrder";
 import { DoctorProfile } from "@/lib/models/DoctorProfile";
+import { User } from "@/lib/models/User";
 import { requireSession } from "@/lib/authz";
 import {
   PageHeader,
@@ -17,7 +18,6 @@ import {
 import { BookedBanner } from "@/app/dashboard/_components/BookedBanner";
 import {
   ApptRowItem,
-  NextConsultationCard,
   type ApptRow,
   JOIN_WINDOW_MS,
 } from "@/app/dashboard/_lib/shared";
@@ -50,34 +50,90 @@ async function PatientView({
   const userId = session.user.id;
   const now = new Date();
 
-  const [upcomingCount, next, activeRxCount, openOrdersCount] =
-    await Promise.all([
-      Appointment.countDocuments({
-        patient: userId,
-        status: { $in: ["scheduled", "in_progress"] },
-        startAt: { $gte: new Date(now.getTime() - JOIN_WINDOW_MS) },
-      }),
-      Appointment.findOne({
-        patient: userId,
-        status: { $in: ["scheduled", "in_progress"] },
-        startAt: { $gte: new Date(now.getTime() - JOIN_WINDOW_MS) },
-      })
-        .populate("doctor", "name")
-        .populate("patient", "name")
-        .sort({ startAt: 1 })
-        .lean<ApptRow | null>(),
-      Prescription.countDocuments({
-        patient: userId,
-        fulfilledAt: { $exists: false },
-        revokedAt: { $exists: false },
-      }),
-      PharmacyOrder.countDocuments({
-        patient: userId,
-        status: { $nin: ["delivered", "cancelled"] },
-      }),
-    ]);
+  await connectDB();
+  void User;
+
+  const [next, recentAppts, recentRx, recentOrders, verified] = await Promise.all([
+    Appointment.findOne({
+      patient: userId,
+      status: { $in: ["scheduled", "in_progress"] },
+      startAt: { $gte: new Date(now.getTime() - JOIN_WINDOW_MS) },
+    })
+      .populate("doctor", "name")
+      .populate("patient", "name")
+      .sort({ startAt: 1 })
+      .lean<ApptRow | null>(),
+    Appointment.find({ patient: userId })
+      .populate("doctor", "name")
+      .sort({ createdAt: -1 })
+      .limit(3)
+      .lean<Array<{ _id: string; startAt: Date; createdAt: Date; status: string; doctor?: { name: string } }>>(),
+    Prescription.find({ patient: userId })
+      .populate("doctor", "name")
+      .sort({ issuedAt: -1 })
+      .limit(3)
+      .lean<Array<{ _id: string; issuedAt: Date; drugs: Array<{ name: string }>; doctor?: { name: string } }>>(),
+    PharmacyOrder.find({ patient: userId })
+      .sort({ createdAt: -1 })
+      .limit(3)
+      .lean<Array<{ _id: string; status: string; createdAt: Date }>>(),
+    User.findById(userId)
+      .select("emailVerifiedAt")
+      .lean<{ emailVerifiedAt?: Date } | null>(),
+  ]);
 
   const firstName = displayName.split(" ")[0];
+  const isVerified = !!verified?.emailVerifiedAt;
+
+  // Build "Recent activity" — flatten cross-domain into 3 most recent.
+  type Activity = {
+    when: Date;
+    title: string;
+    detail: string;
+    href: string;
+  };
+  const activities: Activity[] = [
+    ...recentAppts.map<Activity>((a) => ({
+      when: a.createdAt,
+      title: `Visit with Dr. ${a.doctor?.name ?? "your clinician"}`,
+      detail: new Date(a.startAt).toLocaleString(),
+      href: "/dashboard/visits",
+    })),
+    ...recentRx.map<Activity>((r) => ({
+      when: r.issuedAt,
+      title: `Prescription · ${r.drugs.map((d) => d.name).slice(0, 2).join(", ")}${r.drugs.length > 2 ? "…" : ""}`,
+      detail: `Issued ${new Date(r.issuedAt).toLocaleDateString()} · Dr. ${r.doctor?.name ?? ""}`.trim(),
+      href: "/dashboard/prescriptions",
+    })),
+    ...recentOrders.map<Activity>((o) => ({
+      when: o.createdAt,
+      title: `Pharmacy order ${String(o._id).slice(-6).toUpperCase()}`,
+      detail: `${o.status.replace(/_/g, " ")} · ${new Date(o.createdAt).toLocaleDateString()}`,
+      href: `/dashboard/orders/${o._id}`,
+    })),
+  ]
+    .sort((a, b) => b.when.getTime() - a.when.getTime())
+    .slice(0, 3);
+
+  // Single-line state for the Today card
+  let todayLine: { text: string; cta: { href: string; label: string } };
+  if (next) {
+    const startAt = new Date(next.startAt);
+    const within = Date.now() >= startAt.getTime() - JOIN_WINDOW_MS;
+    todayLine = {
+      text: within
+        ? `Your visit with Dr. ${next.doctor.name} is ready to join now.`
+        : `Next visit: ${startAt.toLocaleString(undefined, { weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })} with Dr. ${next.doctor.name}.`,
+      cta: within
+        ? { href: `/visits/${next._id}/room`, label: "Join visit →" }
+        : { href: "/dashboard/visits", label: "See visit →" },
+    };
+  } else {
+    todayLine = {
+      text: "Nothing on your calendar. Find a doctor to book your first visit.",
+      cta: { href: "/dashboard/doctors", label: "Find a doctor →" },
+    };
+  }
 
   return (
     <>
@@ -88,115 +144,65 @@ async function PatientView({
         eyebrow="Today"
         title="Welcome back,"
         italic={`${firstName}.`}
+      />
+
+      {/* Calm "Today" card */}
+      <section className="mt-2 border border-[color:var(--rule-strong)] bg-paper p-6 sm:p-7">
+        <div className="flex flex-wrap items-center gap-2 mb-3">
+          <span className="eyebrow text-ink-mute">Today</span>
+          {isVerified && (
+            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 border border-moss/40 bg-moss/10 eyebrow text-moss rounded-sm">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <path d="M5 12l5 5L20 7" />
+              </svg>
+              Verified
+            </span>
+          )}
+        </div>
+        <p className="text-[18px] sm:text-[20px] tracking-[-0.012em] leading-[1.4] text-ink max-w-[58ch]">
+          {todayLine.text}
+        </p>
+        <div className="mt-5">
+          <Link href={todayLine.cta.href} className="btn btn-clay btn-sm">
+            {todayLine.cta.label}
+          </Link>
+        </div>
+      </section>
+
+      {/* Recent activity */}
+      <Section
+        eyebrow="Recent activity"
+        title="What's new"
+        action={
+          <Link href="/dashboard/visits" className="eyebrow hover:text-clay">
+            All visits →
+          </Link>
+        }
       >
-        Your next visit, your active prescriptions, and what&apos;s waiting at
-        the pharmacy — at a glance.
-      </PageHeader>
-
-      <StatGrid cols={3}>
-        <StatTile
-          label="Upcoming visits"
-          value={upcomingCount}
-          hint="Scheduled or in progress"
-        />
-        <StatTile
-          label="Active prescriptions"
-          value={activeRxCount}
-          hint="Not yet fulfilled"
-        />
-        <StatTile
-          label="Pharmacy in progress"
-          value={openOrdersCount}
-          hint="Orders being prepared or shipped"
-        />
-      </StatGrid>
-
-      {next ? (
-        <div className="mt-10">
-          <NextConsultationCard appt={next} />
-        </div>
-      ) : (
-        <Section eyebrow="Your next visit" title="Nothing on the calendar">
-          <EmptyState
-            message="No upcoming visits. Find a doctor and book your first."
-            cta={
-              <Link href="/dashboard/doctors" className="btn btn-clay text-xs">
-                Find a doctor →
-              </Link>
-            }
-          />
-        </Section>
-      )}
-
-      <Section eyebrow="Quick actions" title="Jump to">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-[color:var(--rule)] border border-[color:var(--rule)]">
-          <Link
-            href="/dashboard/visits"
-            className="bg-paper p-5 hover:bg-paper-tint transition-colors"
-          >
-            <p className="font-display text-[1.2rem] tracking-tight">
-              All visits →
-            </p>
-            <p className="text-ink-soft text-[13px] mt-2">
-              Upcoming, in-progress, and past consultations.
-            </p>
-          </Link>
-          <Link
-            href="/dashboard/prescriptions"
-            className="bg-paper p-5 hover:bg-paper-tint transition-colors"
-          >
-            <p className="font-display text-[1.2rem] tracking-tight">
-              Prescriptions →
-            </p>
-            <p className="text-ink-soft text-[13px] mt-2">
-              Active scripts, signed PDFs, and history.
-            </p>
-          </Link>
-          <Link
-            href="/dashboard/orders"
-            className="bg-paper p-5 hover:bg-paper-tint transition-colors"
-          >
-            <p className="font-display text-[1.2rem] tracking-tight">
-              Pharmacy orders →
-            </p>
-            <p className="text-ink-soft text-[13px] mt-2">
-              Track prescriptions sent for fulfilment.
-            </p>
-          </Link>
-          <Link
-            href="/dashboard/doctors"
-            className="bg-paper p-5 hover:bg-paper-tint transition-colors"
-          >
-            <p className="font-display text-[1.2rem] tracking-tight">
-              Find a doctor →
-            </p>
-            <p className="text-ink-soft text-[13px] mt-2">
-              Browse 50+ specialties and book a same-day visit.
-            </p>
-          </Link>
-          <Link
-            href="/dashboard/records"
-            className="bg-paper p-5 hover:bg-paper-tint transition-colors"
-          >
-            <p className="font-display text-[1.2rem] tracking-tight">
-              Medical record →
-            </p>
-            <p className="text-ink-soft text-[13px] mt-2">
-              Consolidated visit summaries and notes.
-            </p>
-          </Link>
-          <Link
-            href="/dashboard/profile"
-            className="bg-paper p-5 hover:bg-paper-tint transition-colors"
-          >
-            <p className="font-display text-[1.2rem] tracking-tight">
-              Account →
-            </p>
-            <p className="text-ink-soft text-[13px] mt-2">
-              Contact details, verification, and privacy controls.
-            </p>
-          </Link>
-        </div>
+        {activities.length === 0 ? (
+          <EmptyState message="No activity yet. Your visits, prescriptions, and orders will appear here." />
+        ) : (
+          <ul className="divide-y divide-[color:var(--rule)] border border-[color:var(--rule)]">
+            {activities.map((a) => (
+              <li key={`${a.title}-${a.when.getTime()}`}>
+                <Link
+                  href={a.href}
+                  className="px-4 py-3 flex flex-wrap items-center justify-between gap-3 hover:bg-paper-tint transition-colors"
+                >
+                  <div className="min-w-0">
+                    <p className="text-[14px] font-medium tracking-[-0.01em] truncate">
+                      {a.title}
+                    </p>
+                    <p className="mono text-[11px] text-ink-mute mt-0.5 truncate">
+                      {a.detail}
+                    </p>
+                  </div>
+                  <span className="eyebrow text-clay shrink-0">View →</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
       </Section>
     </>
   );

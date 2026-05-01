@@ -11,7 +11,8 @@ import { requireRole } from "@/lib/authz";
 import { audit } from "@/lib/audit";
 import { stripe, isStripeConfigured } from "@/lib/stripe";
 import { env } from "@/lib/env";
-import { PharmacyAddressSchema } from "@/lib/schemas";
+import { PharmacyOrderCreateSchema } from "@/lib/schemas";
+import { PharmacyProfile } from "@/lib/models/PharmacyProfile";
 
 export type PharmacyFormState = { error?: string };
 
@@ -23,18 +24,23 @@ export async function createPharmacyOrderAction(
 ): Promise<PharmacyFormState> {
   const session = await requireRole("patient");
 
-  const prescriptionId = String(formData.get("prescriptionId") ?? "");
-  if (!Types.ObjectId.isValid(prescriptionId)) return { error: "Invalid prescription." };
-
-  const addr = PharmacyAddressSchema.safeParse({
-    line1: formData.get("line1"),
-    line2: formData.get("line2") ?? "",
-    city: formData.get("city"),
-    region: formData.get("region"),
-    postalCode: formData.get("postalCode"),
-    country: formData.get("country"),
+  const parsed = PharmacyOrderCreateSchema.safeParse({
+    prescriptionId: formData.get("prescriptionId"),
+    pharmacyId: formData.get("pharmacyId"),
+    address: {
+      line1: formData.get("line1"),
+      line2: formData.get("line2") ?? "",
+      city: formData.get("city"),
+      region: formData.get("region"),
+      postalCode: formData.get("postalCode"),
+      country: formData.get("country"),
+    },
   });
-  if (!addr.success) return { error: "Please complete the delivery address." };
+  if (!parsed.success) {
+    const first = parsed.error.issues[0];
+    return { error: first?.message ?? "Please complete the form." };
+  }
+  const { prescriptionId, pharmacyId, address } = parsed.data;
 
   await connectDB();
   const rx = await Prescription.findById(prescriptionId).lean<{
@@ -48,11 +54,20 @@ export async function createPharmacyOrderAction(
   if (rx.revokedAt) return { error: "This prescription has been revoked." };
   if (rx.fulfilledAt) return { error: "This prescription has already been fulfilled." };
 
+  const pharmacy = await PharmacyProfile.findOne({
+    user: pharmacyId,
+    licenseVerifiedAt: { $ne: null },
+  }).lean<{ user: Types.ObjectId } | null>();
+  if (!pharmacy) return { error: "That pharmacy is unavailable. Please pick another." };
+
   const order = await PharmacyOrder.create({
     prescription: rx._id,
     patient: session.user.id,
-    status: "queued",
-    deliveryAddressEnc: encryptPHI(JSON.stringify(addr.data)) ?? "",
+    pharmacy: pharmacyId,
+    pharmacist: pharmacyId, // auto-claimed by chosen pharmacy
+    status: "claimed",
+    claimedAt: new Date(),
+    deliveryAddressEnc: encryptPHI(JSON.stringify(address)) ?? "",
     totalCents: FULFILMENT_FEE_CENTS,
   });
 
@@ -61,6 +76,7 @@ export async function createPharmacyOrderAction(
     actorRole: "patient",
     action: "pharmacy.order.create",
     target: `PharmacyOrder:${order._id}`,
+    meta: { pharmacy: pharmacyId },
   });
 
   if (!isStripeConfigured()) {

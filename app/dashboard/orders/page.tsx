@@ -8,9 +8,17 @@ import {
   EmptyState,
   StatusPill,
 } from "@/app/dashboard/_components/Shell";
-import type { OrderRow } from "@/app/dashboard/_lib/shared";
+import { OrderTimeline } from "@/app/dashboard/_components/OrderTimeline";
 
 export const dynamic = "force-dynamic";
+
+interface OrderListRow {
+  _id: string;
+  status: string;
+  createdAt: Date;
+  claimedAt?: Date;
+  prescription: string;
+}
 
 export default async function PatientOrdersPage() {
   const session = await requireRole("patient");
@@ -20,7 +28,7 @@ export default async function PatientOrdersPage() {
   const orders = await PharmacyOrder.find({ patient: userId })
     .sort({ createdAt: -1 })
     .limit(50)
-    .lean<OrderRow[]>();
+    .lean<OrderListRow[]>();
 
   const open = orders.filter(
     (o) => !["delivered", "cancelled"].includes(o.status),
@@ -57,9 +65,34 @@ export default async function PatientOrdersPage() {
             }
           />
         ) : (
-          <ul className="divide-y divide-[color:var(--rule)] border border-[color:var(--rule)]">
+          <ul className="space-y-3">
             {open.map((o) => (
-              <OrderRowItem key={o._id} order={o} />
+              <li
+                key={o._id}
+                className="border border-[color:var(--rule)] bg-paper p-5"
+              >
+                <div className="flex flex-wrap items-start justify-between gap-3 mb-5">
+                  <div>
+                    <p className="font-medium text-[14px]">
+                      Order {String(o._id).slice(-6).toUpperCase()}
+                    </p>
+                    <p className="mono text-[11px] text-ink-mute mt-0.5">
+                      Placed {new Date(o.createdAt).toLocaleString()}
+                    </p>
+                  </div>
+                  <Link
+                    href={`/dashboard/orders/${o._id}`}
+                    className="eyebrow text-clay hover:underline"
+                  >
+                    Details →
+                  </Link>
+                </div>
+                <OrderTimeline
+                  status={o.status}
+                  claimedAt={o.claimedAt ? o.claimedAt.toISOString() : null}
+                  createdAt={o.createdAt.toISOString()}
+                />
+              </li>
             ))}
           </ul>
         )}
@@ -71,27 +104,27 @@ export default async function PatientOrdersPage() {
         ) : (
           <ul className="divide-y divide-[color:var(--rule)] border border-[color:var(--rule)]">
             {closed.map((o) => (
-              <OrderRowItem key={o._id} order={o} />
+              <li
+                key={o._id}
+                className="px-4 py-3 flex flex-wrap justify-between items-center gap-3"
+              >
+                <div>
+                  <Link
+                    href={`/dashboard/orders/${o._id}`}
+                    className="font-medium hover:text-clay"
+                  >
+                    Order {String(o._id).slice(-6).toUpperCase()}
+                  </Link>
+                  <p className="mono text-[11px] text-ink-mute mt-0.5">
+                    {new Date(o.createdAt).toLocaleString()}
+                  </p>
+                </div>
+                <StatusPill status={o.status} />
+              </li>
             ))}
           </ul>
         )}
       </Section>
     </>
-  );
-}
-
-function OrderRowItem({ order }: { order: OrderRow }) {
-  return (
-    <li className="px-4 py-3 flex flex-wrap justify-between items-center gap-3">
-      <div>
-        <p className="font-medium">
-          Order {String(order._id).slice(-6).toUpperCase()}
-        </p>
-        <p className="mono text-[11px] text-ink-mute mt-0.5">
-          {new Date(order.createdAt).toLocaleString()}
-        </p>
-      </div>
-      <StatusPill status={order.status} />
-    </li>
   );
 }

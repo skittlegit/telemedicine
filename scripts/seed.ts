@@ -7,6 +7,7 @@ import { connectDB } from "../lib/db";
 import { User } from "../lib/models/User";
 import { DoctorProfile } from "../lib/models/DoctorProfile";
 import { PatientProfile } from "../lib/models/PatientProfile";
+import { PharmacyProfile } from "../lib/models/PharmacyProfile";
 
 async function upsertUser(opts: {
   email: string;
@@ -77,6 +78,77 @@ async function main() {
     password: "password123",
   });
 
+  // Mock dispensary network — verified pharmacies that patients can pick
+  // from when sending a prescription for fulfilment.
+  const pharmacies = [
+    {
+      email: "rx-1@vellum.test",
+      name: "Dovetail Pharmacy",
+      city: "Brooklyn",
+      region: "NY",
+      addressLine1: "212 Smith Street",
+      postalCode: "11231",
+      licenseNumber: "RX-2026-0001",
+      phone: "+1 718 555 0101",
+    },
+    {
+      email: "rx-2@vellum.test",
+      name: "Cedar Apothecary",
+      city: "Austin",
+      region: "TX",
+      addressLine1: "1108 East Cesar Chavez St",
+      postalCode: "78702",
+      licenseNumber: "RX-2026-0002",
+      phone: "+1 512 555 0102",
+    },
+    {
+      email: "rx-3@vellum.test",
+      name: "Riverside Rx",
+      city: "Portland",
+      region: "OR",
+      addressLine1: "4140 SE Hawthorne Blvd",
+      postalCode: "97214",
+      licenseNumber: "RX-2026-0003",
+      phone: "+1 503 555 0103",
+    },
+    {
+      email: "rx-4@vellum.test",
+      name: "Lantern Pharmacy",
+      city: "Cambridge",
+      region: "MA",
+      addressLine1: "1320 Massachusetts Ave",
+      postalCode: "02138",
+      licenseNumber: "RX-2026-0004",
+      phone: "+1 617 555 0104",
+    },
+  ];
+  for (const p of pharmacies) {
+    const u = await upsertUser({
+      email: p.email,
+      name: p.name,
+      role: "pharmacist",
+      password: "password123",
+    });
+    await PharmacyProfile.findOneAndUpdate(
+      { user: u._id },
+      {
+        user: u._id,
+        pharmacyName: p.name,
+        licenseNumber: p.licenseNumber,
+        licenseRegion: p.region,
+        licenseVerifiedAt: new Date(),
+        addressLine1: p.addressLine1,
+        city: p.city,
+        region: p.region,
+        postalCode: p.postalCode,
+        country: "US",
+        phone: p.phone,
+      },
+      { upsert: true, new: true },
+    );
+    console.log(`  pharmacy: ${p.name} (${p.city}, ${p.region}) → ${u._id}`);
+  }
+
   await upsertUser({
     email: "admin@vellum.test",
     name: "Ada Admin",
@@ -88,6 +160,7 @@ async function main() {
   console.log("  patient@vellum.test");
   console.log("  doc.cardio@vellum.test, doc.gp@vellum.test, doc.derm@vellum.test");
   console.log("  pharmacist@vellum.test");
+  console.log("  rx-1..4@vellum.test (4 verified pharmacies)");
   console.log("  admin@vellum.test");
   process.exit(0);
 }

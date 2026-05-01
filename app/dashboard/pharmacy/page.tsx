@@ -3,7 +3,7 @@ import { connectDB } from "@/lib/db";
 import { PharmacyOrder } from "@/lib/models/PharmacyOrder";
 import { PharmacyProfile } from "@/lib/models/PharmacyProfile";
 import { requireRole } from "@/lib/authz";
-import { claimOrderAction } from "@/app/actions/pharmacy";
+import { advanceOrderAction } from "@/app/actions/pharmacy";
 import {
   PageHeader,
   StatGrid,
@@ -35,22 +35,25 @@ export default async function PharmacyQueuePage() {
         pharmacyName: string;
         licenseVerifiedAt?: Date;
       } | null>(),
-      PharmacyOrder.find({ status: "queued" })
+      PharmacyOrder.find({
+        pharmacy: session.user.id,
+        status: "claimed",
+      })
         .populate("patient", "name")
         .sort({ createdAt: 1 })
         .limit(50)
         .lean<QueueRow[]>(),
       PharmacyOrder.countDocuments({
-        pharmacist: session.user.id,
-        status: { $in: ["claimed", "preparing", "out_for_delivery"] },
+        pharmacy: session.user.id,
+        status: { $in: ["preparing", "out_for_delivery"] },
       }),
       PharmacyOrder.countDocuments({
-        pharmacist: session.user.id,
+        pharmacy: session.user.id,
         status: "delivered",
         deliveredAt: { $gte: startOfToday },
       }),
       PharmacyOrder.find({
-        pharmacist: session.user.id,
+        pharmacy: session.user.id,
         status: "delivered",
         deliveredAt: { $gte: last7d },
       })
@@ -121,8 +124,8 @@ export default async function PharmacyQueuePage() {
       </StatGrid>
 
       <Section
-        eyebrow="Queue"
-        title="Open orders"
+        eyebrow="Just in"
+        title="New orders"
         action={
           <Link
             href="/dashboard/pharmacy/active"
@@ -133,7 +136,7 @@ export default async function PharmacyQueuePage() {
         }
       >
         {queue.length === 0 ? (
-          <EmptyState message="No orders waiting — clear queue." />
+          <EmptyState message="No new orders — all caught up." />
         ) : (
           <ul className="divide-y divide-[color:var(--rule)] border border-[color:var(--rule)]">
             {queue.map((o) => (
@@ -144,14 +147,15 @@ export default async function PharmacyQueuePage() {
                 <div>
                   <p className="font-medium">{o.patient.name}</p>
                   <p className="mono text-[11px] text-ink-mute mt-0.5">
-                    Queued {new Date(o.createdAt).toLocaleString()} · $
+                    Received {new Date(o.createdAt).toLocaleString()} · $
                     {(o.totalCents / 100).toFixed(2)}
                   </p>
                 </div>
-                <form action={claimOrderAction}>
+                <form action={advanceOrderAction}>
                   <input type="hidden" name="orderId" value={o._id} />
+                  <input type="hidden" name="next" value="preparing" />
                   <button type="submit" className="btn btn-clay text-xs">
-                    Claim →
+                    Start preparing →
                   </button>
                 </form>
               </li>

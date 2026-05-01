@@ -14,6 +14,7 @@ const PharmacyOrderSchema = new Schema(
     prescription: { type: Types.ObjectId, ref: "Prescription", required: true, index: true },
     patient: { type: Types.ObjectId, ref: "User", required: true, index: true },
     pharmacist: { type: Types.ObjectId, ref: "User", index: true },
+    pharmacy: { type: Types.ObjectId, ref: "User", index: true },
     status: { type: String, enum: PHARMACY_ORDER_STATUS, default: "queued", index: true },
     deliveryAddressEnc: { type: String, required: true }, // PHI
     totalCents: { type: Number, required: true, min: 0 },

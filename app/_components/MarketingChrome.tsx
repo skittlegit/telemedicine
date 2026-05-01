@@ -63,7 +63,7 @@ const NAV_LINKS: ReadonlyArray<{
 }> = [
   { href: "/how-it-works", label: "How it works" },
   { href: "/doctors", label: "Doctors" },
-  { href: "/specialties", label: "Care", hasMega: true },
+  { href: "/specialties", label: "Specialties", hasMega: true },
   { href: "/pricing", label: "Pricing" },
   { href: "/security", label: "Security" },
 ];
@@ -72,56 +72,6 @@ function isActive(pathname: string | null, href: string) {
   if (!pathname) return false;
   if (href === "/") return pathname === "/";
   return pathname === href || pathname.startsWith(`${href}/`);
-}
-
-/**
- * Slim CTA strip above the marketing nav. Dismissable; preference saved to
- * localStorage so it doesn't re-appear after every session.
- */
-export function AnnouncementBar() {
-  const [hidden, setHidden] = useState(true);
-  useEffect(() => {
-    try {
-      setHidden(localStorage.getItem("vellum-announce-dismissed") === "1");
-    } catch {
-      setHidden(false);
-    }
-  }, []);
-  function dismiss() {
-    try {
-      localStorage.setItem("vellum-announce-dismissed", "1");
-    } catch {}
-    setHidden(true);
-  }
-  if (hidden) return null;
-  return (
-    <div className="announce">
-      <span>Same-day video visits — most appointments under 15 minutes.</span>
-      <Link href="/register" prefetch>
-        Get care →
-      </Link>
-      <button
-        type="button"
-        onClick={dismiss}
-        aria-label="Dismiss announcement"
-        className="ml-2 opacity-60 hover:opacity-100 transition-opacity"
-      >
-        <svg
-          width="13"
-          height="13"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          aria-hidden
-        >
-          <path d="M5 5l14 14" />
-          <path d="M19 5L5 19" />
-        </svg>
-      </button>
-    </div>
-  );
 }
 
 export function MarketingHeader() {
@@ -163,7 +113,6 @@ export function MarketingHeader() {
 
   return (
     <>
-      <AnnouncementBar />
       <header
         className="sticky top-0 z-50 bg-paper/95 backdrop-blur-md border-b border-[color:var(--rule)]"
         onMouseLeave={scheduleCloseMega}
@@ -285,7 +234,7 @@ export function MarketingHeader() {
                 </Link>
               </div>
               <div className="col-span-9 grid grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-1">
-                {SPECIALTIES.slice(0, 9).map((s) => (
+                {SPECIALTIES.slice(0, 6).map((s) => (
                   <Link
                     key={s.name}
                     href={`/specialties/${s.slug}`}
@@ -318,13 +267,6 @@ export function MarketingHeader() {
                     See how it works
                   </Link>
                 </p>
-                <Link
-                  href="/doctors"
-                  prefetch
-                  className="text-clay font-medium hover:underline"
-                >
-                  Browse all doctors →
-                </Link>
               </div>
             </div>
           </div>
@@ -367,88 +309,40 @@ export function MarketingHeader() {
 export function MarketingFooter() {
   return (
     <footer className="mt-auto border-t border-[color:var(--rule-strong)]">
-      <div className="mx-auto w-full max-w-[1200px] px-5 sm:px-6 lg:px-8 py-12 grid grid-cols-2 md:grid-cols-5 gap-8">
-        <div className="col-span-2">
+      <div className="mx-auto w-full max-w-[1200px] px-5 sm:px-6 lg:px-8 py-12 grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div className="col-span-2 md:col-span-1">
           <Wordmark />
           <p className="mt-4 text-ink-mute text-[13px] leading-[1.6] max-w-[34ch]">
             Encrypted video visits, signed digital prescriptions, same-day
             pharmacy fulfilment.
           </p>
-          <p className="mt-4 mono text-[11px] text-ink-faint">
-            build · 0.2.0 ·{" "}
-            <span className="text-moss">all systems operational</span>
-          </p>
         </div>
         <div>
-          <p className="eyebrow mb-3">Care</p>
+          <p className="eyebrow mb-3">Browse</p>
           <ul className="space-y-2 text-[13.5px] text-ink-soft">
-            <li>
-              <Link className="hover:text-clay" href="/how-it-works">
-                How it works
-              </Link>
-            </li>
-            <li>
-              <Link className="hover:text-clay" href="/specialties">
-                Specialties
-              </Link>
-            </li>
-            <li>
-              <Link className="hover:text-clay" href="/doctors">
-                Find a doctor
-              </Link>
-            </li>
-            <li>
-              <Link className="hover:text-clay" href="/pricing">
-                Pricing
-              </Link>
-            </li>
+            <li><Link className="hover:text-clay" href="/doctors">Doctors</Link></li>
+            <li><Link className="hover:text-clay" href="/specialties">Specialties</Link></li>
+            <li><Link className="hover:text-clay" href="/pricing">Pricing</Link></li>
           </ul>
         </div>
         <div>
-          <p className="eyebrow mb-3">Patients</p>
+          <p className="eyebrow mb-3">Account</p>
           <ul className="space-y-2 text-[13.5px] text-ink-soft">
-            <li>
-              <Link className="hover:text-clay" href="/register">
-                Create account
-              </Link>
-            </li>
-            <li>
-              <Link className="hover:text-clay" href="/login">
-                Sign in
-              </Link>
-            </li>
-            <li>
-              <Link className="hover:text-clay" href="/dashboard">
-                Your dashboard
-              </Link>
-            </li>
+            <li><Link className="hover:text-clay" href="/login">Login</Link></li>
+            <li><Link className="hover:text-clay" href="/register">Register</Link></li>
           </ul>
         </div>
         <div>
           <p className="eyebrow mb-3">Company</p>
           <ul className="space-y-2 text-[13.5px] text-ink-soft">
-            <li>
-              <Link className="hover:text-clay" href="/security">
-                Security
-              </Link>
-            </li>
-            <li>
-              <Link className="hover:text-clay" href="/security#rights">
-                Privacy
-              </Link>
-            </li>
-            <li>
-              <Link className="hover:text-clay" href="/security#rights">
-                Terms
-              </Link>
-            </li>
+            <li><Link className="hover:text-clay" href="/how-it-works">How it works</Link></li>
+            <li><Link className="hover:text-clay" href="/security">Security</Link></li>
           </ul>
         </div>
       </div>
       <div className="border-t border-[color:var(--rule)]">
-        <div className="mx-auto w-full max-w-[1200px] px-5 sm:px-6 lg:px-8 py-4 flex flex-wrap items-center justify-between gap-2 eyebrow text-[10.5px]">
-          <span>© 2026 Vellum Health</span>
-          <span>Portfolio implementation. Not a real medical service.</span>
+        <div className="mx-auto w-full max-w-[1200px] px-5 sm:px-6 lg:px-8 py-4 eyebrow text-[10.5px] text-ink-mute">
+          © Vellum Health · Demo build
         </div>
       </div>
     </footer>

@@ -39,25 +39,12 @@ export default function Home() {
 
           <div className="mt-7 flex flex-wrap gap-2">
             <Link href="/register" className="btn btn-clay">
-              Book a consultation
+              Register
               <span aria-hidden>→</span>
             </Link>
             <Link href="/doctors" className="btn btn-ghost">
               Browse doctors
             </Link>
-          </div>
-
-          <div className="mt-9 grid grid-cols-3 gap-px bg-[color:var(--rule)] border border-[color:var(--rule)] max-w-[520px]">
-            {[
-              ["30 min", "average wait"],
-              ["50+", "specialties"],
-              ["HIPAA", "aligned"],
-            ].map(([k, v]) => (
-              <div key={k} className="bg-paper px-3 sm:px-5 py-4">
-                <p className="text-[18px] sm:text-[22px] leading-none tracking-[-0.018em] font-semibold">{k}</p>
-                <p className="eyebrow mt-1.5 text-[10px] sm:text-[11px]">{v}</p>
-              </div>
-            ))}
           </div>
         </div>
 
@@ -151,52 +138,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ============ DOCTORS ============ */}
-      <section className="mx-auto w-full max-w-[1200px] px-5 sm:px-6 lg:px-8 py-14 sm:py-16">
-        <div className="flex flex-wrap items-end justify-between gap-6 mb-8">
-          <div className="max-w-[44ch]">
-            <p className="eyebrow mb-2.5">Meet the clinicians</p>
-            <h2 className="text-[24px] sm:text-[28px] font-semibold tracking-[-0.018em] leading-[1.2]">
-              Board-certified. Background-checked.
-            </h2>
-          </div>
-          <Link href="/doctors" className="btn btn-ghost btn-sm">View all doctors →</Link>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-[color:var(--rule)] border border-[color:var(--rule)]">
-          {SAMPLE_DOCTORS.map((d) => (
-            <Link
-              key={d.name}
-              href={`/doctors?q=${encodeURIComponent(d.name.replace(/^Dr\.\s*/, ""))}`}
-              className="group bg-paper p-5 lg:p-6 hover:bg-paper-tint transition-colors"
-              prefetch
-            >
-              <div className="flex items-start justify-between gap-4">
-                <div
-                  className="w-12 h-12 rounded-full bg-clay-wash text-clay text-[15px] font-semibold flex items-center justify-center"
-                  aria-hidden
-                >
-                  {d.initials}
-                </div>
-                <span className="inline-flex items-center gap-1.5 eyebrow text-moss">
-                  <span className="h-1.5 w-1.5 rounded-full bg-moss" />
-                  Online
-                </span>
-              </div>
-              <h3 className="text-[16px] mt-4 font-semibold tracking-[-0.012em] leading-[1.25]">{d.name}</h3>
-              <p className="eyebrow mt-1">{d.specialty}</p>
-              <p className="text-ink-soft text-[13px] mt-3 leading-[1.55]">{d.bio}</p>
-              <div className="mt-4 pt-4 border-t border-[color:var(--rule)] flex items-center justify-between text-[12.5px]">
-                <span className="text-ink-mute">{d.years} yrs · {d.languages.join(", ")}</span>
-                <span className="font-semibold text-[14px]">${d.fee}</span>
-              </div>
-              <span className="mt-3 inline-block eyebrow text-clay group-hover:translate-x-0.5 transition-transform">
-                View profile →
-              </span>
-            </Link>
-          ))}
-        </div>
-      </section>
+      {/* ============ DOCTORS section removed: directory at /doctors ============ */}
 
       {/* ============ SECURITY ============ */}
       <section id="security" className="mx-auto w-full max-w-[1200px] px-5 sm:px-6 lg:px-8 py-14 sm:py-16 grid grid-cols-12 gap-x-10 gap-y-8">
@@ -244,40 +186,46 @@ export default function Home() {
               Before you book.
             </h2>
           </div>
-          <dl className="col-span-12 lg:col-span-8 divide-y divide-[color:var(--rule)] border-y border-[color:var(--rule-strong)]">
-            {FAQ.map(([q, a]) => (
-              <div key={q} className="py-5 grid grid-cols-1 md:grid-cols-3 gap-4">
-                <dt className="text-[14.5px] font-semibold tracking-[-0.01em] leading-[1.35] md:col-span-1">
-                  {q}
-                </dt>
-                <dd className="text-ink-soft text-[13.5px] leading-[1.65] md:col-span-2">
+          <div className="col-span-12 lg:col-span-8 border-y border-[color:var(--rule-strong)] divide-y divide-[color:var(--rule)]">
+            {FAQ.map(([q, a], i) => (
+              <details
+                key={q}
+                {...(i === 0 ? { open: true } : {})}
+                className="group py-4"
+              >
+                <summary className="flex items-center justify-between gap-4 cursor-pointer list-none text-[14.5px] font-semibold tracking-[-0.01em] leading-[1.35]">
+                  <span>{q}</span>
+                  <span
+                    aria-hidden
+                    className="shrink-0 text-ink-mute group-open:rotate-45 transition-transform text-[18px] leading-none"
+                  >
+                    +
+                  </span>
+                </summary>
+                <p className="mt-3 text-ink-soft text-[13.5px] leading-[1.65]">
                   {a}
-                </dd>
-              </div>
+                </p>
+              </details>
             ))}
-          </dl>
+          </div>
         </div>
       </section>
 
       {/* ============ CTA ============ */}
       <section className="mx-auto w-full max-w-[1200px] px-5 sm:px-6 lg:px-8 py-14 sm:py-20">
         <div className="border border-[color:var(--rule-strong)] bg-paper-tint p-8 sm:p-12 text-center rounded-sm">
-          <p className="eyebrow mb-4">Get care</p>
           <h2 className="text-[26px] sm:text-[32px] font-semibold tracking-[-0.022em] leading-[1.2] max-w-[24ch] mx-auto">
             Care, today. No waiting room.
           </h2>
-          <p className="mt-4 text-ink-soft text-[14.5px] max-w-[52ch] mx-auto leading-[1.6]">
-            Create your account in under a minute. Your first consultation can be tonight.
-          </p>
-          <div className="mt-7 flex justify-center gap-2 flex-wrap">
+          <div className="mt-7 flex justify-center">
             <Link href="/register" className="btn btn-clay">
-              Create patient account
+              Create your account
               <span aria-hidden>→</span>
             </Link>
-            <Link href="/register?role=doctor" className="btn btn-ghost">
-              I&rsquo;m a clinician
-            </Link>
           </div>
+          <p className="mt-4 text-ink-mute text-[13px]">
+            Takes under a minute. Your first visit can be tonight.
+          </p>
         </div>
       </section>
 
@@ -342,36 +290,6 @@ function HeroCalloutCard() {
 /* ====================================================================
    Static content
    ==================================================================== */
-
-const SAMPLE_DOCTORS = [
-  {
-    initials: "AR",
-    name: "Dr. Amelia Reyes",
-    specialty: "Internal medicine",
-    bio: "Twelve years of primary care. Calm with chronic-condition follow-ups and complex medication histories.",
-    years: 12,
-    languages: ["English", "Spanish"],
-    fee: 50,
-  },
-  {
-    initials: "BS",
-    name: "Dr. Ben Stone",
-    specialty: "General practice",
-    bio: "Family doctor focused on preventive care and acute illness. Known for plain-English explanations.",
-    years: 9,
-    languages: ["English"],
-    fee: 45,
-  },
-  {
-    initials: "CK",
-    name: "Dr. Cara Kim",
-    specialty: "Dermatology",
-    bio: "Photo-led consultations for acne, eczema, and pigment concerns. Same-day prescription routing.",
-    years: 7,
-    languages: ["English", "Korean"],
-    fee: 70,
-  },
-];
 
 const FAQ: Array<[string, string]> = [
   [

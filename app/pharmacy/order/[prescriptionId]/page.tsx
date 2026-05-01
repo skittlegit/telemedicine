@@ -4,8 +4,9 @@ import { Types } from "mongoose";
 import { connectDB } from "@/lib/db";
 import { Prescription } from "@/lib/models/Prescription";
 import { User } from "@/lib/models/User";
+import { PharmacyProfile } from "@/lib/models/PharmacyProfile";
 import { requireRole } from "@/lib/authz";
-import { OrderForm } from "./OrderForm";
+import { OrderForm, type PharmacyChoice } from "./OrderForm";
 
 export const dynamic = "force-dynamic";
 
@@ -22,6 +23,14 @@ interface RxView {
   drugs: Array<{ name: string; dose: string; days: number }>;
 }
 
+interface PharmacyRow {
+  _id: string;
+  user: { _id: string; name: string };
+  pharmacyName: string;
+  city: string;
+  region: string;
+}
+
 export default async function PharmacyOrderPage({ params }: PageProps) {
   const session = await requireRole("patient");
   const { prescriptionId } = await params;
@@ -29,9 +38,15 @@ export default async function PharmacyOrderPage({ params }: PageProps) {
 
   await connectDB();
   void User;
-  const rx = await Prescription.findById(prescriptionId)
-    .populate("doctor", "name")
-    .lean<RxView | null>();
+  const [rx, pharmacies] = await Promise.all([
+    Prescription.findById(prescriptionId)
+      .populate("doctor", "name")
+      .lean<RxView | null>(),
+    PharmacyProfile.find({ licenseVerifiedAt: { $ne: null } })
+      .populate("user", "name")
+      .sort({ pharmacyName: 1 })
+      .lean<PharmacyRow[]>(),
+  ]);
   if (!rx) notFound();
   if (String(rx.patient) !== session.user.id) notFound();
   if (rx.revokedAt || rx.fulfilledAt) {
@@ -49,6 +64,16 @@ export default async function PharmacyOrderPage({ params }: PageProps) {
     );
   }
 
+  const choices: PharmacyChoice[] = pharmacies
+    .filter((p) => p.user)
+    .map((p) => ({
+      id: String(p.user._id),
+      name: p.pharmacyName,
+      city: p.city,
+      region: p.region,
+      eta: "2-3 days",
+    }));
+
   return (
     <main className="min-h-screen bg-paper text-ink">
       <div className="mx-auto w-full max-w-[640px] px-8 py-12">
@@ -61,7 +86,7 @@ export default async function PharmacyOrderPage({ params }: PageProps) {
           {rx.drugs.length === 1 ? "" : "s"}
         </p>
 
-        <OrderForm prescriptionId={String(rx._id)} />
+        <OrderForm prescriptionId={String(rx._id)} pharmacies={choices} />
       </div>
     </main>
   );

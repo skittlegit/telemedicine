@@ -9,7 +9,12 @@ import { SPECIALTIES, StarIcon } from "@/app/_components/icons";
 export const dynamic = "force-dynamic";
 
 interface PageProps {
-  searchParams: Promise<{ specialty?: string; q?: string }>;
+  searchParams: Promise<{
+    specialty?: string;
+    q?: string;
+    page?: string;
+    sort?: string;
+  }>;
 }
 
 interface DoctorRow {
@@ -41,13 +46,29 @@ export default async function DashboardDoctorsPage({ searchParams }: PageProps) 
   const filter: Record<string, unknown> = {};
   if (sp.specialty) filter.specialty = sp.specialty;
 
-  const doctors = await DoctorProfile.find(filter)
-    .populate("user", "name status")
-    .sort({ rating: -1, ratingCount: -1, createdAt: -1 })
-    .limit(60)
-    .lean<DoctorRow[]>();
+  const PAGE_SIZE = 12;
+  const page = Math.max(1, Number(sp.page) || 1);
+  const sortKey = sp.sort ?? "rating";
+  const sortMap: Record<string, Record<string, 1 | -1>> = {
+    rating: { rating: -1, ratingCount: -1, createdAt: -1 },
+    experience: { yearsOfExperience: -1, rating: -1 },
+    fee_asc: { consultationFeeCents: 1, rating: -1 },
+    fee_desc: { consultationFeeCents: -1, rating: -1 },
+  };
+  const sort = sortMap[sortKey] ?? sortMap.rating;
 
   const q = sp.q?.toLowerCase().trim() ?? "";
+
+  const [allMatchingForCount, doctors] = await Promise.all([
+    DoctorProfile.countDocuments(filter),
+    DoctorProfile.find(filter)
+      .populate("user", "name status")
+      .sort(sort)
+      .skip((page - 1) * PAGE_SIZE)
+      .limit(PAGE_SIZE)
+      .lean<DoctorRow[]>(),
+  ]);
+
   const visible = doctors
     .filter((d) => d.user)
     .filter((d) =>
@@ -57,6 +78,17 @@ export default async function DashboardDoctorsPage({ searchParams }: PageProps) 
           (d.languages ?? []).some((l) => l.toLowerCase().includes(q))
         : true,
     );
+  const totalPages = Math.max(1, Math.ceil(allMatchingForCount / PAGE_SIZE));
+
+  function pageHref(p: number) {
+    const params = new URLSearchParams();
+    if (sp.specialty) params.set("specialty", sp.specialty);
+    if (sp.q) params.set("q", sp.q);
+    if (sortKey !== "rating") params.set("sort", sortKey);
+    if (p > 1) params.set("page", String(p));
+    const qs = params.toString();
+    return qs ? `/dashboard/doctors?${qs}` : "/dashboard/doctors";
+  }
 
   return (
     <>
@@ -102,10 +134,26 @@ export default async function DashboardDoctorsPage({ searchParams }: PageProps) 
             ))}
           </select>
         </div>
+        <div className="min-w-[160px]">
+          <label htmlFor="sort" className="eyebrow block mb-2">
+            Sort
+          </label>
+          <select
+            id="sort"
+            name="sort"
+            defaultValue={sortKey}
+            className="field"
+          >
+            <option value="rating">Top rated</option>
+            <option value="experience">Most experience</option>
+            <option value="fee_asc">Lowest fee</option>
+            <option value="fee_desc">Highest fee</option>
+          </select>
+        </div>
         <button type="submit" className="btn btn-clay btn-sm">
           Search →
         </button>
-        {(q || sp.specialty) && (
+        {(q || sp.specialty || sortKey !== "rating") && (
           <Link href="/dashboard/doctors" className="btn btn-ghost btn-sm">
             Clear
           </Link>
@@ -197,6 +245,31 @@ export default async function DashboardDoctorsPage({ searchParams }: PageProps) 
             </Link>
           ))}
         </div>
+      )}
+
+      {visible.length > 0 && totalPages > 1 && (
+        <nav
+          aria-label="Pagination"
+          className="mt-8 flex items-center justify-between border-t border-[color:var(--rule)] pt-4 text-[13px]"
+        >
+          {page > 1 ? (
+            <Link href={pageHref(page - 1)} className="btn btn-ghost btn-sm">
+              ← Previous
+            </Link>
+          ) : (
+            <span aria-hidden />
+          )}
+          <span className="eyebrow text-ink-mute">
+            Page {page} of {totalPages}
+          </span>
+          {page < totalPages ? (
+            <Link href={pageHref(page + 1)} className="btn btn-ghost btn-sm">
+              Next →
+            </Link>
+          ) : (
+            <span aria-hidden />
+          )}
+        </nav>
       )}
     </>
   );

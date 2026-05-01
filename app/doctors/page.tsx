@@ -12,7 +12,12 @@ export const metadata = { title: "Find a doctor — Vellum Health" };
 export const dynamic = "force-dynamic";
 
 interface PageProps {
-  searchParams: Promise<{ specialty?: string; q?: string }>;
+  searchParams: Promise<{
+    specialty?: string;
+    q?: string;
+    page?: string;
+    sort?: string;
+  }>;
 }
 
 interface DoctorRow {
@@ -43,13 +48,26 @@ export default async function DoctorsPage({ searchParams }: PageProps) {
   const filter: Record<string, unknown> = {};
   if (sp.specialty) filter.specialty = sp.specialty;
 
-  const [doctors, specialties] = await Promise.all([
+  const PAGE_SIZE = 12;
+  const page = Math.max(1, Number(sp.page) || 1);
+  const sortKey = sp.sort ?? "rating";
+  const sortMap: Record<string, Record<string, 1 | -1>> = {
+    rating: { rating: -1, ratingCount: -1, createdAt: -1 },
+    experience: { yearsOfExperience: -1, rating: -1 },
+    fee_asc: { consultationFeeCents: 1, rating: -1 },
+    fee_desc: { consultationFeeCents: -1, rating: -1 },
+  };
+  const sort = sortMap[sortKey] ?? sortMap.rating;
+
+  const [doctors, specialties, totalCount] = await Promise.all([
     DoctorProfile.find(filter)
       .populate("user", "name status")
-      .sort({ rating: -1, ratingCount: -1, createdAt: -1 })
-      .limit(60)
+      .sort(sort)
+      .skip((page - 1) * PAGE_SIZE)
+      .limit(PAGE_SIZE)
       .lean<DoctorRow[]>(),
     DoctorProfile.distinct("specialty"),
+    DoctorProfile.countDocuments(filter),
   ]);
 
   const q = sp.q?.toLowerCase().trim() ?? "";
@@ -62,6 +80,17 @@ export default async function DoctorsPage({ searchParams }: PageProps) {
           (d.languages ?? []).some((l) => l.toLowerCase().includes(q))
         : true,
     );
+  const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
+
+  function pageHref(p: number) {
+    const params = new URLSearchParams();
+    if (sp.specialty) params.set("specialty", sp.specialty);
+    if (sp.q) params.set("q", sp.q);
+    if (sortKey !== "rating") params.set("sort", sortKey);
+    if (p > 1) params.set("page", String(p));
+    const qs = params.toString();
+    return qs ? `/doctors?${qs}` : "/doctors";
+  }
 
   return (
     <main className="min-h-screen flex flex-col bg-paper text-ink">
@@ -222,6 +251,31 @@ export default async function DoctorsPage({ searchParams }: PageProps) {
               </li>
             ))}
           </ul>
+        )}
+
+        {visible.length > 0 && totalPages > 1 && (
+          <nav
+            aria-label="Pagination"
+            className="mt-8 flex items-center justify-between border-t border-[color:var(--rule)] pt-4 text-[13px]"
+          >
+            {page > 1 ? (
+              <Link href={pageHref(page - 1)} className="btn btn-ghost btn-sm">
+                ← Previous
+              </Link>
+            ) : (
+              <span aria-hidden />
+            )}
+            <span className="eyebrow text-ink-mute">
+              Page {page} of {totalPages}
+            </span>
+            {page < totalPages ? (
+              <Link href={pageHref(page + 1)} className="btn btn-ghost btn-sm">
+                Next →
+              </Link>
+            ) : (
+              <span aria-hidden />
+            )}
+          </nav>
         )}
       </section>
 

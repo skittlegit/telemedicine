@@ -111,3 +111,10 @@ export const PharmacyAddressSchema = z.object({
   country: z.string().trim().length(2).toUpperCase(),
 });
 export type PharmacyAddress = z.infer<typeof PharmacyAddressSchema>;
+
+export const PharmacyOrderCreateSchema = z.object({
+  prescriptionId: z.string().regex(/^[0-9a-f]{24}$/i, "Invalid prescription."),
+  pharmacyId: z.string().regex(/^[0-9a-f]{24}$/i, "Please choose a pharmacy."),
+  address: PharmacyAddressSchema,
+});
+export type PharmacyOrderCreateInput = z.infer<typeof PharmacyOrderCreateSchema>;

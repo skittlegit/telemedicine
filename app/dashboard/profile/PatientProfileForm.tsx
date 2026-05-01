@@ -33,131 +33,145 @@ export function PatientProfileForm({ initial }: { initial: PatientFormInitial })
   const fe = state.fieldErrors ?? {};
 
   return (
-    <form action={action} className="space-y-6">
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Field
-          label="Date of birth"
-          name="dob"
-          type="date"
-          defaultValue={initial.dob}
-          errors={fe.dob}
-        />
-        <div>
-          <label className="eyebrow block mb-1.5" htmlFor="sex">
-            Sex
-          </label>
-          <select
-            id="sex"
-            name="sex"
-            defaultValue={initial.sex}
-            className="field"
-          >
-            <option value="unspecified">Prefer not to say</option>
-            <option value="female">Female</option>
-            <option value="male">Male</option>
-            <option value="other">Other</option>
-          </select>
+    <form action={action} className="space-y-3">
+      <details open className="group border border-[color:var(--rule)] bg-paper">
+        <summary className="cursor-pointer list-none px-4 py-3 flex items-center justify-between gap-3">
+          <span className="text-[14px] font-semibold tracking-[-0.01em]">Contact</span>
+          <span aria-hidden className="text-ink-mute group-open:rotate-45 transition-transform text-[18px] leading-none">+</span>
+        </summary>
+        <div className="px-4 pb-5 pt-1 space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <Field
+              label="Date of birth"
+              name="dob"
+              type="date"
+              defaultValue={initial.dob}
+              errors={fe.dob}
+            />
+            <div>
+              <label className="eyebrow block mb-1.5" htmlFor="sex">
+                Sex
+              </label>
+              <select
+                id="sex"
+                name="sex"
+                defaultValue={initial.sex}
+                className="field"
+              >
+                <option value="unspecified">Prefer not to say</option>
+                <option value="female">Female</option>
+                <option value="male">Male</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <Field
+              label="Phone"
+              name="phone"
+              type="tel"
+              defaultValue={initial.phone}
+              placeholder="+1 555 0100"
+              errors={fe.phone}
+            />
+          </div>
+          <Field
+            label="Street"
+            name="addressLine1"
+            defaultValue={initial.addressLine1}
+            errors={fe.addressLine1}
+          />
+          <Field
+            label="Apt / suite"
+            name="addressLine2"
+            defaultValue={initial.addressLine2}
+            errors={fe.addressLine2}
+          />
+          <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+            <Field
+              label="City"
+              name="city"
+              defaultValue={initial.city}
+              errors={fe.city}
+            />
+            <Field
+              label="Region"
+              name="region"
+              defaultValue={initial.region}
+              errors={fe.region}
+            />
+            <Field
+              label="Postal code"
+              name="postalCode"
+              defaultValue={initial.postalCode}
+              mono
+              errors={fe.postalCode}
+            />
+            <Field
+              label="Country"
+              name="country"
+              defaultValue={initial.country}
+              placeholder="US"
+              mono
+              hint="ISO-2 code"
+              errors={fe.country}
+            />
+          </div>
         </div>
-        <Field
-          label="Phone"
-          name="phone"
-          type="tel"
-          defaultValue={initial.phone}
-          placeholder="+1 555 0100"
-          errors={fe.phone}
-        />
-      </div>
+      </details>
 
-      <fieldset className="space-y-4 pt-2">
-        <legend className="eyebrow mb-2">Address</legend>
-        <Field
-          label="Street"
-          name="addressLine1"
-          defaultValue={initial.addressLine1}
-          errors={fe.addressLine1}
-        />
-        <Field
-          label="Apt / suite"
-          name="addressLine2"
-          defaultValue={initial.addressLine2}
-          errors={fe.addressLine2}
-        />
-        <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-          <Field
-            label="City"
-            name="city"
-            defaultValue={initial.city}
-            errors={fe.city}
+      <details className="group border border-[color:var(--rule)] bg-paper">
+        <summary className="cursor-pointer list-none px-4 py-3 flex items-center justify-between gap-3">
+          <span className="text-[14px] font-semibold tracking-[-0.01em]">Medical history</span>
+          <span aria-hidden className="text-ink-mute group-open:rotate-45 transition-transform text-[18px] leading-none">+</span>
+        </summary>
+        <div className="px-4 pb-5 pt-1 space-y-4">
+          <Textarea
+            label="Allergies"
+            name="allergies"
+            defaultValue={initial.allergies}
+            placeholder="e.g. Penicillin (rash), latex"
+            errors={fe.allergies}
           />
-          <Field
-            label="Region"
-            name="region"
-            defaultValue={initial.region}
-            errors={fe.region}
+          <Textarea
+            label="Ongoing conditions"
+            name="conditions"
+            defaultValue={initial.conditions}
+            placeholder="e.g. Hypertension, asthma"
+            errors={fe.conditions}
           />
-          <Field
-            label="Postal code"
-            name="postalCode"
-            defaultValue={initial.postalCode}
-            mono
-            errors={fe.postalCode}
-          />
-          <Field
-            label="Country"
-            name="country"
-            defaultValue={initial.country}
-            placeholder="US"
-            mono
-            hint="ISO-2 code"
-            errors={fe.country}
+          <Textarea
+            label="Current medications"
+            name="medications"
+            defaultValue={initial.medications}
+            placeholder="Drug, dose, frequency"
+            errors={fe.medications}
           />
         </div>
-      </fieldset>
+      </details>
 
-      <fieldset className="space-y-4 pt-2">
-        <legend className="eyebrow mb-2">Medical history</legend>
-        <Textarea
-          label="Allergies"
-          name="allergies"
-          defaultValue={initial.allergies}
-          placeholder="e.g. Penicillin (rash), latex"
-          errors={fe.allergies}
-        />
-        <Textarea
-          label="Ongoing conditions"
-          name="conditions"
-          defaultValue={initial.conditions}
-          placeholder="e.g. Hypertension, asthma"
-          errors={fe.conditions}
-        />
-        <Textarea
-          label="Current medications"
-          name="medications"
-          defaultValue={initial.medications}
-          placeholder="Drug, dose, frequency"
-          errors={fe.medications}
-        />
-      </fieldset>
-
-      <fieldset className="space-y-4 pt-2">
-        <legend className="eyebrow mb-2">Other</legend>
-        <Textarea
-          label="Insurance"
-          name="insurance"
-          defaultValue={initial.insurance}
-          rows={2}
-          placeholder="Provider, member ID, group #"
-          errors={fe.insurance}
-        />
-        <Textarea
-          label="Emergency contact"
-          name="emergencyContact"
-          defaultValue={initial.emergencyContact}
-          rows={2}
-          placeholder="Name, relation, phone"
-          errors={fe.emergencyContact}
-        />
-      </fieldset>
+      <details className="group border border-[color:var(--rule)] bg-paper">
+        <summary className="cursor-pointer list-none px-4 py-3 flex items-center justify-between gap-3">
+          <span className="text-[14px] font-semibold tracking-[-0.01em]">Other</span>
+          <span aria-hidden className="text-ink-mute group-open:rotate-45 transition-transform text-[18px] leading-none">+</span>
+        </summary>
+        <div className="px-4 pb-5 pt-1 space-y-4">
+          <Textarea
+            label="Insurance"
+            name="insurance"
+            defaultValue={initial.insurance}
+            rows={2}
+            placeholder="Provider, member ID, group #"
+            errors={fe.insurance}
+          />
+          <Textarea
+            label="Emergency contact"
+            name="emergencyContact"
+            defaultValue={initial.emergencyContact}
+            rows={2}
+            placeholder="Name, relation, phone"
+            errors={fe.emergencyContact}
+          />
+        </div>
+      </details>
 
       {state.error && (
         <p role="alert" className="text-oxblood text-sm">
