@@ -91,7 +91,7 @@ export default function HowItWorksPage() {
         </ol>
       </section>
 
-      {/* Pricing band */}
+      {/* Pricing teaser */}
       <section className="mx-auto w-full max-w-[1200px] px-5 sm:px-6 lg:px-8 py-10 sm:py-14 grid grid-cols-12 gap-x-10 gap-y-8">
         <div className="col-span-12 lg:col-span-5">
           <p className="eyebrow mb-2.5">Pricing</p>
@@ -103,15 +103,20 @@ export default function HowItWorksPage() {
             consultation. You get an itemised receipt for out-of-network
             reimbursement.
           </p>
+          <Link
+            href="/pricing"
+            className="btn btn-ghost mt-6 inline-flex"
+            prefetch
+          >
+            See full pricing <span aria-hidden>→</span>
+          </Link>
         </div>
         <dl className="col-span-12 lg:col-span-7 grid grid-cols-2 gap-px bg-[color:var(--rule)] border border-[color:var(--rule)] self-start">
           {[
             ["General practice", "$45"],
             ["Specialist visit", "$70"],
             ["Mental health", "$80"],
-            ["Prescription refill", "$25"],
             ["Pharmacy delivery", "from $5"],
-            ["Cancellation", "free, anytime"],
           ].map(([k, v]) => (
             <div key={k} className="bg-paper p-5">
               <dt className="eyebrow mb-1.5">{k}</dt>

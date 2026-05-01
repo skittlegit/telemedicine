@@ -17,7 +17,6 @@ import {
   ApptRowItem,
   NextConsultationCard,
   type ApptRow,
-  type RxRow,
   JOIN_WINDOW_MS,
 } from "@/app/dashboard/_lib/shared";
 
@@ -199,7 +198,7 @@ async function PatientView({
 }
 
 /* ============================================================
-   CLINICIAN VIEW — split into sub-routes in Phase 3.
+   CLINICIAN — Today overview only. Schedule + Rx live in sub-routes.
    ============================================================ */
 
 async function ClinicianView({
@@ -221,53 +220,46 @@ async function ClinicianView({
   const last30 = new Date(now);
   last30.setDate(last30.getDate() - 30);
 
-  const [profile, todays, week, recentRx, panelIds, rx30Count] =
+  const [profile, todaysCount, weekCount, panelIds, rx30Count, nextAppt] =
     await Promise.all([
       DoctorProfile.findOne({ user: userId }).lean<{
         specialty: string;
         licenseVerifiedAt?: Date;
         consultationFeeCents: number;
-        rating: number;
-        ratingCount: number;
       } | null>(),
-      Appointment.find({
+      Appointment.countDocuments({
         doctor: userId,
         startAt: { $gte: startOfToday, $lt: endOfToday },
-      })
-        .populate("patient", "name")
-        .populate("doctor", "name")
-        .sort({ startAt: 1 })
-        .lean<ApptRow[]>(),
-      Appointment.find({
+      }),
+      Appointment.countDocuments({
         doctor: userId,
         startAt: { $gte: endOfToday, $lt: endOfWeek },
-      })
-        .populate("patient", "name")
-        .populate("doctor", "name")
-        .sort({ startAt: 1 })
-        .limit(20)
-        .lean<ApptRow[]>(),
-      Prescription.find({ doctor: userId })
-        .populate("patient", "name")
-        .populate("doctor", "name")
-        .sort({ issuedAt: -1 })
-        .limit(10)
-        .lean<RxRow[]>(),
+      }),
       Appointment.distinct("patient", { doctor: userId }),
       Prescription.countDocuments({
         doctor: userId,
         issuedAt: { $gte: last30 },
       }),
+      Appointment.findOne({
+        doctor: userId,
+        status: { $in: ["scheduled", "in_progress"] },
+        startAt: { $gte: new Date(now.getTime() - JOIN_WINDOW_MS) },
+      })
+        .populate("patient", "name")
+        .populate("doctor", "name")
+        .sort({ startAt: 1 })
+        .lean<ApptRow | null>(),
     ]);
 
   const verified = !!profile?.licenseVerifiedAt;
+  const lastName = displayName.split(" ").slice(-1)[0];
 
   return (
     <>
       <PageHeader
         eyebrow="Practice"
         title="Good morning,"
-        italic={`Dr. ${displayName.split(" ").slice(-1)[0]}.`}
+        italic={`Dr. ${lastName}.`}
       >
         {profile?.specialty ?? "Clinician"} · {panelIds.length} patients in
         your panel · ${(profile?.consultationFeeCents ?? 5000) / 100} per
@@ -302,76 +294,58 @@ async function ClinicianView({
       )}
 
       <StatGrid cols={4}>
-        <StatTile label="Today's visits" value={todays.length} />
-        <StatTile
-          label="This week"
-          value={week.length}
-          hint={`${startOfWeek.toLocaleDateString()} – ${new Date(endOfWeek.getTime() - 1).toLocaleDateString()}`}
-        />
-        <StatTile label="Rx issued" value={rx30Count} hint="Last 30 days" />
-        <StatTile
-          label="Patients"
-          value={panelIds.length}
-          hint="In your panel"
-        />
+        <StatTile label="Today's visits" value={todaysCount} />
+        <StatTile label="This week" value={weekCount} />
+        <StatTile label="Rx issued (30d)" value={rx30Count} />
+        <StatTile label="Panel" value={panelIds.length} hint="Patients seen" />
       </StatGrid>
 
-      <Section eyebrow="Today" title="Schedule">
-        {todays.length === 0 ? (
-          <EmptyState message="Nothing on today's calendar." />
-        ) : (
+      <Section eyebrow="Up next" title="Imminent visit">
+        {nextAppt ? (
           <ul className="divide-y divide-[color:var(--rule)] border border-[color:var(--rule)]">
-            {todays.map((a) => (
-              <ApptRowItem key={a._id} appt={a} as="doctor" />
-            ))}
+            <ApptRowItem appt={nextAppt} as="doctor" />
           </ul>
+        ) : (
+          <EmptyState message="No active or imminent visits on your calendar." />
         )}
       </Section>
 
-      <Section eyebrow="This week" title="Upcoming">
-        {week.length === 0 ? (
-          <EmptyState message="No visits scheduled this week." />
-        ) : (
-          <ul className="divide-y divide-[color:var(--rule)] border border-[color:var(--rule)]">
-            {week.map((a) => (
-              <ApptRowItem key={a._id} appt={a} as="doctor" />
-            ))}
-          </ul>
-        )}
-      </Section>
-
-      <Section eyebrow="℞" title="Recent prescriptions">
-        {recentRx.length === 0 ? (
-          <EmptyState message="No prescriptions issued yet." />
-        ) : (
-          <ul className="divide-y divide-[color:var(--rule)] border border-[color:var(--rule)]">
-            {recentRx.map((r) => (
-              <li
-                key={r._id}
-                className="px-4 py-3 flex flex-wrap justify-between items-center gap-3"
-              >
-                <div className="min-w-0">
-                  <p className="font-medium truncate">
-                    {r.patient.name} ·{" "}
-                    <span className="text-ink-soft text-[13px]">
-                      {r.drugs.map((d) => d.name).join(", ")}
-                    </span>
-                  </p>
-                  <p className="mono text-[11px] text-ink-mute mt-0.5">
-                    {new Date(r.issuedAt).toLocaleDateString()}
-                    {r.fulfilledAt ? " · fulfilled" : ""}
-                  </p>
-                </div>
-                <Link
-                  href={`/dashboard/clinician/prescriptions/${r._id}`}
-                  className="btn btn-ghost text-xs"
-                >
-                  View →
-                </Link>
-              </li>
-            ))}
-          </ul>
-        )}
+      <Section eyebrow="Workspaces" title="Jump to">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-[color:var(--rule)] border border-[color:var(--rule)]">
+          <Link
+            href="/dashboard/clinician/schedule"
+            className="bg-paper p-5 hover:bg-paper-tint transition-colors"
+          >
+            <p className="font-display text-[1.2rem] tracking-tight">
+              Schedule →
+            </p>
+            <p className="text-ink-soft text-[13px] mt-2">
+              Today, this week, and recent past visits.
+            </p>
+          </Link>
+          <Link
+            href="/dashboard/clinician/prescriptions"
+            className="bg-paper p-5 hover:bg-paper-tint transition-colors"
+          >
+            <p className="font-display text-[1.2rem] tracking-tight">
+              Prescriptions →
+            </p>
+            <p className="text-ink-soft text-[13px] mt-2">
+              Issued by you · active scripts and history.
+            </p>
+          </Link>
+          <Link
+            href="/dashboard/clinician/profile"
+            className="bg-paper p-5 hover:bg-paper-tint transition-colors"
+          >
+            <p className="font-display text-[1.2rem] tracking-tight">
+              Profile →
+            </p>
+            <p className="text-ink-soft text-[13px] mt-2">
+              Bio, specialty, fees, and licensure details.
+            </p>
+          </Link>
+        </div>
       </Section>
     </>
   );

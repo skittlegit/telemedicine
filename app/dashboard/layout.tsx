@@ -144,16 +144,30 @@ const NAV_BY_ROLE: Record<string, SidebarSection[]> = {
     {
       heading: "Practice",
       items: [
-        { href: "/dashboard", label: "Overview", icon: <HomeIcon />, exact: true },
+        { href: "/dashboard", label: "Today", icon: <HomeIcon />, exact: true },
+        { href: "/dashboard/clinician/schedule", label: "Schedule", icon: <CalendarIcon /> },
+        { href: "/dashboard/clinician/prescriptions", label: "Prescriptions", icon: <PillIcon /> },
+      ],
+    },
+    {
+      heading: "Account",
+      items: [
         { href: "/dashboard/clinician/profile", label: "Profile", icon: <UserIcon /> },
       ],
     },
   ],
   pharmacist: [
     {
-      heading: "Pharmacy",
+      heading: "Dispensary",
       items: [
         { href: "/dashboard/pharmacy", label: "Queue", icon: <ListIcon />, exact: true },
+        { href: "/dashboard/pharmacy/active", label: "Active", icon: <PillIcon /> },
+        { href: "/dashboard/pharmacy/history", label: "History", icon: <FileIcon /> },
+      ],
+    },
+    {
+      heading: "Account",
+      items: [
         { href: "/dashboard/pharmacy/profile", label: "Profile", icon: <UserIcon /> },
       ],
     },
@@ -163,13 +177,15 @@ const NAV_BY_ROLE: Record<string, SidebarSection[]> = {
       heading: "Operations",
       items: [
         { href: "/dashboard/admin", label: "Overview", icon: <ChartIcon />, exact: true },
+        { href: "/dashboard/admin/approvals", label: "Approvals", icon: <ShieldIcon /> },
+        { href: "/dashboard/admin/clinicians", label: "Clinicians", icon: <StethIcon /> },
+        { href: "/dashboard/admin/audit", label: "Audit log", icon: <FileIcon /> },
       ],
     },
   ],
 };
 
 // Suppress unused-warnings for icon imports we may wire in later phases.
-void ShieldIcon;
 
 export default async function DashboardLayout({
   children,

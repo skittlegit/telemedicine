@@ -9,10 +9,7 @@ import { requireRole } from "@/lib/authz";
 import { decryptPHI } from "@/lib/crypto";
 import { audit } from "@/lib/audit";
 import { advanceOrderAction } from "@/app/actions/pharmacy";
-import {
-  DashboardHeader,
-  StatusPill,
-} from "@/app/dashboard/_components/Shell";
+import { StatusPill } from "@/app/dashboard/_components/Shell";
 
 export const dynamic = "force-dynamic";
 
@@ -96,16 +93,14 @@ export default async function PharmacyOrderDetailPage({ params }: PageProps) {
   const transitions = NEXT_STATUS[order.status] ?? [];
 
   return (
-    <main className="min-h-screen bg-paper text-ink">
-      <DashboardHeader user={{ name: session.user.name ?? "Pharmacist", role: "pharmacist" }} />
-      <div className="mx-auto w-full max-w-[820px] px-6 lg:px-8 py-10">
-        <Link href="/dashboard/pharmacy" className="eyebrow text-ink-mute hover:text-clay">
-          ← Queue
-        </Link>
-        <h1 className="font-display text-5xl tracking-tight mt-4">
-          Order for {order.patient.name}
-        </h1>
-        <div className="mt-3"><StatusPill status={order.status} /></div>
+    <div className="max-w-[820px]">
+      <Link href="/dashboard/pharmacy" className="eyebrow text-ink-mute hover:text-clay">
+        ← Queue
+      </Link>
+      <h1 className="font-display text-5xl tracking-tight mt-4">
+        Order for {order.patient.name}
+      </h1>
+      <div className="mt-3"><StatusPill status={order.status} /></div>
 
         {rx && (
           <>
@@ -167,7 +162,6 @@ export default async function PharmacyOrderDetailPage({ params }: PageProps) {
             </div>
           </>
         )}
-      </div>
-    </main>
+    </div>
   );
 }

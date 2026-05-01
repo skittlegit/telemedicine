@@ -8,7 +8,6 @@ import { decryptPHI } from "@/lib/crypto";
 import { requireRole } from "@/lib/authz";
 import { audit } from "@/lib/audit";
 import { PrescribeForm } from "./PrescribeForm";
-import { DashboardHeader } from "@/app/dashboard/_components/Shell";
 
 export const dynamic = "force-dynamic";
 
@@ -50,25 +49,22 @@ export default async function PrescribePage({ params }: PageProps) {
   }
 
   return (
-    <main className="min-h-screen bg-paper text-ink">
-      <DashboardHeader user={{ name: session.user.name ?? "Doctor", role: "doctor" }} />
-      <div className="mx-auto w-full max-w-[720px] px-6 lg:px-8 py-12">
-        <Link href="/dashboard" className="eyebrow text-ink-mute hover:text-clay">
-          ← Dashboard
-        </Link>
-        <h1 className="font-display text-5xl tracking-tight mt-4">Issue prescription</h1>
-        <p className="text-ink-soft mt-2">
-          For <strong>{appt.patient.name}</strong> · {new Date(appt.startAt).toLocaleString()}
-        </p>
-        {appt.reasonEnc && reason && (
-          <div className="mt-6 border border-[color:var(--rule)] p-3 text-sm">
-            <p className="eyebrow mb-1">Patient&apos;s reason</p>
-            <p className="text-ink-soft">{reason}</p>
-          </div>
-        )}
+    <div className="max-w-[720px]">
+      <Link href="/dashboard" className="eyebrow text-ink-mute hover:text-clay">
+        ← Dashboard
+      </Link>
+      <h1 className="font-display text-5xl tracking-tight mt-4">Issue prescription</h1>
+      <p className="text-ink-soft mt-2">
+        For <strong>{appt.patient.name}</strong> · {new Date(appt.startAt).toLocaleString()}
+      </p>
+      {appt.reasonEnc && reason && (
+        <div className="mt-6 border border-[color:var(--rule)] p-3 text-sm">
+          <p className="eyebrow mb-1">Patient&apos;s reason</p>
+          <p className="text-ink-soft">{reason}</p>
+        </div>
+      )}
 
-        <PrescribeForm appointmentId={String(appt._id)} />
-      </div>
-    </main>
+      <PrescribeForm appointmentId={String(appt._id)} />
+    </div>
   );
 }

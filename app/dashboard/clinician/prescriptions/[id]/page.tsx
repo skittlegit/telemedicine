@@ -10,7 +10,6 @@ import { decryptPHI } from "@/lib/crypto";
 import { audit } from "@/lib/audit";
 import { prescriptionQrDataUrl } from "@/app/actions/prescription";
 import { env } from "@/lib/env";
-import { DashboardHeader } from "@/app/dashboard/_components/Shell";
 
 export const dynamic = "force-dynamic";
 
@@ -67,12 +66,10 @@ export default async function PrescriptionPage({ params }: PageProps) {
   }
 
   return (
-    <main className="min-h-screen bg-paper text-ink">
-      <DashboardHeader user={{ name: session.user.name ?? "User", role }} />
-      <div className="mx-auto w-full max-w-[720px] px-6 lg:px-8 py-12">
-        <Link href="/dashboard" className="eyebrow text-ink-mute hover:text-clay">
-          ← Dashboard
-        </Link>
+    <div className="max-w-[720px]">
+      <Link href="/dashboard" className="eyebrow text-ink-mute hover:text-clay">
+        ← Dashboard
+      </Link>
 
         <p className="eyebrow mt-6">℞ Prescription</p>
         <h1 className="font-display text-5xl tracking-tight mt-2">
@@ -139,7 +136,6 @@ export default async function PrescriptionPage({ params }: PageProps) {
             </Link>
           )}
         </div>
-      </div>
-    </main>
+    </div>
   );
 }

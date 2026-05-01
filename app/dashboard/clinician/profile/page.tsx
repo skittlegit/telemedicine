@@ -1,11 +1,7 @@
 import { connectDB } from "@/lib/db";
 import { DoctorProfile } from "@/lib/models/DoctorProfile";
 import { requireRole } from "@/lib/authz";
-import {
-  DashboardHeader,
-  PageHeader,
-  Section,
-} from "@/app/dashboard/_components/Shell";
+import { PageHeader, Section } from "@/app/dashboard/_components/Shell";
 import { ProfileForm } from "./ProfileForm";
 
 export const dynamic = "force-dynamic";
@@ -28,16 +24,16 @@ export default async function ClinicianProfilePage() {
     .lean<ProfileLean | null>();
 
   const verified = !!profile?.licenseVerifiedAt;
+  void session;
 
   return (
-    <main className="min-h-screen bg-paper text-ink">
-      <DashboardHeader user={{ name: session.user.name ?? "Doctor", role: "doctor" }} />
+    <>
       <PageHeader eyebrow="Practice" title="Your" italic="profile.">
         Update specialty, languages, and rates. Changing your licence will trigger
         a fresh admin verification.
       </PageHeader>
 
-      <div className="mx-auto w-full max-w-[820px] px-5 sm:px-6 lg:px-8 pb-24">
+      <div className="max-w-[820px]">
         <div
           className={`mb-10 border p-4 ${
             verified ? "border-moss/40 bg-moss/5" : "border-amber/40 bg-amber/10"
@@ -65,6 +61,6 @@ export default async function ClinicianProfilePage() {
           />
         </Section>
       </div>
-    </main>
+    </>
   );
 }
