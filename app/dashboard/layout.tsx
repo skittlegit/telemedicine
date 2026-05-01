@@ -121,7 +121,21 @@ const NAV_BY_ROLE: Record<string, SidebarSection[]> = {
     {
       heading: "Care",
       items: [
-        { href: "/dashboard", label: "Overview", icon: <HomeIcon />, exact: true },
+        { href: "/dashboard", label: "Today", icon: <HomeIcon />, exact: true },
+        { href: "/dashboard/visits", label: "Visits", icon: <CalendarIcon /> },
+        {
+          href: "/dashboard/prescriptions",
+          label: "Prescriptions",
+          icon: <PillIcon />,
+        },
+        { href: "/dashboard/orders", label: "Pharmacy", icon: <ListIcon /> },
+        { href: "/dashboard/records", label: "Records", icon: <FileIcon /> },
+      ],
+    },
+    {
+      heading: "Account",
+      items: [
+        { href: "/dashboard/profile", label: "Profile", icon: <UserIcon /> },
         { href: "/doctors", label: "Find a doctor", icon: <StethIcon /> },
       ],
     },
@@ -155,9 +169,6 @@ const NAV_BY_ROLE: Record<string, SidebarSection[]> = {
 };
 
 // Suppress unused-warnings for icon imports we may wire in later phases.
-void CalendarIcon;
-void PillIcon;
-void FileIcon;
 void ShieldIcon;
 
 export default async function DashboardLayout({
