@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { SidebarTrigger, type SidebarSection } from "./Sidebar";
+import { type SidebarSection } from "./Sidebar";
 import { ThemeToggle } from "@/app/_components/ThemeToggle";
 
 /**
@@ -52,7 +52,6 @@ export function Topbar({
     <div className="sticky top-0 z-30 h-[56px] bg-paper/95 backdrop-blur-md border-b border-[color:var(--rule)]">
       <div className="h-full px-5 sm:px-6 lg:px-10 flex items-center justify-between gap-4">
         <div className="flex items-center gap-2 min-w-0">
-          <SidebarTrigger />
           <nav aria-label="Breadcrumb" className="min-w-0">
             <ol className="flex items-center gap-2 text-[13px] text-ink-mute">
               {crumbs.map((c, i) => (
