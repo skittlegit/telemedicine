@@ -11,24 +11,22 @@ export default function SecurityPage() {
     <main className="min-h-screen flex flex-col bg-paper text-ink">
       <MarketingHeader />
 
-      <section className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-8 pt-10 sm:pt-16 lg:pt-24 pb-12">
-        <p className="eyebrow mb-3">Privacy &amp; security</p>
-        <h1 className="font-display text-[clamp(2rem,8vw,6rem)] leading-[0.98] tracking-[-0.035em] max-w-[22ch] break-words">
-          Your record is read by you,{" "}
-          <span className="italic-accent">and your doctor.</span>{" "}
-          Alone.
+      <section className="mx-auto w-full max-w-[1200px] px-5 sm:px-6 lg:px-8 pt-12 sm:pt-16 pb-10">
+        <p className="eyebrow mb-2.5">Privacy &amp; security</p>
+        <h1 className="text-[34px] sm:text-[44px] lg:text-[52px] font-semibold tracking-[-0.025em] leading-[1.05] max-w-[22ch]">
+          Your record is read by you, and your doctor. Alone.
         </h1>
-        <p className="mt-7 text-ink-soft text-[17px] leading-[1.65] max-w-[58ch]">
+        <p className="mt-5 text-ink-soft text-[15.5px] leading-[1.65] max-w-[58ch]">
           Notes, allergies, history, and addresses are encrypted at the field
           level before they touch our database. Prescriptions carry a per-record
           HMAC signature any pharmacist can verify independently.
         </p>
-        <div className="mt-7 flex flex-wrap gap-2">
+        <div className="mt-5 flex flex-wrap gap-1.5">
           {["HIPAA-aligned", "SOC 2 controls", "TLS 1.3", "AES-256-GCM"].map(
             (b) => (
               <span
                 key={b}
-                className="px-3 py-1.5 border border-[color:var(--rule-strong)] eyebrow text-ink"
+                className="px-2.5 py-1 border border-[color:var(--rule-strong)] eyebrow text-ink rounded-sm"
               >
                 {b}
               </span>
@@ -37,11 +35,9 @@ export default function SecurityPage() {
         </div>
       </section>
 
-      <hr className="rule mx-5 sm:mx-6 lg:mx-8" />
-
-      <section className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-8 py-10 sm:py-14 lg:py-20">
-        <p className="eyebrow mb-3">By the layer</p>
-        <h2 className="font-display text-[clamp(1.6rem,5vw,3.25rem)] tracking-[-0.025em] leading-[1.04] max-w-[34ch] mb-12 break-words">
+      <section className="mx-auto w-full max-w-[1200px] px-5 sm:px-6 lg:px-8 py-10 sm:py-14">
+        <p className="eyebrow mb-2.5">By the layer</p>
+        <h2 className="text-[24px] sm:text-[28px] font-semibold tracking-[-0.018em] leading-[1.2] max-w-[34ch] mb-8">
           Defence in depth, explained in one table.
         </h2>
 
@@ -56,11 +52,11 @@ export default function SecurityPage() {
             ["Authentication", "Argon2-grade hashing", "bcrypt cost 12. Sessions are short-lived, HttpOnly, SameSite=Lax."],
             ["Incident response", "On-call rotation", "Customers paged for any P1; postmortems published within 7 days."],
           ].map(([k, v, body]) => (
-            <div key={k} className="bg-paper p-6">
+            <div key={k} className="bg-paper p-5">
               <dt className="eyebrow mb-1.5">{k}</dt>
               <dd>
-                <p className="mono text-[13.5px] text-clay">{v}</p>
-                <p className="text-ink-soft text-[13.5px] leading-[1.6] mt-2">
+                <p className="mono text-[13px] text-clay">{v}</p>
+                <p className="text-ink-soft text-[13px] leading-[1.6] mt-1.5">
                   {body}
                 </p>
               </dd>
@@ -69,16 +65,14 @@ export default function SecurityPage() {
         </dl>
       </section>
 
-      <hr className="rule mx-5 sm:mx-6 lg:mx-8" />
-
-      <section className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-8 py-10 sm:py-14 lg:py-20 grid grid-cols-12 gap-x-10 gap-y-10">
+      <section className="mx-auto w-full max-w-[1200px] px-5 sm:px-6 lg:px-8 py-10 sm:py-14 grid grid-cols-12 gap-x-10 gap-y-8">
         <div className="col-span-12 lg:col-span-5">
-          <p className="eyebrow mb-3">Your rights</p>
-          <h2 className="font-display text-[clamp(1.6rem,5vw,3.25rem)] tracking-[-0.025em] leading-[1.04] break-words">
+          <p className="eyebrow mb-2.5">Your rights</p>
+          <h2 className="text-[24px] sm:text-[28px] font-semibold tracking-[-0.018em] leading-[1.2]">
             Export anything. Delete everything.
           </h2>
         </div>
-        <ul className="col-span-12 lg:col-span-7 divide-y divide-[color:var(--rule-strong)] border-y border-[color:var(--rule-strong)]">
+        <ul className="col-span-12 lg:col-span-7 divide-y divide-[color:var(--rule)] border-y border-[color:var(--rule-strong)]">
           {[
             [
               "Export your record",
@@ -93,11 +87,11 @@ export default function SecurityPage() {
               "See every staff member who has accessed your file, when, and why.",
             ],
           ].map(([title, body]) => (
-            <li key={title} className="py-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-              <p className="font-display text-[1.15rem] tracking-[-0.015em] leading-[1.2] md:col-span-1">
+            <li key={title} className="py-5 grid grid-cols-1 md:grid-cols-3 gap-4">
+              <p className="text-[14.5px] font-semibold tracking-[-0.01em] leading-[1.35] md:col-span-1">
                 {title}
               </p>
-              <p className="text-ink-soft text-[14.5px] leading-[1.65] md:col-span-2">
+              <p className="text-ink-soft text-[13.5px] leading-[1.65] md:col-span-2">
                 {body}
               </p>
             </li>
@@ -105,13 +99,12 @@ export default function SecurityPage() {
         </ul>
       </section>
 
-      <section className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-8 pb-24">
-        <div className="border border-[color:var(--rule-strong)] bg-paper-tint p-7 sm:p-10 lg:p-14 text-center">
-          <h2 className="font-display text-[clamp(1.85rem,6vw,3.5rem)] tracking-[-0.03em] leading-[1.02] max-w-[22ch] mx-auto break-words">
-            Privacy that&apos;s{" "}
-            <span className="italic-accent">technical, not theatrical.</span>
+      <section className="mx-auto w-full max-w-[1200px] px-5 sm:px-6 lg:px-8 pb-20">
+        <div className="border border-[color:var(--rule-strong)] bg-paper-tint p-8 sm:p-12 text-center rounded-sm">
+          <h2 className="text-[26px] sm:text-[32px] font-semibold tracking-[-0.022em] leading-[1.2] max-w-[24ch] mx-auto">
+            Privacy that&apos;s technical, not theatrical.
           </h2>
-          <div className="mt-8 flex justify-center gap-3 flex-wrap">
+          <div className="mt-6 flex justify-center gap-2 flex-wrap">
             <Link href="/register" className="btn btn-clay" prefetch>
               Create your account <span aria-hidden>→</span>
             </Link>

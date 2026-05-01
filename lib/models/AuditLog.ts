@@ -16,6 +16,14 @@ const AuditLogSchema = new Schema(
   { timestamps: true, capped: false, strict: true },
 );
 
+// Admin audit panel paginates "most recent first" and filters by actor or
+// action. The single-field indexes alone forced a sort on `createdAt` after
+// the filter — slow on a multi-thousand-row log. Compound indexes let Mongo
+// walk the index in already-sorted order.
+AuditLogSchema.index({ createdAt: -1 });
+AuditLogSchema.index({ action: 1, createdAt: -1 });
+AuditLogSchema.index({ actor: 1, createdAt: -1 });
+
 export type AuditLogDoc = InferSchemaType<typeof AuditLogSchema> & { _id: string };
 
 export const AuditLog: Model<AuditLogDoc> =

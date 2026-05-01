@@ -4,7 +4,10 @@ import { motion, useReducedMotion } from "motion/react";
 import { type ReactNode } from "react";
 
 /**
- * Generic fade-up reveal. Pass `delay` in seconds to stagger.
+ * Subtle fade-up reveal for marketing sections. Tightened from the prior
+ * 14px / 550ms editorial flourish to a 6px / 280ms clinical fade so the
+ * page still feels alive without making the user wait. `whileInView` with
+ * `once: true` so it only fires the first time.
  */
 export function FadeUp({
   children,
@@ -21,10 +24,10 @@ export function FadeUp({
   const MotionTag = motion[as];
   return (
     <MotionTag
-      initial={reduce ? false : { opacity: 0, y: 14 }}
+      initial={reduce ? false : { opacity: 0, y: 6 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.55, ease: [0.22, 0.61, 0.36, 1], delay }}
+      viewport={{ once: true, amount: 0.15 }}
+      transition={{ duration: 0.28, ease: "easeOut", delay }}
       className={className}
     >
       {children}

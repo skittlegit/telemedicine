@@ -29,6 +29,13 @@ const PrescriptionSchema = new Schema(
   { timestamps: true, strict: true },
 );
 
+// Dashboards render "your most recent prescriptions" for both patient and
+// doctor views. Without these compound indexes Mongo had to scan all the
+// matching docs and sort in memory on every page load — measurable nav lag
+// once a few hundred prescriptions exist.
+PrescriptionSchema.index({ patient: 1, createdAt: -1 });
+PrescriptionSchema.index({ doctor: 1, createdAt: -1 });
+
 export type PrescriptionDoc = InferSchemaType<typeof PrescriptionSchema> & { _id: string };
 
 export const Prescription: Model<PrescriptionDoc> =

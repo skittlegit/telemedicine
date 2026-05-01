@@ -1,20 +1,19 @@
 @import "tailwindcss";
 
 /* =====================================================================
-   VELLUM HEALTH — designer warm-bone palette
-   Bone surfaces, aubergine ink, plum-violet primary, ochre highlight.
-   Editorial typography: Fraunces (display, with optical sizing) over
-   Inter (body) over JetBrains Mono (clinical IDs / codes / status).
-
-   Token names (paper / ink / clay / moss / amber / oxblood) are kept
-   so all consuming pages inherit the new palette automatically.
+   VELLUM HEALTH — clinic-modern token system
+   One palette + one shell for marketing AND authenticated product.
+   Paper surfaces (slightly cooler than warm-bone), aubergine ink,
+   plum-violet primary, ochre warning. Inter is the default sans for
+   everything; Fraunces is reserved for one .serif-display class on
+   page H1s only — no italic accents, no oversized clamps.
    ===================================================================== */
 
 :root {
-  /* Surface — warm bone, not white */
-  --paper:        #F6F2E9;
-  --paper-tint:   #EFEAE0;
-  --paper-deep:   #E5DECF;
+  /* Surface — calm paper, slightly cooler than the prior warm-bone */
+  --paper:        #F4F1E9;
+  --paper-tint:   #EDE9DF;
+  --paper-deep:   #E2DCCE;
 
   /* Ink — deep aubergine-near-black */
   --ink:          #1F1A2E;
@@ -72,10 +71,6 @@
 html {
   background: var(--paper);
   color: var(--ink);
-  background-image:
-    radial-gradient(circle at 14% 8%,  rgba(91,  63, 207, 0.05) 0, transparent 42%),
-    radial-gradient(circle at 86% 92%, rgba(184, 130, 26, 0.05) 0, transparent 50%);
-  background-attachment: fixed;
   overflow-x: clip;
 }
 
@@ -90,25 +85,43 @@ body {
   overflow-x: clip;
 }
 
-/* Display — Fraunces serif with strong optical sizing for big headlines */
-.font-display,
-h1.display, h2.display {
+/*
+ * Default heading family is Inter (inherits body). Use .serif-display ONLY
+ * on page H1s when you want a single serif moment. This is the ONE place
+ * Fraunces appears in the clinic-modern system.
+ */
+.serif-display {
   font-family: var(--font-fraunces), "Times New Roman", serif;
-  font-variation-settings: "opsz" 144, "SOFT" 50;
+  font-variation-settings: "opsz" 96, "SOFT" 50;
   font-weight: 500;
-  letter-spacing: -0.025em;
-  line-height: 0.98;
+  letter-spacing: -0.022em;
+  line-height: 1.04;
   overflow-wrap: break-word;
-  word-break: break-word;
 }
 
-/* Italic-accent — warm-violet italic serif emphasis. The signature touch. */
+/*
+ * Back-compat: existing pages still reference .font-display. Map it to
+ * Inter at its tightest — no Fraunces, no serif. Pages that explicitly
+ * want a serif H1 must opt in via .serif-display. This lets us flip the
+ * whole product clinical without touching every tsx file at once.
+ */
+.font-display {
+  font-family: var(--font-plex), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.022em;
+  line-height: 1.1;
+}
+
+/*
+ * Italic-accent was the editorial signature. In clinic-modern it is a
+ * no-op: text colour stays inherit, no italic, no Fraunces. Keeping the
+ * class so existing markup doesn't break — but it stops *looking*
+ * different from the rest of the line.
+ */
 .italic-accent {
-  font-family: var(--font-fraunces), serif;
-  font-style: italic;
-  font-variation-settings: "opsz" 144, "SOFT" 100;
-  font-weight: 400;
-  color: var(--accent);
+  font-style: normal;
+  font-weight: inherit;
+  color: inherit;
 }
 
 .eyebrow {
@@ -127,7 +140,7 @@ h1.display, h2.display {
   overflow-wrap: anywhere;
 }
 
-/* ===== Hairline rule — the editorial backbone ======================= */
+/* ===== Hairline rule — the structural backbone ====================== */
 
 .rule {
   border: 0;
@@ -142,27 +155,32 @@ h1.display, h2.display {
   height: 4px;
 }
 
-/* ===== Buttons — sharp, confident, slightly rounded ================ */
+/* ===== Buttons — flat, compact, clinical =========================== */
 
 .btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.7rem 1.2rem;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 36px;
+  padding: 0 0.95rem;
   font-family: var(--font-plex), sans-serif;
   font-size: 13px;
   font-weight: 500;
-  letter-spacing: 0.01em;
+  letter-spacing: 0;
   border-radius: 4px;
   border: 1px solid var(--ink);
   background: var(--ink);
   color: var(--paper);
   cursor: pointer;
-  transition: background 140ms ease, border-color 140ms ease, color 140ms ease, transform 140ms ease;
+  transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
 }
 .btn:hover { background: var(--clay-deep); border-color: var(--clay-deep); }
-.btn:active { transform: translateY(1px); }
-.btn:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(91, 63, 207, 0.25); }
+.btn:focus-visible {
+  outline: 2px solid color-mix(in oklab, var(--clay) 40%, transparent);
+  outline-offset: 2px;
+}
+.btn[disabled], .btn:disabled { opacity: 0.55; cursor: not-allowed; }
 
 .btn-ghost {
   background: transparent;
@@ -176,86 +194,83 @@ h1.display, h2.display {
   border-color: var(--clay);
   color: #ffffff;
 }
-.btn-clay:hover { background: var(--clay-deep); border-color: var(--clay-deep); }
+.btn-clay:hover { background: var(--clay-deep); border-color: var(--clay-deep); color: #ffffff; }
 
-/* ===== Inputs — bottom-rule editorial style ======================== */
+.btn-danger {
+  background: var(--oxblood);
+  border-color: var(--oxblood);
+  color: #ffffff;
+}
+.btn-danger:hover { background: #6e2424; border-color: #6e2424; color: #ffffff; }
+
+.btn-sm { min-height: 30px; padding: 0 0.7rem; font-size: 12px; }
+
+/* ===== Inputs — bordered (clinical), not editorial bottom-rule ===== */
 
 .field {
   width: 100%;
-  background: transparent;
-  border: 0;
-  border-bottom: 1px solid var(--rule-strong);
-  border-radius: 0;
-  padding: 0.6rem 0;
+  display: block;
+  background: var(--paper);
+  border: 1px solid var(--rule-strong);
+  border-radius: 4px;
+  padding: 0.55rem 0.7rem;
   font-family: inherit;
-  font-size: 15px;
+  font-size: 14px;
+  line-height: 1.4;
   color: var(--ink);
   outline: none;
-  transition: border-color 160ms ease;
+  transition: border-color 140ms ease, box-shadow 140ms ease;
 }
-.field:focus { border-bottom-color: var(--clay); }
+.field:hover { border-color: var(--ink-mute); }
+.field:focus { border-color: var(--clay); box-shadow: 0 0 0 3px color-mix(in oklab, var(--clay) 18%, transparent); }
 .field::placeholder { color: var(--ink-faint); }
+textarea.field { line-height: 1.5; }
 
-/* ===== Cards / wells =============================================== */
+/* ===== Cards / wells / rows ======================================== */
 
 .well {
   background: var(--paper-tint);
   border: 1px solid var(--rule);
   border-radius: 4px;
-  padding: 1.5rem;
+  padding: 1.25rem;
 }
 
 .card {
   background: var(--paper);
   border: 1px solid var(--rule-strong);
   border-radius: 4px;
-  padding: 1.75rem;
+  padding: 1.25rem;
   position: relative;
 }
 
-.stamp {
-  display: inline-block;
-  border: 1.5px solid var(--clay);
-  color: var(--clay);
-  background: transparent;
-  padding: 0.35rem 0.85rem;
-  font-family: var(--font-plex-mono), monospace;
-  font-size: 10.5px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  transform: rotate(-1.5deg);
+/* Row: list-row primitive used across /doctors, dashboard appointments,
+   Rx list, pharmacy queue. Same idiom everywhere. */
+.row-list {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+.row-list > * + * { border-top: 1px solid var(--rule); }
+.row-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.85rem 0;
 }
 
-/* ===== Animations =================================================== */
-
-@keyframes rise {
-  from { opacity: 0; transform: translateY(14px); }
-  to   { opacity: 1; transform: translateY(0); }
+.kbd {
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  border: 1px solid var(--rule-strong);
+  border-radius: 3px;
+  padding: 0.05rem 0.3rem;
+  color: var(--ink-soft);
+  background: var(--paper);
 }
 
-@keyframes draw {
-  from { transform: scaleX(0); }
-  to   { transform: scaleX(1); }
-}
-
-.rise { animation: rise 700ms cubic-bezier(0.2, 0.7, 0.2, 1) both; }
-.rise-1 { animation-delay: 80ms; }
-.rise-2 { animation-delay: 180ms; }
-.rise-3 { animation-delay: 320ms; }
-.rise-4 { animation-delay: 480ms; }
-.rise-5 { animation-delay: 640ms; }
-
-.draw {
-  transform-origin: left;
-  animation: draw 900ms cubic-bezier(0.7, 0, 0.2, 1) both;
-}
-
-::selection {
-  background: var(--clay);
-  color: #ffffff;
-}
-
-/* ===== Skip link ===================================================== */
+/* ===== Skip link ==================================================== */
 
 .skip-link {
   position: fixed;
@@ -270,13 +285,18 @@ h1.display, h2.display {
   padding: 0.55rem 0.95rem;
   border-radius: 4px;
   transform: translateY(calc(-100% - 1rem));
-  transition: transform 160ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  transition: transform 140ms ease;
 }
 .skip-link:focus,
 .skip-link:focus-visible {
   transform: translateY(0);
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(91, 63, 207, 0.35);
+  outline: 2px solid color-mix(in oklab, var(--clay) 50%, transparent);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--clay);
+  color: #ffffff;
 }
 
 * {

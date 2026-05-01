@@ -1,12 +1,14 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { signOutAction } from "@/app/actions/auth";
+import { Wordmark, Caduceus as MarkCaduceus } from "@/app/_components/MarketingChrome";
 import { DashboardMobileNav } from "./DashboardMobileNav";
 
 /**
- * Shared chrome for every authenticated page so the dashboards read as part
- * of the same product as the marketing home (same wordmark, same nav style,
- * same warm-bone + plum-violet tokens).
+ * Authenticated chrome. Identical visual frame to MarketingHeader so /dashboard
+ * doesn't read as a different product from /. Only the nav list and the
+ * right-side cluster change (role badge + sign out instead of sign in /
+ * register CTAs).
  */
 
 const NAV: Record<string, Array<{ href: string; label: string }>> = {
@@ -41,34 +43,30 @@ export function DashboardHeader({
 }) {
   const links = NAV[user.role] ?? [];
   return (
-    <header className="border-b border-[color:var(--rule)] bg-paper/80 backdrop-blur-sm sticky top-0 z-50">
-      <div className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-8 py-3.5 sm:py-4 flex items-center justify-between gap-3 sm:gap-6">
-        <Link href="/" className="flex items-center gap-2 sm:gap-2.5 shrink-0">
-          <Caduceus className="text-clay" />
-          <span className="font-display text-[20px] sm:text-[24px] tracking-[-0.02em] leading-none">
-            Vellum<span className="italic-accent"> Health</span>
-          </span>
-        </Link>
-        <nav className="hidden md:flex items-center gap-7 eyebrow">
+    <header className="border-b border-[color:var(--rule)] bg-paper/90 backdrop-blur-[2px] sticky top-0 z-50">
+      <div className="mx-auto w-full max-w-[1200px] px-5 sm:px-6 lg:px-8 h-[56px] flex items-center justify-between gap-3 sm:gap-6">
+        <Wordmark />
+        <nav className="hidden md:flex items-center gap-7 text-[13px] text-ink-soft">
           {links.map((l) => (
             <Link
               key={l.label}
               href={l.href}
-              className="hover:text-clay transition-colors"
+              prefetch
+              className="hover:text-ink transition-colors"
             >
               {l.label}
             </Link>
           ))}
         </nav>
-        <div className="flex items-center gap-3">
-          <span className="hidden sm:inline-flex items-center gap-2 eyebrow text-ink-soft">
-            <span className="px-2 py-0.5 border border-[color:var(--rule-strong)] bg-paper-tint text-clay">
+        <div className="flex items-center gap-2">
+          <span className="hidden sm:inline-flex items-center gap-2 text-[12px] text-ink-mute">
+            <span className="px-1.5 py-0.5 border border-[color:var(--rule-strong)] bg-paper-tint text-clay text-[10.5px] tracking-[0.14em] uppercase font-medium">
               {user.role}
             </span>
-            <span className="hidden lg:inline">{user.name}</span>
+            <span className="hidden lg:inline text-ink-soft">{user.name}</span>
           </span>
           <form action={signOutAction} className="hidden md:block">
-            <button type="submit" className="btn btn-ghost text-xs">
+            <button type="submit" className="btn btn-ghost btn-sm">
               Sign out
             </button>
           </form>
@@ -79,6 +77,11 @@ export function DashboardHeader({
   );
 }
 
+/**
+ * Page header. Tightened from the prior editorial-clamp 4.5rem H1 to a
+ * clinical text-3xl (~30px). Inter, not Fraunces. The serif moment is now
+ * opt-in only via .serif-display on individual marketing pages.
+ */
 export function PageHeader({
   eyebrow,
   title,
@@ -91,18 +94,17 @@ export function PageHeader({
   children?: ReactNode;
 }) {
   return (
-    <div className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-8 pt-10 sm:pt-12 pb-8 sm:pb-10">
-      <p className="eyebrow mb-3">{eyebrow}</p>
-      <h1 className="font-display text-[clamp(2rem,7vw,4.5rem)] tracking-[-0.03em] leading-[1.02] break-words">
+    <div className="mx-auto w-full max-w-[1200px] px-5 sm:px-6 lg:px-8 pt-8 sm:pt-10 pb-6">
+      <p className="eyebrow mb-2.5">{eyebrow}</p>
+      <h1 className="text-[26px] sm:text-[30px] font-semibold tracking-[-0.022em] leading-[1.15]">
         {title}
-        {italic && (
-          <>
-            {" "}
-            <span className="italic-accent">{italic}</span>
-          </>
-        )}
+        {italic && <span className="text-ink-mute font-normal"> {italic}</span>}
       </h1>
-      {children && <div className="mt-5 text-ink-soft text-[15px]">{children}</div>}
+      {children && (
+        <div className="mt-4 text-ink-soft text-[14px] max-w-[68ch] leading-[1.55]">
+          {children}
+        </div>
+      )}
     </div>
   );
 }
@@ -117,13 +119,13 @@ export function StatTile({
   hint?: string;
 }) {
   return (
-    <div className="bg-paper px-5 py-5">
-      <p className="eyebrow mb-2">{label}</p>
-      <p className="font-display text-[2rem] leading-none tracking-[-0.02em]">
+    <div className="bg-paper px-5 py-4">
+      <p className="eyebrow mb-2 text-[10.5px]">{label}</p>
+      <p className="text-[26px] leading-none tracking-[-0.018em] font-semibold">
         {value}
       </p>
       {hint && (
-        <p className="text-[12px] text-ink-mute mt-2 leading-[1.45]">{hint}</p>
+        <p className="text-[12px] text-ink-mute mt-1.5 leading-[1.45]">{hint}</p>
       )}
     </div>
   );
@@ -165,11 +167,11 @@ export function Section({
   children: ReactNode;
 }) {
   return (
-    <section id={id} className="mt-14">
-      <div className="flex flex-wrap items-end justify-between gap-4 mb-5">
+    <section id={id} className="mt-10">
+      <div className="flex flex-wrap items-end justify-between gap-3 mb-4 pb-2 border-b border-[color:var(--rule)]">
         <div>
-          {eyebrow && <p className="eyebrow mb-2">{eyebrow}</p>}
-          <h2 className="font-display text-[clamp(1.5rem,2.5vw,2rem)] tracking-[-0.02em] leading-[1.05]">
+          {eyebrow && <p className="eyebrow mb-1.5">{eyebrow}</p>}
+          <h2 className="text-[18px] sm:text-[20px] font-semibold tracking-[-0.014em] leading-[1.2]">
             {title}
           </h2>
         </div>
@@ -188,7 +190,7 @@ export function EmptyState({
   cta?: ReactNode;
 }) {
   return (
-    <div className="border border-dashed border-[color:var(--rule-strong)] p-8 text-center">
+    <div className="border border-dashed border-[color:var(--rule-strong)] rounded-sm p-8 text-center">
       <p className="text-ink-mute text-sm">{message}</p>
       {cta && <div className="mt-4 flex justify-center">{cta}</div>}
     </div>
@@ -256,7 +258,7 @@ export function StatusPill({ status }: { status: string }) {
   const t = PILL_TONES[pillTone(status)];
   return (
     <span
-      className={`inline-flex items-center gap-1.5 px-2 py-0.5 border ${t.border} ${t.bg} ${t.fg} eyebrow`}
+      className={`inline-flex items-center gap-1.5 px-2 py-0.5 border ${t.border} ${t.bg} ${t.fg} text-[10.5px] tracking-[0.14em] uppercase font-medium rounded-sm`}
     >
       <span className={`h-1.5 w-1.5 rounded-full ${t.dot}`} />
       {status.replace(/_/g, " ")}
@@ -264,24 +266,9 @@ export function StatusPill({ status }: { status: string }) {
   );
 }
 
-export function Caduceus({
-  className = "",
-  size = 26,
-}: {
-  className?: string;
-  size?: number;
-}) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width={size}
-      height={size}
-      viewBox="0 0 256 256"
-      fill="currentColor"
-      className={className}
-      aria-hidden
-    >
-      <path d="M216,79v1a40,40,0,0,1-40,40H136v80h8a16,16,0,0,0,10.67-27.93,8,8,0,0,1,10.66-11.92A32,32,0,0,1,144,216h-8v16a8,8,0,0,1-16,0V216H96a8,8,0,0,1,0-16h24V120H96a16,16,0,0,0,0,32,8,8,0,0,1,0,16,32,32,0,0,1,0-64h24V24a8,8,0,0,1,16,0v80h40a24,24,0,0,0,24-24V79a23,23,0,0,0-23-23H160a8,8,0,0,1,0-16h17a39,39,0,0,1,39,39ZM56,96H32a8,8,0,0,1-8-8V80A40,40,0,0,1,64,40H96a8,8,0,0,1,0,16A40,40,0,0,1,56,96ZM80,56H64A24,24,0,0,0,40,80H56A24,24,0,0,0,80,56Z" />
-    </svg>
-  );
-}
+/**
+ * Re-export the shared Caduceus icon. Kept as a named export from this module
+ * so existing imports (`import { Caduceus } from "@/app/dashboard/_components/Shell"`)
+ * keep compiling without per-file edits.
+ */
+export const Caduceus = MarkCaduceus;

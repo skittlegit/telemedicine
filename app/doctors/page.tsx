@@ -68,20 +68,19 @@ export default async function DoctorsPage({ searchParams }: PageProps) {
       <MarketingHeader />
 
       {/* HERO */}
-      <section className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-8 pt-10 sm:pt-14 lg:pt-20 pb-10">
-        <p className="eyebrow mb-3">The directory</p>
-        <h1 className="font-display text-[clamp(2rem,8vw,6rem)] leading-[0.98] tracking-[-0.035em] max-w-[20ch] break-words">
-          Practitioners{" "}
-          <span className="italic-accent">in residence.</span>
+      <section className="mx-auto w-full max-w-[1200px] px-5 sm:px-6 lg:px-8 pt-12 sm:pt-14 pb-8">
+        <p className="eyebrow mb-2.5">The directory</p>
+        <h1 className="text-[34px] sm:text-[44px] lg:text-[52px] font-semibold tracking-[-0.025em] leading-[1.05] max-w-[20ch]">
+          Practitioners in residence.
         </h1>
-        <p className="mt-7 text-ink-soft text-[16.5px] leading-[1.65] max-w-[58ch]">
+        <p className="mt-5 text-ink-soft text-[15.5px] leading-[1.65] max-w-[58ch]">
           Every clinician below is board-certified, background-checked, and has
           had their licence verified by our admin team.
         </p>
 
         {/* Search */}
         <form
-          className="mt-8 flex flex-wrap gap-3 items-end max-w-[640px]"
+          className="mt-7 flex flex-wrap gap-2 items-end max-w-[640px]"
           action="/doctors"
         >
           <div className="flex-1 min-w-0 w-full">
@@ -93,7 +92,7 @@ export default async function DoctorsPage({ searchParams }: PageProps) {
               name="q"
               defaultValue={sp.q ?? ""}
               placeholder="e.g. Reyes, dermatology, Spanish"
-              className="w-full bg-paper border border-[color:var(--rule-strong)] px-3 py-2.5 text-sm focus:outline-none focus:border-clay"
+              className="field"
             />
           </div>
           {sp.specialty && (
@@ -105,12 +104,10 @@ export default async function DoctorsPage({ searchParams }: PageProps) {
         </form>
       </section>
 
-      <hr className="rule mx-5 sm:mx-6 lg:mx-8" />
-
       {/* FILTER CHIPS */}
-      <section className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-8 py-8">
-        <p className="eyebrow mb-3">Filter by specialty</p>
-        <div className="flex flex-wrap gap-2">
+      <section className="mx-auto w-full max-w-[1200px] px-5 sm:px-6 lg:px-8 py-6 border-t border-[color:var(--rule)]">
+        <p className="eyebrow mb-2.5">Filter by specialty</p>
+        <div className="flex flex-wrap gap-1.5">
           <FilterChip
             href={q ? `/doctors?q=${encodeURIComponent(q)}` : "/doctors"}
             label="All"
@@ -133,8 +130,8 @@ export default async function DoctorsPage({ searchParams }: PageProps) {
       </section>
 
       {/* RESULTS */}
-      <section className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-8 pb-24">
-        <div className="flex items-baseline justify-between mb-6">
+      <section className="mx-auto w-full max-w-[1200px] px-5 sm:px-6 lg:px-8 pb-20">
+        <div className="flex items-baseline justify-between mb-5">
           <p className="eyebrow">
             {visible.length} {visible.length === 1 ? "result" : "results"}
             {sp.specialty ? ` · ${sp.specialty}` : ""}
@@ -143,18 +140,18 @@ export default async function DoctorsPage({ searchParams }: PageProps) {
         </div>
 
         {visible.length === 0 ? (
-          <div className="border border-[color:var(--rule-strong)] bg-paper-tint p-10 text-center">
-            <p className="font-display text-[1.4rem] tracking-tight">
+          <div className="border border-[color:var(--rule-strong)] bg-paper-tint p-10 text-center rounded-sm">
+            <p className="text-[18px] font-semibold tracking-[-0.014em]">
               No practitioners match.
             </p>
-            <p className="mt-2 text-ink-mute text-sm">
+            <p className="mt-1.5 text-ink-mute text-sm">
               Try a different specialty, or{" "}
               <Link href="/doctors" className="text-clay underline">
                 clear filters
               </Link>
               .
             </p>
-            <p className="mt-6 text-xs text-ink-mute">
+            <p className="mt-5 text-xs text-ink-mute">
               Are you a clinician?{" "}
               <Link
                 href="/register?role=doctor"
@@ -170,12 +167,12 @@ export default async function DoctorsPage({ searchParams }: PageProps) {
               <li key={d._id} className="bg-paper">
                 <Link
                   href={`/doctors/${d._id}`}
-                  className="group block p-6 lg:p-7 hover:bg-paper-tint transition-colors h-full"
+                  className="group block p-5 lg:p-6 hover:bg-paper-tint transition-colors h-full"
                   prefetch
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div
-                      className="w-14 h-14 rounded-full bg-clay-wash text-clay font-display text-[20px] flex items-center justify-center tracking-tight"
+                      className="w-12 h-12 rounded-full bg-clay-wash text-clay text-[15px] font-semibold flex items-center justify-center"
                       aria-hidden
                     >
                       {initialsOf(d.user.name)}
@@ -196,7 +193,7 @@ export default async function DoctorsPage({ searchParams }: PageProps) {
                     )}
                   </div>
 
-                  <h3 className="font-display text-[1.5rem] mt-5 tracking-[-0.02em] leading-[1.05]">
+                  <h3 className="text-[16px] mt-4 font-semibold tracking-[-0.012em] leading-[1.25]">
                     Dr. {d.user.name}
                   </h3>
                   <p className="eyebrow mt-1">
@@ -204,21 +201,21 @@ export default async function DoctorsPage({ searchParams }: PageProps) {
                   </p>
 
                   {d.bio && (
-                    <p className="mt-3 text-ink-soft text-[13.5px] leading-[1.55] line-clamp-3">
+                    <p className="mt-3 text-ink-soft text-[13px] leading-[1.55] line-clamp-3">
                       {d.bio}
                     </p>
                   )}
 
-                  <div className="mt-5 pt-5 border-t border-[color:var(--rule)] flex items-center justify-between text-[13px]">
+                  <div className="mt-4 pt-4 border-t border-[color:var(--rule)] flex items-center justify-between text-[12.5px]">
                     <span className="text-ink-mute truncate">
                       {(d.languages ?? []).slice(0, 3).join(", ") || "English"}
                     </span>
-                    <span className="font-display text-[1.15rem] tracking-tight">
+                    <span className="font-semibold text-[14px]">
                       ${(d.consultationFeeCents / 100).toFixed(0)}
                     </span>
                   </div>
 
-                  <span className="mt-4 inline-block eyebrow text-clay group-hover:translate-x-0.5 transition-transform">
+                  <span className="mt-3 inline-block eyebrow text-clay group-hover:translate-x-0.5 transition-transform">
                     View profile →
                   </span>
                 </Link>
@@ -246,7 +243,7 @@ function FilterChip({
     <Link
       href={href}
       prefetch
-      className={`px-3 py-1.5 border eyebrow transition-colors ${
+      className={`px-2.5 py-1 border eyebrow text-[10.5px] rounded-sm transition-colors ${
         active
           ? "bg-ink text-paper border-ink"
           : "border-[color:var(--rule-strong)] hover:bg-paper-tint"

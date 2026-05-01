@@ -3,9 +3,13 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { AnimatePresence, motion } from "motion/react";
 
-export function Caduceus({ size = 22, className = "" }: { size?: number; className?: string }) {
+/**
+ * Wordmark glyph. Single hairline stroke so it composes with the Inter
+ * wordmark next to it without visual clash. Used by both marketing and
+ * authenticated chrome — same icon everywhere.
+ */
+export function Caduceus({ size = 20, className = "" }: { size?: number; className?: string }) {
   return (
     <svg
       width={size}
@@ -13,7 +17,7 @@ export function Caduceus({ size = 22, className = "" }: { size?: number; classNa
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="1.6"
+      strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"
       className={className}
@@ -28,8 +32,24 @@ export function Caduceus({ size = 22, className = "" }: { size?: number; classNa
   );
 }
 
-const NAV_LINKS: ReadonlyArray<readonly [string, string]> = [
-  ["/doctors", "Find a doctor"],
+/**
+ * Compact wordmark used inside any chrome bar. No italic accent — the home
+ * and the dashboard both render this exact element so they read as the same
+ * site.
+ */
+export function Wordmark() {
+  return (
+    <Link href="/" className="flex items-center gap-2 shrink-0 text-ink hover:text-ink">
+      <Caduceus className="text-clay" />
+      <span className="font-semibold text-[15px] tracking-[-0.01em] leading-none">
+        Vellum<span className="text-ink-mute font-normal"> · Health</span>
+      </span>
+    </Link>
+  );
+}
+
+const MARKETING_LINKS: ReadonlyArray<readonly [string, string]> = [
+  ["/doctors", "Doctors"],
   ["/how-it-works", "How it works"],
   ["/specialties", "Specialties"],
   ["/security", "Security"],
@@ -39,10 +59,13 @@ export function MarketingHeader() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
 
+  // Close the mobile sheet on route change.
   useEffect(() => {
     setOpen(false);
   }, [pathname]);
 
+  // Lock body scroll while the mobile sheet is open. Cheap CSS-only solution
+  // that doesn't fight the browser's URL-bar behavior.
   useEffect(() => {
     if (typeof document === "undefined") return;
     const original = document.body.style.overflow;
@@ -53,29 +76,32 @@ export function MarketingHeader() {
   }, [open]);
 
   return (
-    <header className="border-b border-[color:var(--rule)] bg-paper/85 backdrop-blur-sm sticky top-0 z-50">
-      <div className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-8 py-3.5 sm:py-4 flex items-center justify-between gap-3">
-        <Link href="/" className="flex items-center gap-2 sm:gap-2.5 shrink-0">
-          <Caduceus className="text-clay" />
-          <span className="font-display text-[20px] sm:text-[24px] tracking-[-0.02em] leading-none">
-            Vellum<span className="italic-accent"> Health</span>
-          </span>
-        </Link>
+    <header className="border-b border-[color:var(--rule)] bg-paper/90 backdrop-blur-[2px] sticky top-0 z-50">
+      <div className="mx-auto w-full max-w-[1200px] px-5 sm:px-6 lg:px-8 h-[56px] flex items-center justify-between gap-3">
+        <Wordmark />
 
-        <nav className="hidden md:flex items-center gap-7 lg:gap-9 eyebrow">
-          {NAV_LINKS.map(([href, label]) => (
-            <Link key={href} href={href} className="hover:text-clay transition-colors" prefetch>
-              {label}
-            </Link>
-          ))}
+        <nav className="hidden md:flex items-center gap-7 text-[13px] text-ink-soft">
+          {MARKETING_LINKS.map(([href, label]) => {
+            const active = pathname === href || pathname?.startsWith(`${href}/`);
+            return (
+              <Link
+                key={href}
+                href={href}
+                prefetch
+                className={`transition-colors hover:text-ink ${active ? "text-ink" : ""}`}
+              >
+                {label}
+              </Link>
+            );
+          })}
         </nav>
 
-        <div className="hidden sm:flex items-center gap-3 lg:gap-4">
-          <Link href="/login" className="eyebrow hover:text-clay transition-colors" prefetch>
+        <div className="hidden sm:flex items-center gap-2">
+          <Link href="/login" prefetch className="btn btn-ghost btn-sm">
             Sign in
           </Link>
-          <Link href="/register" className="btn btn-clay" prefetch>
-            Get care
+          <Link href="/register" prefetch className="btn btn-clay btn-sm">
+            Create account
           </Link>
         </div>
 
@@ -83,11 +109,11 @@ export function MarketingHeader() {
           type="button"
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
-          aria-controls="mobile-nav"
+          aria-controls="marketing-mobile-nav"
           onClick={() => setOpen((v) => !v)}
           className="sm:hidden inline-flex items-center justify-center w-10 h-10 -mr-2 text-ink"
         >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" aria-hidden>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" aria-hidden>
             {open ? (
               <>
                 <path d="M5 5l14 14" />
@@ -104,46 +130,33 @@ export function MarketingHeader() {
         </button>
       </div>
 
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            id="mobile-nav"
-            key="mobile-nav"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.18 }}
-            className="sm:hidden border-t border-[color:var(--rule)] bg-paper"
-          >
-            <motion.nav
-              initial={{ y: -8 }}
-              animate={{ y: 0 }}
-              exit={{ y: -8 }}
-              transition={{ duration: 0.22, ease: [0.22, 0.61, 0.36, 1] }}
-              className="px-5 py-4 flex flex-col"
-            >
-              {NAV_LINKS.map(([href, label]) => (
-                <Link
-                  key={href}
-                  href={href}
-                  prefetch
-                  className="font-display text-[1.6rem] tracking-[-0.02em] py-2.5 border-b border-[color:var(--rule)] last:border-b-0 hover:text-clay transition-colors"
-                >
-                  {label}
-                </Link>
-              ))}
-              <div className="mt-5 flex flex-col gap-3">
-                <Link href="/login" prefetch className="btn btn-ghost justify-center">
-                  Sign in
-                </Link>
-                <Link href="/register" prefetch className="btn btn-clay justify-center">
-                  Get care →
-                </Link>
-              </div>
-            </motion.nav>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {open && (
+        <div
+          id="marketing-mobile-nav"
+          className="sm:hidden border-t border-[color:var(--rule)] bg-paper"
+        >
+          <nav className="px-5 py-3 flex flex-col">
+            {MARKETING_LINKS.map(([href, label]) => (
+              <Link
+                key={href}
+                href={href}
+                prefetch
+                className="text-[15px] py-2.5 border-b border-[color:var(--rule)] last:border-b-0 text-ink hover:text-clay transition-colors"
+              >
+                {label}
+              </Link>
+            ))}
+            <div className="mt-4 grid grid-cols-2 gap-2">
+              <Link href="/login" prefetch className="btn btn-ghost btn-sm">
+                Sign in
+              </Link>
+              <Link href="/register" prefetch className="btn btn-clay btn-sm">
+                Create account
+              </Link>
+            </div>
+          </nav>
+        </div>
+      )}
     </header>
   );
 }
@@ -151,16 +164,11 @@ export function MarketingHeader() {
 export function MarketingFooter() {
   return (
     <footer className="mt-auto border-t border-[color:var(--rule-strong)]">
-      <div className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-8 py-10 sm:py-12 grid grid-cols-2 md:grid-cols-4 gap-8 sm:gap-10">
+      <div className="mx-auto w-full max-w-[1200px] px-5 sm:px-6 lg:px-8 py-10 grid grid-cols-2 md:grid-cols-4 gap-8">
         <div className="col-span-2 md:col-span-1">
-          <Link href="/" className="flex items-center gap-2.5">
-            <Caduceus className="text-clay" />
-            <span className="font-display text-[22px] tracking-[-0.02em] leading-none">
-              Vellum<span className="italic-accent"> Health</span>
-            </span>
-          </Link>
-          <p className="mt-4 text-ink-mute text-[13px] leading-[1.65] max-w-[34ch]">
-            Telemedicine done with care. Encrypted, signed, licensed.
+          <Wordmark />
+          <p className="mt-4 text-ink-mute text-[13px] leading-[1.6] max-w-[34ch]">
+            Telemedicine, properly. Encrypted video, signed prescriptions, licensed clinicians.
           </p>
         </div>
         <div>
@@ -188,8 +196,8 @@ export function MarketingFooter() {
         </div>
       </div>
       <div className="border-t border-[color:var(--rule)]">
-        <div className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-8 py-4 flex flex-wrap items-center justify-between gap-2 eyebrow text-[10.5px]">
-          <span>© 2026 Vellum Health · all rights reserved</span>
+        <div className="mx-auto w-full max-w-[1200px] px-5 sm:px-6 lg:px-8 py-4 flex flex-wrap items-center justify-between gap-2 eyebrow text-[10.5px]">
+          <span>© 2026 Vellum Health</span>
           <span>Portfolio implementation. Not a real medical service.</span>
         </div>
       </div>
