@@ -170,45 +170,44 @@ export function MarketingHeader() {
             })}
           </nav>
 
-          <div className="hidden sm:flex items-center gap-1">
-            <ThemeToggle />
+          <div className="flex items-center gap-1.5">
+            <ThemeToggle className="hidden sm:inline-flex" />
             <Link href="/login" prefetch className="btn btn-clay btn-sm">
               Login →
             </Link>
-          </div>
-
-          <button
-            type="button"
-            aria-label={open ? "Close menu" : "Open menu"}
-            aria-expanded={open}
-            aria-controls="marketing-mobile-nav"
-            onClick={() => setOpen((v) => !v)}
-            className="sm:hidden inline-flex items-center justify-center w-10 h-10 -mr-2 text-ink"
-          >
-            <svg
-              width="22"
-              height="22"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.7"
-              strokeLinecap="round"
-              aria-hidden
+            <button
+              type="button"
+              aria-label={open ? "Close menu" : "Open menu"}
+              aria-expanded={open}
+              aria-controls="marketing-mobile-nav"
+              onClick={() => setOpen((v) => !v)}
+              className="md:hidden inline-flex items-center justify-center w-10 h-10 -mr-2 text-ink"
             >
-              {open ? (
-                <>
-                  <path d="M5 5l14 14" />
-                  <path d="M19 5L5 19" />
-                </>
-              ) : (
-                <>
-                  <path d="M4 7h16" />
-                  <path d="M4 12h16" />
-                  <path d="M4 17h16" />
-                </>
-              )}
-            </svg>
-          </button>
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.7"
+                strokeLinecap="round"
+                aria-hidden
+              >
+                {open ? (
+                  <>
+                    <path d="M5 5l14 14" />
+                    <path d="M19 5L5 19" />
+                  </>
+                ) : (
+                  <>
+                    <path d="M4 7h16" />
+                    <path d="M4 12h16" />
+                    <path d="M4 17h16" />
+                  </>
+                )}
+              </svg>
+            </button>
+          </div>
         </div>
 
         {/* Mega-menu */}
@@ -289,9 +288,12 @@ export function MarketingHeader() {
                   {l.label}
                 </Link>
               ))}
-              <div className="mt-6">
+              <div className="mt-6 flex flex-col gap-2">
                 <Link href="/login" prefetch className="btn btn-clay w-full justify-center">
                   Login →
+                </Link>
+                <Link href="/register" prefetch className="btn btn-ghost w-full justify-center">
+                  Create an account
                 </Link>
               </div>
               <div className="mt-6 flex items-center justify-between text-[13px] text-ink-mute">

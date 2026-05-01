@@ -49,12 +49,12 @@ export default async function DoctorPage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen bg-paper text-ink">
-      <div className="mx-auto w-full max-w-[900px] px-8 py-10">
+      <div className="mx-auto w-full max-w-[900px] px-5 sm:px-8 py-10">
         <Link href="/doctors" className="eyebrow text-ink-mute hover:text-clay">
           ← Practitioners
         </Link>
 
-        <h1 className="font-display text-6xl tracking-tight mt-4">Dr. {doc.user.name}</h1>
+        <h1 className="font-display text-3xl sm:text-5xl lg:text-6xl tracking-tight mt-4 break-words">Dr. {doc.user.name}</h1>
         <p className="eyebrow mt-3">
           {doc.specialty} · {doc.yearsOfExperience} years · {doc.licenseRegion} #{doc.licenseNumber}
         </p>

@@ -80,7 +80,7 @@ export async function createPharmacyOrderAction(
   });
 
   if (!isStripeConfigured()) {
-    redirect(`/dashboard?pharmacy=${order._id}`);
+    redirect(`/dashboard/orders/${order._id}?placed=1`);
   }
 
   const checkout = await stripe().checkout.sessions.create({
@@ -96,8 +96,8 @@ export async function createPharmacyOrderAction(
         quantity: 1,
       },
     ],
-    success_url: `${env.APP_URL}/dashboard?pharmacy=${order._id}&paid=1`,
-    cancel_url: `${env.APP_URL}/dashboard?pharmacy=${order._id}&cancelled=1`,
+    success_url: `${env.APP_URL}/dashboard/orders/${order._id}?placed=1`,
+    cancel_url: `${env.APP_URL}/dashboard/orders/${order._id}?cancelled=1`,
     metadata: { kind: "pharmacy", orderId: String(order._id) },
   });
 

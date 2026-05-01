@@ -41,7 +41,7 @@ export function AppShell({
           </div>
         </footer>
       </div>
-      <MobileBottomNav nav={nav} />
+      <MobileBottomNav nav={nav} user={user} />
     </div>
   );
 }

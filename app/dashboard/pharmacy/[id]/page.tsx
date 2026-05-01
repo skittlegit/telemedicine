@@ -97,7 +97,7 @@ export default async function PharmacyOrderDetailPage({ params }: PageProps) {
       <Link href="/dashboard/pharmacy" className="eyebrow text-ink-mute hover:text-clay">
         ← Queue
       </Link>
-      <h1 className="font-display text-5xl tracking-tight mt-4">
+      <h1 className="font-display text-3xl sm:text-5xl tracking-tight mt-4 break-words">
         Order for {order.patient.name}
       </h1>
       <div className="mt-3"><StatusPill status={order.status} /></div>

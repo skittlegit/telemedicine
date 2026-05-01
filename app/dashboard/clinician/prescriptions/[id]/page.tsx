@@ -72,7 +72,7 @@ export default async function PrescriptionPage({ params }: PageProps) {
       </Link>
 
         <p className="eyebrow mt-6">℞ Prescription</p>
-        <h1 className="font-display text-5xl tracking-tight mt-2">
+        <h1 className="font-display text-3xl sm:text-5xl tracking-tight mt-2 break-words">
           {rx.patient.name}
         </h1>
         <p className="mono text-xs text-ink-mute mt-1">{String(rx._id)}</p>

@@ -76,11 +76,11 @@ export default async function PharmacyOrderPage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen bg-paper text-ink">
-      <div className="mx-auto w-full max-w-[640px] px-8 py-12">
+      <div className="mx-auto w-full max-w-[640px] px-5 sm:px-8 py-12">
         <Link href="/dashboard" className="eyebrow text-ink-mute hover:text-clay">
           ← Dashboard
         </Link>
-        <h1 className="font-display text-5xl tracking-tight mt-4">Send to pharmacy</h1>
+        <h1 className="font-display text-3xl sm:text-5xl tracking-tight mt-4 break-words">Send to pharmacy</h1>
         <p className="text-ink-soft mt-2">
           Issued by Dr. {rx.doctor.name} · {rx.drugs.length} drug
           {rx.drugs.length === 1 ? "" : "s"}

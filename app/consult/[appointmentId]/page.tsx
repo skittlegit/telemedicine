@@ -53,7 +53,7 @@ export default async function ConsultPage({ params }: PageProps) {
       <main className="min-h-screen bg-paper text-ink flex items-center justify-center px-6">
         <div className="text-center max-w-md">
           <p className="eyebrow">Consultation</p>
-          <h1 className="font-display text-4xl tracking-tight mt-3">Not available</h1>
+          <h1 className="font-display text-3xl sm:text-4xl tracking-tight mt-3 break-words">Not available</h1>
           <p className="text-ink-soft mt-3">
             This appointment is currently <strong>{appt.status}</strong>.
           </p>

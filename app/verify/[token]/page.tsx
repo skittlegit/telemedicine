@@ -37,7 +37,7 @@ export default async function VerifyPage({ params }: PageProps) {
       <main className="min-h-screen bg-paper text-ink flex items-center justify-center px-6">
         <div className="text-center max-w-md">
           <p className="eyebrow text-oxblood">Not found</p>
-          <h1 className="font-display text-5xl tracking-tight mt-3">No prescription</h1>
+          <h1 className="font-display text-3xl sm:text-5xl tracking-tight mt-3 break-words">No prescription</h1>
           <p className="text-ink-soft mt-4">
             This verification link is invalid or has been revoked.
           </p>
@@ -60,13 +60,13 @@ export default async function VerifyPage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen bg-paper text-ink">
-      <div className="mx-auto w-full max-w-[640px] px-8 py-16">
+      <div className="mx-auto w-full max-w-[640px] px-5 sm:px-8 py-16">
         <Link href="/" className="eyebrow text-ink-mute hover:text-clay">
           ← Vellum Health
         </Link>
 
         <p className="eyebrow mt-6">Prescription verification</p>
-        <h1 className="font-display text-5xl tracking-tight mt-2">
+        <h1 className="font-display text-3xl sm:text-5xl tracking-tight mt-2 break-words">
           {valid && !rx.revokedAt ? (
             <span className="text-moss">Authentic</span>
           ) : rx.revokedAt ? (

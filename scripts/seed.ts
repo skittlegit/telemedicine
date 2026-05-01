@@ -3,11 +3,15 @@
  * Run: `npm run seed` (loads .env.local automatically)
  */
 import bcrypt from "bcryptjs";
+import { randomBytes } from "crypto";
 import { connectDB } from "../lib/db";
 import { User } from "../lib/models/User";
 import { DoctorProfile } from "../lib/models/DoctorProfile";
 import { PatientProfile } from "../lib/models/PatientProfile";
 import { PharmacyProfile } from "../lib/models/PharmacyProfile";
+import { Appointment } from "../lib/models/Appointment";
+import { Prescription } from "../lib/models/Prescription";
+import { signPrescription } from "../lib/crypto";
 
 async function upsertUser(opts: {
   email: string;
@@ -155,6 +159,56 @@ async function main() {
     role: "admin",
     password: "password123",
   });
+
+  // Demo prescription so the order flow is testable end-to-end without
+  // needing a clinician to issue one. Idempotent: skips if any active
+  // prescription already exists for the demo patient.
+  const existingRx = await Prescription.findOne({
+    patient: patient._id,
+    revokedAt: null,
+    fulfilledAt: null,
+  });
+  if (!existingRx) {
+    const gp = await User.findOne({ email: "doc.gp@vellum.test" });
+    if (gp) {
+      const start = new Date(Date.now() - 24 * 60 * 60 * 1000);
+      const appt = await Appointment.create({
+        patient: patient._id,
+        doctor: gp._id,
+        startAt: start,
+        endAt: new Date(start.getTime() + 30 * 60 * 1000),
+        status: "completed",
+        feeCents: 5000,
+      });
+      const drugs = [
+        { name: "Amoxicillin", dose: "500 mg", freq: "3× daily", days: 7, notes: "" },
+        { name: "Ibuprofen", dose: "400 mg", freq: "as needed", days: 5, notes: "With food" },
+      ];
+      const issuedAt = new Date();
+      const verifyToken = randomBytes(16).toString("hex");
+      // Mongo will assign _id; pre-compute via ObjectId so we can sign.
+      const { Types } = await import("mongoose");
+      const _id = new Types.ObjectId();
+      const signature = signPrescription({
+        id: String(_id),
+        doctorId: String(gp._id),
+        patientId: String(patient._id),
+        issuedAt: issuedAt.getTime(),
+        drugs,
+      });
+      await Prescription.create({
+        _id: _id as unknown as string,
+        appointment: appt._id,
+        doctor: gp._id,
+        patient: patient._id,
+        drugs,
+        issuedAt,
+        signature,
+        verifyToken,
+      });
+      console.log("  prescription: demo Rx for Eve Patient (orderable)");
+    }
+  }
 
   console.log("✔ Seed complete. Demo accounts (password: password123):");
   console.log("  patient@vellum.test");

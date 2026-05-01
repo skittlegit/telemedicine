@@ -53,7 +53,7 @@ export default async function PrescribePage({ params }: PageProps) {
       <Link href="/dashboard" className="eyebrow text-ink-mute hover:text-clay">
         ← Dashboard
       </Link>
-      <h1 className="font-display text-5xl tracking-tight mt-4">Issue prescription</h1>
+      <h1 className="font-display text-3xl sm:text-5xl tracking-tight mt-4 break-words">Issue prescription</h1>
       <p className="text-ink-soft mt-2">
         For <strong>{appt.patient.name}</strong> · {new Date(appt.startAt).toLocaleString()}
       </p>
