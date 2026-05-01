@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Types } from "mongoose";
 import { connectDB } from "@/lib/db";
+import { formatINR2 } from "@/lib/money";
 import { PharmacyOrder } from "@/lib/models/PharmacyOrder";
 import { Prescription } from "@/lib/models/Prescription";
 import { User } from "@/lib/models/User";
@@ -100,7 +101,7 @@ export default async function PatientOrderDetailPage({ params }: PageProps) {
           <div className="mb-5 flex flex-wrap items-center gap-3">
             <StatusPill status={order.status} />
             <span className="mono text-[11px] text-ink-mute">
-              ${(order.totalCents / 100).toFixed(2)} fulfilment fee
+              {formatINR2(order.totalCents)} fulfilment fee
             </span>
           </div>
           <OrderTimeline

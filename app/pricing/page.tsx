@@ -3,6 +3,7 @@ import {
   MarketingHeader,
   MarketingFooter,
 } from "../_components/MarketingChrome";
+import { marketingHeaderProps } from "../_components/marketingHeaderProps";
 
 export const metadata = {
   title: "Pricing — Vellum Health",
@@ -11,11 +12,11 @@ export const metadata = {
 };
 
 const TIERS: Array<[string, string, string]> = [
-  ["General practice", "$45", "20-minute video consult with a board-certified GP."],
-  ["Specialist visit", "$70", "30-minute consult with a specialist clinician."],
-  ["Mental health", "$80", "45-minute talk session with a licensed therapist."],
-  ["Prescription refill", "$25", "Async script renewal — no consult needed if stable."],
-  ["Pharmacy delivery", "from $5", "Same-day, signature on receipt where required."],
+  ["General practice", "₹499", "20-minute video consult with a board-certified GP."],
+  ["Specialist visit", "₹899", "30-minute consult with a specialist clinician."],
+  ["Mental health", "₹1,199", "45-minute talk session with a licensed therapist."],
+  ["Prescription refill", "₹299", "Async script renewal — no consult needed if stable."],
+  ["Pharmacy delivery", "from ₹49", "Same-day, signature on receipt where required."],
   ["Cancellation", "free, anytime", "Reschedule or cancel up to the appointment."],
 ];
 
@@ -30,7 +31,7 @@ const FAQ: Array<[string, string]> = [
   ],
   [
     "How does pharmacy delivery work?",
-    "Once your clinician issues a script, our pharmacist network claims it within minutes. Standard delivery is $5; same-day in metro zones runs $9 – $15 depending on distance.",
+    "Once your clinician issues a script, our pharmacist network claims it within minutes. Standard delivery is ₹49; same-day in metro zones runs ₹99 – ₹199 depending on distance.",
   ],
   [
     "Can I get a receipt for HSA / FSA?",
@@ -38,10 +39,11 @@ const FAQ: Array<[string, string]> = [
   ],
 ];
 
-export default function PricingPage() {
+export default async function PricingPage() {
+  const headerProps = await marketingHeaderProps();
   return (
     <main className="min-h-screen flex flex-col bg-paper text-ink">
-      <MarketingHeader />
+      <MarketingHeader {...headerProps} />
 
       <section className="mx-auto w-full max-w-[1200px] px-5 sm:px-6 lg:px-8 pt-12 sm:pt-16 pb-10">
         <p className="eyebrow mb-2.5">Pricing</p>
@@ -124,7 +126,7 @@ export default function PricingPage() {
         </div>
       </section>
 
-      <MarketingFooter />
+      <MarketingFooter logoHref={headerProps.logoHref} />
     </main>
   );
 }

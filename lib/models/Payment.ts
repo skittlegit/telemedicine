@@ -9,7 +9,7 @@ const PaymentSchema = new Schema(
     kind: { type: String, enum: PAYMENT_KIND, required: true, index: true },
     refId: { type: Types.ObjectId, required: true, index: true }, // Appointment or PharmacyOrder
     amountCents: { type: Number, required: true, min: 0 },
-    currency: { type: String, default: "usd" },
+    currency: { type: String, default: "inr" },
     status: { type: String, enum: PAYMENT_STATUS, default: "pending", index: true },
     stripeSessionId: { type: String, index: true },
     stripePaymentIntentId: { type: String, index: true },

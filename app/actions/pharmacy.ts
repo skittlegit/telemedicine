@@ -16,7 +16,7 @@ import { PharmacyProfile } from "@/lib/models/PharmacyProfile";
 
 export type PharmacyFormState = { error?: string };
 
-const FULFILMENT_FEE_CENTS = 1500; // $15
+const FULFILMENT_FEE_CENTS = 4900; // ₹49 fulfilment fee (paise)
 
 export async function createPharmacyOrderAction(
   _prev: PharmacyFormState,
@@ -89,7 +89,7 @@ export async function createPharmacyOrderAction(
     line_items: [
       {
         price_data: {
-          currency: "usd",
+          currency: "inr",
           unit_amount: FULFILMENT_FEE_CENTS,
           product_data: { name: "Pharmacy fulfilment & delivery" },
         },

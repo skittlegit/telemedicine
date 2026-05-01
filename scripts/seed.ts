@@ -69,7 +69,7 @@ async function main() {
         licenseVerifiedAt: new Date(),
         yearsOfExperience: 10,
         languages: ["English"],
-        consultationFeeCents: 5000,
+        consultationFeeCents: 89900,
       },
       { upsert: true, new: true },
     );
@@ -178,7 +178,7 @@ async function main() {
         startAt: start,
         endAt: new Date(start.getTime() + 30 * 60 * 1000),
         status: "completed",
-        feeCents: 5000,
+        feeCents: 89900,
       });
       const drugs = [
         { name: "Amoxicillin", dose: "500 mg", freq: "3× daily", days: 7, notes: "" },

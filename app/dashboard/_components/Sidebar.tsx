@@ -44,7 +44,7 @@ export function Sidebar({
       aria-label="Primary"
     >
       <div className="h-[64px] px-5 flex items-center border-b border-[color:var(--rule)]">
-        <Wordmark />
+        <Wordmark href="/dashboard" />
       </div>
 
       <nav className="flex-1 overflow-y-auto px-3 py-5">
@@ -80,9 +80,12 @@ export function Sidebar({
 
       <div className="border-t border-[color:var(--rule)] p-3">
         <div className="px-2 py-2 mb-2">
-          <p className="text-[13px] font-medium text-ink leading-tight truncate">
+          <Link
+            href="/dashboard"
+            className="block text-[13px] font-medium text-ink hover:text-clay leading-tight truncate"
+          >
             {user.name}
-          </p>
+          </Link>
           <p className="eyebrow text-[10px] mt-0.5">{user.role}</p>
         </div>
         <div className="flex items-center gap-1">

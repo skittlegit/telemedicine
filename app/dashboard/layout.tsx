@@ -123,13 +123,13 @@ const NAV_BY_ROLE: Record<string, SidebarSection[]> = {
       items: [
         { href: "/dashboard", label: "Today", icon: <HomeIcon />, exact: true },
         { href: "/dashboard/doctors", label: "Find a doctor", icon: <StethIcon /> },
-        { href: "/dashboard/visits", label: "Visits", icon: <CalendarIcon /> },
         {
           href: "/dashboard/prescriptions",
           label: "Prescriptions",
           icon: <PillIcon />,
         },
         { href: "/dashboard/orders", label: "Pharmacy orders", icon: <ListIcon /> },
+        { href: "/dashboard/visits", label: "Visits", icon: <CalendarIcon /> },
         { href: "/dashboard/records", label: "Records", icon: <FileIcon /> },
       ],
     },

@@ -79,7 +79,7 @@ export const HARDCODED_DEMO_USERS = [
       licenseRegion: "CA-USA",
       yearsOfExperience: 8,
       languages: ["English"],
-      consultationFeeCents: 5000,
+      consultationFeeCents: 89900,
     },
   },
   {

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Types } from "mongoose";
 import { connectDB } from "@/lib/db";
+import { formatINR } from "@/lib/money";
 import { DoctorProfile } from "@/lib/models/DoctorProfile";
 import { User } from "@/lib/models/User";
 import { Appointment } from "@/lib/models/Appointment";
@@ -108,7 +109,7 @@ export default async function BookPage({ params }: PageProps) {
           <div className="text-right">
             <p className="eyebrow">Visit fee</p>
             <p className="text-[22px] font-semibold mt-1">
-              ${(doc.consultationFeeCents / 100).toFixed(0)}
+              {formatINR(doc.consultationFeeCents)}
             </p>
             <p className="text-[12px] text-ink-mute mt-0.5">30-minute video</p>
           </div>

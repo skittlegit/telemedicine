@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import Link from "next/link";
 import { Sidebar, type SidebarSection } from "./Sidebar";
 import { Topbar } from "./Topbar";
 import { MobileBottomNav } from "./MobileBottomNav";
@@ -34,9 +33,7 @@ export function AppShell({
         </main>
         <footer className="hidden lg:block border-t border-[color:var(--rule)] mt-auto">
           <div className="mx-auto w-full max-w-[1100px] px-5 sm:px-6 lg:px-10 py-4 flex flex-wrap items-center justify-between gap-2 eyebrow text-[10.5px]">
-            <Link href="/" className="hover:text-clay">
-              <Wordmark />
-            </Link>
+            <Wordmark href="/dashboard" />
             <span>© 2026 Vellum Health</span>
           </div>
         </footer>

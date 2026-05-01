@@ -27,7 +27,7 @@ export const DoctorProfileUpdateSchema = z.object({
   licenseRegion: z.string().trim().min(2).max(80),
   yearsOfExperience: z.coerce.number().int().min(0).max(80).optional().default(0),
   languages: z.string().trim().max(200).optional().default(""), // comma-separated on the wire
-  consultationFeeCents: z.coerce.number().int().min(0).max(100_000).optional().default(5000),
+  consultationFeeCents: z.coerce.number().int().min(0).max(10_000_000).optional().default(89900),
 });
 export type DoctorProfileUpdateInput = z.infer<typeof DoctorProfileUpdateSchema>;
 

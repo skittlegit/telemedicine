@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { connectDB } from "@/lib/db";
+import { formatINR } from "@/lib/money";
 import { DoctorProfile } from "@/lib/models/DoctorProfile";
 import { User } from "@/lib/models/User";
 import { requireRole } from "@/lib/authz";
@@ -236,7 +237,7 @@ export default async function DashboardDoctorsPage({ searchParams }: PageProps) 
                   {(d.languages ?? []).slice(0, 2).join(", ") || "English"}
                 </span>
                 <span className="font-semibold text-[14px]">
-                  ${(d.consultationFeeCents / 100).toFixed(0)}
+                  {formatINR(d.consultationFeeCents)}
                 </span>
               </div>
               <span className="mt-3 inline-block eyebrow text-clay group-hover:translate-x-0.5 transition-transform">

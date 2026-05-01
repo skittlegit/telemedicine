@@ -10,7 +10,7 @@ const DoctorProfileSchema = new Schema(
     licenseVerifiedAt: { type: Date },
     yearsOfExperience: { type: Number, min: 0, default: 0 },
     languages: { type: [String], default: [] },
-    consultationFeeCents: { type: Number, required: true, min: 0, default: 5000 },
+    consultationFeeCents: { type: Number, required: true, min: 0, default: 89900 },
     // Free-form weekly availability blocks (UTC).
     availability: {
       type: [

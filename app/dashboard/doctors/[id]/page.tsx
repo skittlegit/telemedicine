@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Types } from "mongoose";
 import { connectDB } from "@/lib/db";
+import { formatINR } from "@/lib/money";
 import { DoctorProfile } from "@/lib/models/DoctorProfile";
 import { User } from "@/lib/models/User";
 import { requireRole } from "@/lib/authz";
@@ -131,7 +132,7 @@ export default async function DashboardDoctorPage({ params }: PageProps) {
           <div className="border border-[color:var(--rule-strong)] bg-paper-tint p-5 sticky top-24">
             <p className="eyebrow mb-2">Consultation</p>
             <p className="text-[34px] font-semibold tracking-[-0.02em] leading-none">
-              ${(doc.consultationFeeCents / 100).toFixed(0)}
+              {formatINR(doc.consultationFeeCents)}
             </p>
             <p className="text-ink-mute text-[12.5px] mt-1.5">30-minute video visit</p>
             <Link

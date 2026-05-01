@@ -1,11 +1,13 @@
 import Link from "next/link";
 import { connectDB } from "@/lib/db";
+import { formatINR } from "@/lib/money";
 import { DoctorProfile } from "@/lib/models/DoctorProfile";
 import { User } from "@/lib/models/User";
 import {
   MarketingHeader,
   MarketingFooter,
 } from "../_components/MarketingChrome";
+import { marketingHeaderProps } from "../_components/marketingHeaderProps";
 import { StarIcon } from "../_components/icons";
 
 export const metadata = { title: "Find a doctor — Vellum Health" };
@@ -92,9 +94,11 @@ export default async function DoctorsPage({ searchParams }: PageProps) {
     return qs ? `/doctors?${qs}` : "/doctors";
   }
 
+  const headerProps = await marketingHeaderProps();
+
   return (
     <main className="min-h-screen flex flex-col bg-paper text-ink">
-      <MarketingHeader />
+      <MarketingHeader {...headerProps} />
 
       {/* HERO */}
       <section className="mx-auto w-full max-w-[1200px] px-5 sm:px-6 lg:px-8 pt-12 sm:pt-14 pb-8">
@@ -240,7 +244,7 @@ export default async function DoctorsPage({ searchParams }: PageProps) {
                       {(d.languages ?? []).slice(0, 3).join(", ") || "English"}
                     </span>
                     <span className="font-semibold text-[14px]">
-                      ${(d.consultationFeeCents / 100).toFixed(0)}
+                      {formatINR(d.consultationFeeCents)}
                     </span>
                   </div>
 
@@ -279,7 +283,7 @@ export default async function DoctorsPage({ searchParams }: PageProps) {
         )}
       </section>
 
-      <MarketingFooter />
+      <MarketingFooter logoHref={headerProps.logoHref} />
     </main>
   );
 }

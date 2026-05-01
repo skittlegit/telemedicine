@@ -1,23 +1,28 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import type React from "react";
-import { MarketingHeader, MarketingFooter } from "./_components/MarketingChrome";
+import { MarketingHeader, MarketingFooter } from "@/app/_components/MarketingChrome";
+import { marketingHeaderProps } from "@/app/_components/marketingHeaderProps";
+import { getSession } from "@/lib/authz";
 import {
   SPECIALTIES,
   CalendarIcon,
   VideoIcon,
   PillIcon,
-} from "./_components/icons";
+} from "@/app/_components/icons";
 
 /**
  * Vellum Health landing page.
- * Designer warm-bone aesthetic, framed unambiguously as a telemedicine
- * product: hero with product preview, specialties grid, online clinicians,
- * plain-English "how it works", trust signals, FAQ.
+ * Logged-in users are redirected to /dashboard — the marketing landing
+ * page is for prospects, not authenticated patients/clinicians.
  */
-export default function Home() {
+export default async function Home() {
+  const session = await getSession();
+  if (session?.user) redirect("/dashboard");
+  const headerProps = await marketingHeaderProps();
   return (
     <main className="min-h-screen flex flex-col bg-paper text-ink">
-      <MarketingHeader />
+      <MarketingHeader {...headerProps} />
 
       {/* ============ HERO ============ */}
       <section className="mx-auto w-full max-w-[1200px] px-5 sm:px-6 lg:px-8 pt-12 sm:pt-16 lg:pt-20 pb-16 grid grid-cols-12 gap-x-10 gap-y-12">
@@ -160,7 +165,7 @@ export default function Home() {
             ))}
           </div>
         </div>
-        <dl className="col-span-12 lg:col-span-7 grid grid-cols-2 gap-px bg-[color:var(--rule)] border border-[color:var(--rule)] self-start">
+        <dl className="col-span-12 lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-px bg-[color:var(--rule)] border border-[color:var(--rule)] self-start">
           {[
             ["Encryption at rest", "AES-256-GCM"],
             ["Encryption in transit", "TLS 1.3"],
@@ -230,7 +235,7 @@ export default function Home() {
       </section>
 
       {/* ============ FOOTER ============ */}
-      <MarketingFooter />
+      <MarketingFooter logoHref={headerProps.logoHref} />
     </main>
   );
 }
@@ -249,7 +254,7 @@ function HeroCalloutCard() {
     <div className="relative">
       <div
         aria-hidden
-        className="absolute inset-0 translate-x-3 translate-y-3 border border-[color:var(--rule-strong)] bg-paper-deep"
+        className="absolute inset-0 sm:translate-x-3 sm:translate-y-3 border border-[color:var(--rule-strong)] bg-paper-deep"
       />
       <div className="relative bg-paper border border-[color:var(--rule-strong)]">
         <div className="px-5 py-3.5 border-b border-[color:var(--rule)] flex items-center justify-between">
@@ -277,7 +282,7 @@ function HeroCalloutCard() {
           ))}
         </ul>
         <div className="p-4 flex items-center justify-between gap-3 border-t border-[color:var(--rule)]">
-          <span className="mono text-[11px] text-ink-mute">From $45 / consult</span>
+          <span className="mono text-[11px] text-ink-mute">From ₹499 / consult</span>
           <Link href="/register" className="btn btn-clay btn-sm">
             Get started →
           </Link>
@@ -298,7 +303,7 @@ const FAQ: Array<[string, string]> = [
   ],
   [
     "Do you take insurance?",
-    "Vellum is a flat-fee, cash-pay service starting at $45 per visit. We provide an itemised receipt you can submit to most insurers for out-of-network reimbursement.",
+    "Vellum is a flat-fee, cash-pay service starting at ₹499 per visit. We provide an itemised receipt you can submit to most insurers for out-of-network reimbursement.",
   ],
   [
     "Is my information really private?",

@@ -32,7 +32,7 @@ export async function updateDoctorProfileAction(
     licenseRegion: formData.get("licenseRegion"),
     yearsOfExperience: formData.get("yearsOfExperience") || 0,
     languages: formData.get("languages") || "",
-    consultationFeeCents: formData.get("consultationFeeCents") || 5000,
+    consultationFeeCents: formData.get("consultationFeeCents") || 89900,
   });
   if (!parsed.success) {
     return {

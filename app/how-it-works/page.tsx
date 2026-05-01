@@ -3,6 +3,7 @@ import {
   MarketingHeader,
   MarketingFooter,
 } from "../_components/MarketingChrome";
+import { marketingHeaderProps } from "../_components/marketingHeaderProps";
 import {
   CalendarIcon,
   VideoIcon,
@@ -11,10 +12,11 @@ import {
 
 export const metadata = { title: "How it works — Vellum Health" };
 
-export default function HowItWorksPage() {
+export default async function HowItWorksPage() {
+  const headerProps = await marketingHeaderProps();
   return (
     <main className="min-h-screen flex flex-col bg-paper text-ink">
-      <MarketingHeader />
+      <MarketingHeader {...headerProps} />
 
       <section className="mx-auto w-full max-w-[1200px] px-5 sm:px-6 lg:px-8 pt-12 sm:pt-16 pb-10">
         <p className="eyebrow mb-2.5">How it works</p>
@@ -113,10 +115,10 @@ export default function HowItWorksPage() {
         </div>
         <dl className="col-span-12 lg:col-span-7 grid grid-cols-2 gap-px bg-[color:var(--rule)] border border-[color:var(--rule)] self-start">
           {[
-            ["General practice", "$45"],
-            ["Specialist visit", "$70"],
-            ["Mental health", "$80"],
-            ["Pharmacy delivery", "from $5"],
+            ["General practice", "₹499"],
+            ["Specialist visit", "₹899"],
+            ["Mental health", "₹1,199"],
+            ["Pharmacy delivery", "from ₹49"],
           ].map(([k, v]) => (
             <div key={k} className="bg-paper p-5">
               <dt className="eyebrow mb-1.5">{k}</dt>
@@ -139,7 +141,7 @@ export default function HowItWorksPage() {
         </div>
       </section>
 
-      <MarketingFooter />
+      <MarketingFooter logoHref={headerProps.logoHref} />
     </main>
   );
 }

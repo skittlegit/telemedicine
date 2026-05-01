@@ -3,13 +3,15 @@ import {
   MarketingHeader,
   MarketingFooter,
 } from "../_components/MarketingChrome";
+import { marketingHeaderProps } from "../_components/marketingHeaderProps";
 
 export const metadata = { title: "Security — Vellum Health" };
 
-export default function SecurityPage() {
+export default async function SecurityPage() {
+  const headerProps = await marketingHeaderProps();
   return (
     <main className="min-h-screen flex flex-col bg-paper text-ink">
-      <MarketingHeader />
+      <MarketingHeader {...headerProps} />
 
       <section className="mx-auto w-full max-w-[1200px] px-5 sm:px-6 lg:px-8 pt-12 sm:pt-16 pb-10">
         <p className="eyebrow mb-2.5">Privacy &amp; security</p>
@@ -112,7 +114,7 @@ export default function SecurityPage() {
         </div>
       </section>
 
-      <MarketingFooter />
+      <MarketingFooter logoHref={headerProps.logoHref} />
     </main>
   );
 }

@@ -92,7 +92,7 @@ export async function registerAction(_prev: FormState, formData: FormData): Prom
         specialty: parsed.data.specialty!,
         licenseNumber: parsed.data.licenseNumber!,
         licenseRegion: parsed.data.licenseRegion!,
-        consultationFeeCents: 5000,
+        consultationFeeCents: 89900,
         bio: "",
       });
     } else if (role === "pharmacist") {

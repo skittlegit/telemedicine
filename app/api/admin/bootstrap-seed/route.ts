@@ -124,7 +124,7 @@ export async function POST(req: NextRequest) {
           licenseVerifiedAt: new Date(),
           yearsOfExperience: 10,
           languages: ["English"],
-          consultationFeeCents: 5000,
+          consultationFeeCents: 89900,
         },
         { upsert: true, new: true },
       );

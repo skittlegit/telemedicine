@@ -1,12 +1,14 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { connectDB } from "@/lib/db";
+import { formatINR } from "@/lib/money";
 import { DoctorProfile } from "@/lib/models/DoctorProfile";
 import { User } from "@/lib/models/User";
 import {
   MarketingHeader,
   MarketingFooter,
 } from "@/app/_components/MarketingChrome";
+import { marketingHeaderProps } from "@/app/_components/marketingHeaderProps";
 import { SPECIALTIES, StarIcon } from "@/app/_components/icons";
 
 export const dynamic = "force-dynamic";
@@ -61,10 +63,11 @@ export default async function SpecialtyPage({ params }: PageProps) {
     .lean<DoctorRow[]>();
 
   const visible = doctors.filter((d) => d.user);
+  const headerProps = await marketingHeaderProps();
 
   return (
     <main className="min-h-screen flex flex-col bg-paper text-ink">
-      <MarketingHeader />
+      <MarketingHeader {...headerProps} />
 
       {/* HERO */}
       <section className="mx-auto w-full max-w-[1200px] px-5 sm:px-6 lg:px-8 pt-12 sm:pt-14 pb-10 grid grid-cols-12 gap-x-10 gap-y-8">
@@ -206,7 +209,7 @@ export default async function SpecialtyPage({ params }: PageProps) {
                     {(d.languages ?? []).slice(0, 2).join(", ") || "English"}
                   </span>
                   <span className="font-semibold text-[14px]">
-                    ${(d.consultationFeeCents / 100).toFixed(0)}
+                    {formatINR(d.consultationFeeCents)}
                   </span>
                 </div>
                 <span className="mt-3 inline-block eyebrow text-clay group-hover:translate-x-0.5 transition-transform">
@@ -239,7 +242,7 @@ export default async function SpecialtyPage({ params }: PageProps) {
         </div>
       </section>
 
-      <MarketingFooter />
+      <MarketingFooter logoHref={headerProps.logoHref} />
     </main>
   );
 }

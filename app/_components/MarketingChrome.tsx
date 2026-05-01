@@ -42,10 +42,10 @@ export function Caduceus({
 /**
  * Compact wordmark used inside any chrome bar.
  */
-export function Wordmark() {
+export function Wordmark({ href = "/" }: { href?: string } = {}) {
   return (
     <Link
-      href="/"
+      href={href}
       className="flex items-center gap-2 shrink-0 text-ink hover:text-ink"
     >
       <Caduceus className="text-clay" />
@@ -74,7 +74,15 @@ function isActive(pathname: string | null, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-export function MarketingHeader() {
+export function MarketingHeader({
+  logoHref = "/",
+  authed = false,
+  dashboardHref = "/dashboard",
+}: {
+  logoHref?: string;
+  authed?: boolean;
+  dashboardHref?: string;
+} = {}) {
   const [open, setOpen] = useState(false);
   const [megaOpen, setMegaOpen] = useState(false);
   const pathname = usePathname();
@@ -118,7 +126,7 @@ export function MarketingHeader() {
         onMouseLeave={scheduleCloseMega}
       >
         <div className="mx-auto w-full max-w-[1200px] px-5 sm:px-6 lg:px-8 h-[64px] flex items-center justify-between gap-6">
-          <Wordmark />
+          <Wordmark href={logoHref} />
 
           <nav className="hidden md:flex items-center gap-7">
             {NAV_LINKS.map((l) => {
@@ -172,9 +180,15 @@ export function MarketingHeader() {
 
           <div className="flex items-center gap-1.5">
             <ThemeToggle className="hidden sm:inline-flex" />
-            <Link href="/login" prefetch className="btn btn-clay btn-sm">
-              Login →
-            </Link>
+            {authed ? (
+              <Link href={dashboardHref} prefetch className="btn btn-clay btn-sm">
+                Dashboard →
+              </Link>
+            ) : (
+              <Link href="/login" prefetch className="btn btn-clay btn-sm">
+                Login →
+              </Link>
+            )}
             <button
               type="button"
               aria-label={open ? "Close menu" : "Open menu"}
@@ -289,12 +303,20 @@ export function MarketingHeader() {
                 </Link>
               ))}
               <div className="mt-6 flex flex-col gap-2">
-                <Link href="/login" prefetch className="btn btn-clay w-full justify-center">
-                  Login →
-                </Link>
-                <Link href="/register" prefetch className="btn btn-ghost w-full justify-center">
-                  Create an account
-                </Link>
+                {authed ? (
+                  <Link href={dashboardHref} prefetch className="btn btn-clay w-full justify-center">
+                    Go to dashboard →
+                  </Link>
+                ) : (
+                  <>
+                    <Link href="/login" prefetch className="btn btn-clay w-full justify-center">
+                      Login →
+                    </Link>
+                    <Link href="/register" prefetch className="btn btn-ghost w-full justify-center">
+                      Create an account
+                    </Link>
+                  </>
+                )}
               </div>
               <div className="mt-6 flex items-center justify-between text-[13px] text-ink-mute">
                 <span>Theme</span>
@@ -308,12 +330,12 @@ export function MarketingHeader() {
   );
 }
 
-export function MarketingFooter() {
+export function MarketingFooter({ logoHref = "/" }: { logoHref?: string } = {}) {
   return (
     <footer className="mt-auto border-t border-[color:var(--rule-strong)]">
       <div className="mx-auto w-full max-w-[1200px] px-5 sm:px-6 lg:px-8 py-12 grid grid-cols-2 md:grid-cols-4 gap-8">
         <div className="col-span-2 md:col-span-1">
-          <Wordmark />
+          <Wordmark href={logoHref} />
           <p className="mt-4 text-ink-mute text-[13px] leading-[1.6] max-w-[34ch]">
             Encrypted video visits, signed digital prescriptions, same-day
             pharmacy fulfilment.

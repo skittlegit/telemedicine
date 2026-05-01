@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import { formatINR2 } from "@/lib/money";
 import {
   updateDoctorProfileAction,
   type ProfileFormState,
@@ -87,12 +88,12 @@ export function ProfileForm({ initial }: { initial: Initial }) {
           errors={fe.yearsOfExperience}
         />
         <Field
-          label="Consultation fee (cents)"
+          label="Consultation fee (paise)"
           name="consultationFeeCents"
           type="number"
           defaultValue={String(initial.consultationFeeCents)}
           mono
-          hint={`= $${(initial.consultationFeeCents / 100).toFixed(2)}`}
+          hint={`= ${formatINR2(initial.consultationFeeCents)}`}
           errors={fe.consultationFeeCents}
         />
       </div>

@@ -3,14 +3,16 @@ import {
   MarketingHeader,
   MarketingFooter,
 } from "../_components/MarketingChrome";
+import { marketingHeaderProps } from "../_components/marketingHeaderProps";
 import { SPECIALTIES } from "../_components/icons";
 
 export const metadata = { title: "Specialties — Vellum Health" };
 
-export default function SpecialtiesPage() {
+export default async function SpecialtiesPage() {
+  const headerProps = await marketingHeaderProps();
   return (
     <main className="min-h-screen flex flex-col bg-paper text-ink">
-      <MarketingHeader />
+      <MarketingHeader {...headerProps} />
 
       <section className="mx-auto w-full max-w-[1200px] px-5 sm:px-6 lg:px-8 pt-12 sm:pt-16 pb-10">
         <p className="eyebrow mb-2.5">What we treat</p>
@@ -90,7 +92,7 @@ export default function SpecialtiesPage() {
         </div>
       </section>
 
-      <MarketingFooter />
+      <MarketingFooter logoHref={headerProps.logoHref} />
     </main>
   );
 }

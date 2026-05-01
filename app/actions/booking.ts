@@ -107,7 +107,7 @@ export async function bookAppointmentAction(
     line_items: [
       {
         price_data: {
-          currency: "usd",
+          currency: "inr",
           unit_amount: doctorProfile.consultationFeeCents,
           product_data: { name: "Vellum Health consultation (30 min)" },
         },
@@ -124,7 +124,7 @@ export async function bookAppointmentAction(
     kind: "consultation",
     refId: appt._id,
     amountCents: doctorProfile.consultationFeeCents,
-    currency: "usd",
+    currency: "inr",
     status: "pending",
     stripeSessionId: checkout.id,
   });

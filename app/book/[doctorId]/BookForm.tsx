@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useState } from "react";
+import { formatINR2 } from "@/lib/money";
 import {
   bookAppointmentAction,
   type BookFormState,
@@ -120,7 +121,7 @@ export function BookForm({
         <div>
           <p className="eyebrow text-ink-mute">Total today</p>
           <p className="text-[22px] font-semibold tracking-[-0.018em] leading-none mt-1">
-            ${(feeCents / 100).toFixed(2)}
+            {formatINR2(feeCents)}
           </p>
         </div>
         <button
