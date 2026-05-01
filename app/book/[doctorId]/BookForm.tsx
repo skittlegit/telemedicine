@@ -39,14 +39,19 @@ export function BookForm({
           maxLength={2000}
           className="field"
           placeholder="Brief description of symptoms or concerns…"
+          aria-describedby="reason-hint"
         />
-        <p className="text-xs text-ink-mute mt-1">
+        <p id="reason-hint" className="text-xs text-ink-mute mt-1">
           Stored encrypted. Only the clinician you book with can read it.
         </p>
       </div>
 
       {state.error && (
-        <p className="text-sm text-oxblood border border-oxblood/30 bg-clay-wash px-3 py-2">
+        <p
+          id="book-error"
+          role="alert"
+          className="text-sm text-oxblood border border-oxblood/30 bg-clay-wash px-3 py-2"
+        >
           {state.error}
         </p>
       )}

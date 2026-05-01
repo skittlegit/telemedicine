@@ -53,6 +53,7 @@ export async function POST(req: NextRequest) {
             paymentIntentId: sess.payment_intent ?? undefined,
           });
           await audit({
+            actorRole: "system:stripe-webhook",
             action: "payment.consultation.succeeded",
             target: `Appointment:${meta.appointmentId}`,
           });
@@ -62,6 +63,7 @@ export async function POST(req: NextRequest) {
             paymentIntentId: sess.payment_intent ?? undefined,
           });
           await audit({
+            actorRole: "system:stripe-webhook",
             action: "payment.pharmacy.succeeded",
             target: `PharmacyOrder:${meta.orderId}`,
           });

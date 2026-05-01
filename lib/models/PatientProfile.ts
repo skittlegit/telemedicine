@@ -17,7 +17,7 @@ const PatientProfileSchema = new Schema(
     insuranceEnc: { type: String },
     emergencyContactEnc: { type: String },
   },
-  { timestamps: true },
+  { timestamps: true, strict: true },
 );
 
 export type PatientProfileDoc = InferSchemaType<typeof PatientProfileSchema> & { _id: string };

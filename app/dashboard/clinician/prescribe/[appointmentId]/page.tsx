@@ -6,6 +6,7 @@ import { Appointment } from "@/lib/models/Appointment";
 import { User } from "@/lib/models/User";
 import { decryptPHI } from "@/lib/crypto";
 import { requireRole } from "@/lib/authz";
+import { audit } from "@/lib/audit";
 import { PrescribeForm } from "./PrescribeForm";
 import { DashboardHeader } from "@/app/dashboard/_components/Shell";
 
@@ -37,6 +38,17 @@ export default async function PrescribePage({ params }: PageProps) {
   if (!appt) notFound();
   if (String(appt.doctor) !== session.user.id) notFound();
 
+  let reason: string | null = null;
+  if (appt.reasonEnc) {
+    reason = decryptPHI(appt.reasonEnc);
+    void audit({
+      actor: session.user.id,
+      actorRole: "doctor",
+      action: "appointment.read_reason",
+      target: `Appointment:${appt._id}`,
+    });
+  }
+
   return (
     <main className="min-h-screen bg-paper text-ink">
       <DashboardHeader user={{ name: session.user.name ?? "Doctor", role: "doctor" }} />
@@ -48,10 +60,10 @@ export default async function PrescribePage({ params }: PageProps) {
         <p className="text-ink-soft mt-2">
           For <strong>{appt.patient.name}</strong> · {new Date(appt.startAt).toLocaleString()}
         </p>
-        {appt.reasonEnc && (
+        {appt.reasonEnc && reason && (
           <div className="mt-6 border border-[color:var(--rule)] p-3 text-sm">
             <p className="eyebrow mb-1">Patient&apos;s reason</p>
-            <p className="text-ink-soft">{decryptPHI(appt.reasonEnc)}</p>
+            <p className="text-ink-soft">{reason}</p>
           </div>
         )}
 

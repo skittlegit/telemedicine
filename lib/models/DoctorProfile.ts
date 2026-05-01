@@ -25,7 +25,7 @@ const DoctorProfileSchema = new Schema(
     rating: { type: Number, min: 0, max: 5, default: 0 },
     ratingCount: { type: Number, min: 0, default: 0 },
   },
-  { timestamps: true },
+  { timestamps: true, strict: true },
 );
 
 DoctorProfileSchema.index({ specialty: 1, "rating": -1 });

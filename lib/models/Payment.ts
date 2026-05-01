@@ -15,7 +15,7 @@ const PaymentSchema = new Schema(
     stripePaymentIntentId: { type: String, index: true },
     failureMessage: { type: String },
   },
-  { timestamps: true },
+  { timestamps: true, strict: true },
 );
 
 export type PaymentDoc = InferSchemaType<typeof PaymentSchema> & { _id: string };

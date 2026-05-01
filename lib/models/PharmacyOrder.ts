@@ -23,7 +23,7 @@ const PharmacyOrderSchema = new Schema(
     deliveredAt: { type: Date },
     notesEnc: { type: String },
   },
-  { timestamps: true },
+  { timestamps: true, strict: true },
 );
 
 export type PharmacyOrderDoc = InferSchemaType<typeof PharmacyOrderSchema> & { _id: string };

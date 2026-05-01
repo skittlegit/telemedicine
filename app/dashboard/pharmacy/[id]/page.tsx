@@ -7,6 +7,7 @@ import { Prescription } from "@/lib/models/Prescription";
 import { User } from "@/lib/models/User";
 import { requireRole } from "@/lib/authz";
 import { decryptPHI } from "@/lib/crypto";
+import { audit } from "@/lib/audit";
 import { advanceOrderAction } from "@/app/actions/pharmacy";
 import {
   DashboardHeader,
@@ -78,7 +79,14 @@ export default async function PharmacyOrderDetailPage({ params }: PageProps) {
   const address = order.pharmacist
     ? (() => {
         try {
-          return JSON.parse(decryptPHI(order.deliveryAddressEnc) ?? "{}");
+          const decoded = JSON.parse(decryptPHI(order.deliveryAddressEnc) ?? "{}");
+          void audit({
+            actor: session.user.id,
+            actorRole: "pharmacist",
+            action: "pharmacy_order.read_address",
+            target: `PharmacyOrder:${order._id}`,
+          });
+          return decoded;
         } catch {
           return null;
         }

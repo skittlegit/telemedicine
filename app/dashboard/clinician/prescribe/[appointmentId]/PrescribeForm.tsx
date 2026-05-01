@@ -110,7 +110,10 @@ export function PrescribeForm({ appointmentId }: { appointmentId: string }) {
       </div>
 
       {state.error && (
-        <p className="text-sm text-oxblood border border-oxblood/30 bg-clay-wash px-3 py-2">
+        <p
+          role="alert"
+          className="text-sm text-oxblood border border-oxblood/30 bg-clay-wash px-3 py-2"
+        >
           {state.error}
         </p>
       )}

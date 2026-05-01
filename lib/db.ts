@@ -32,11 +32,27 @@ if (!globalForMongoose.__mongooseCache) {
  * Always-available admin so login works against any reachable database without
  * running the seed script. Email is on `vellum.health` (not `.test`) so it
  * never collides with the seed users in `npm run seed`.
+ *
+ * In production, `ADMIN_PASSWORD` is required — we refuse to fall back to the
+ * dev default so a public deploy can never ship a known admin login.
  */
+function resolveAdminPassword(): string {
+  if (env.ADMIN_PASSWORD) return env.ADMIN_PASSWORD;
+  if (process.env.NODE_ENV === "production") {
+    throw new Error(
+      "[vellum] ADMIN_PASSWORD is required in production. Refusing to seed the " +
+        "hardcoded admin with the dev default. Set ADMIN_PASSWORD and redeploy.",
+    );
+  }
+  return "admin123";
+}
+
 export const HARDCODED_ADMIN = {
   email: "admin@vellum.health",
   name: "Vellum Admin",
-  password: env.ADMIN_PASSWORD ?? "admin123",
+  get password(): string {
+    return resolveAdminPassword();
+  },
 } as const;
 
 /**
@@ -145,6 +161,13 @@ async function ensureHardcodedAdmin(): Promise<void> {
     );
 
     // 2) Demo users (patient / doctor / pharmacist) — pre-verified.
+    //    Only seeded in non-production environments. We refuse to ship known
+    //    plaintext passwords (`patient123`, etc.) into a production database.
+    if (process.env.NODE_ENV === "production") {
+      cache.bootstrapped = true;
+      return;
+    }
+
     const now = new Date();
     for (const u of HARDCODED_DEMO_USERS) {
       const passwordHash = await bcrypt.hash(u.password, 12);

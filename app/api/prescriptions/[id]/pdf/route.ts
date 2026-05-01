@@ -7,6 +7,7 @@ import { Prescription } from "@/lib/models/Prescription";
 import { User } from "@/lib/models/User";
 import { decryptPHI } from "@/lib/crypto";
 import { requireSession } from "@/lib/authz";
+import { audit } from "@/lib/audit";
 import { PrescriptionPdf } from "@/lib/pdf/PrescriptionPdf";
 import { prescriptionQrDataUrl } from "@/app/actions/prescription";
 import { env } from "@/lib/env";
@@ -56,6 +57,14 @@ export async function GET(
 
   const qr = await prescriptionQrDataUrl(rx.verifyToken);
   const diagnosis = decryptPHI(rx.diagnosisEnc) ?? "";
+  if (rx.diagnosisEnc) {
+    void audit({
+      actor: me,
+      actorRole: role,
+      action: "prescription.read_diagnosis_pdf",
+      target: `Prescription:${rx._id}`,
+    });
+  }
 
   const pdf = await renderToBuffer(
     // The @react-pdf/renderer Document type is awkward to align with React's

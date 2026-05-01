@@ -25,7 +25,7 @@ const AppointmentSchema = new Schema(
     startedAt: { type: Date },
     endedAt: { type: Date },
   },
-  { timestamps: true },
+  { timestamps: true, strict: true },
 );
 
 AppointmentSchema.index({ doctor: 1, startAt: 1 });

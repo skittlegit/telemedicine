@@ -82,7 +82,7 @@ export async function issuePrescriptionAction(
     actorRole: "doctor",
     action: "prescription.create",
     target: `Prescription:${id}`,
-    meta: { drugs: parsed.data.drugs.length },
+    meta: { drugCount: parsed.data.drugs.length },
   });
 
   redirect(`/dashboard/clinician/prescriptions/${id}`);

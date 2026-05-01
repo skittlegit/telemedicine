@@ -1,19 +1,31 @@
 import { NextRequest, NextResponse } from "next/server";
+import { headers } from "next/headers";
+import { timingSafeEqual } from "node:crypto";
 import bcrypt from "bcryptjs";
 import { connectDB } from "@/lib/db";
 import { User } from "@/lib/models/User";
 import { DoctorProfile } from "@/lib/models/DoctorProfile";
 import { PatientProfile } from "@/lib/models/PatientProfile";
 import { env } from "@/lib/env";
+import { rateLimit } from "@/lib/ratelimit";
+import { audit } from "@/lib/audit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+
+function safeKeyCompare(a: string, b: string): boolean {
+  const ab = Buffer.from(a);
+  const bb = Buffer.from(b);
+  if (ab.length !== bb.length) return false;
+  return timingSafeEqual(ab, bb);
+}
 
 /**
  * One-shot demo seed for the production DB on Vercel.
  *
  * Idempotent. Guarded by `BOOTSTRAP_KEY` env var — without it, the route is
- * inert (returns 404 to avoid advertising itself).
+ * inert (returns 404 to avoid advertising itself). Rate-limited to 3 attempts
+ * per hour per IP; key comparison is timing-safe.
  *
  * Usage:
  *   curl -X POST "https://your-app.vercel.app/api/admin/bootstrap-seed?key=YOUR_BOOTSTRAP_KEY"
@@ -24,9 +36,35 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "not found" }, { status: 404 });
   }
 
+  const h = await headers();
+  const ip =
+    h.get("x-forwarded-for")?.split(",")[0]?.trim() ??
+    h.get("x-real-ip") ??
+    "unknown";
+  const rl = await rateLimit(`bootstrap-seed:${ip}`, {
+    limit: 3,
+    windowMs: 60 * 60_000,
+  });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "too many attempts" },
+      {
+        status: 429,
+        headers: {
+          "retry-after": String(Math.max(1, Math.ceil((rl.resetAt - Date.now()) / 1000))),
+        },
+      },
+    );
+  }
+
   const provided =
-    req.nextUrl.searchParams.get("key") ?? req.headers.get("x-bootstrap-key");
-  if (provided !== expected) {
+    req.nextUrl.searchParams.get("key") ?? h.get("x-bootstrap-key") ?? "";
+  if (!safeKeyCompare(provided, expected)) {
+    void audit({
+      actorRole: "system:bootstrap-seed",
+      action: "admin.bootstrap_seed.unauthorized",
+      target: `ip:${ip}`,
+    });
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
@@ -104,6 +142,12 @@ export async function POST(req: NextRequest) {
       name: "Ada Admin",
       role: "admin",
       password: "password123",
+    });
+
+    void audit({
+      actorRole: "system:bootstrap-seed",
+      action: "admin.bootstrap_seed.success",
+      target: `ip:${ip}`,
     });
 
     return NextResponse.json({

@@ -14,9 +14,18 @@ export function RegisterForm({ defaultRole }: { defaultRole: string }) {
     <form action={action} className="mt-8 space-y-5">
       <div>
         <label className="eyebrow block mb-2" htmlFor="name">Full name</label>
-        <input id="name" name="name" required className="field" />
+        <input
+          id="name"
+          name="name"
+          required
+          className="field"
+          aria-invalid={!!state.fieldErrors?.name}
+          aria-describedby={state.fieldErrors?.name ? "name-error" : undefined}
+        />
         {state.fieldErrors?.name && (
-          <p className="text-xs text-oxblood mt-1">{state.fieldErrors.name[0]}</p>
+          <p id="name-error" className="text-xs text-oxblood mt-1" role="alert">
+            {state.fieldErrors.name[0]}
+          </p>
         )}
       </div>
 
@@ -29,9 +38,13 @@ export function RegisterForm({ defaultRole }: { defaultRole: string }) {
           autoComplete="email"
           required
           className="field"
+          aria-invalid={!!state.fieldErrors?.email}
+          aria-describedby={state.fieldErrors?.email ? "email-error" : undefined}
         />
         {state.fieldErrors?.email && (
-          <p className="text-xs text-oxblood mt-1">{state.fieldErrors.email[0]}</p>
+          <p id="email-error" className="text-xs text-oxblood mt-1" role="alert">
+            {state.fieldErrors.email[0]}
+          </p>
         )}
       </div>
 
@@ -45,12 +58,16 @@ export function RegisterForm({ defaultRole }: { defaultRole: string }) {
           required
           minLength={8}
           className="field"
+          aria-invalid={!!state.fieldErrors?.password}
+          aria-describedby={state.fieldErrors?.password ? "password-error password-hint" : "password-hint"}
         />
-        <p className="text-xs text-ink-mute mt-1">
+        <p id="password-hint" className="text-xs text-ink-mute mt-1">
           Min. 8 characters with at least one letter and number.
         </p>
         {state.fieldErrors?.password && (
-          <p className="text-xs text-oxblood mt-1">{state.fieldErrors.password[0]}</p>
+          <p id="password-error" className="text-xs text-oxblood mt-1" role="alert">
+            {state.fieldErrors.password[0]}
+          </p>
         )}
       </div>
 
@@ -80,9 +97,13 @@ export function RegisterForm({ defaultRole }: { defaultRole: string }) {
               required
               placeholder="e.g. Internal medicine"
               className="field"
+              aria-invalid={!!state.fieldErrors?.specialty}
+              aria-describedby={state.fieldErrors?.specialty ? "specialty-error" : undefined}
             />
             {state.fieldErrors?.specialty && (
-              <p className="text-xs text-oxblood mt-1">{state.fieldErrors.specialty[0]}</p>
+              <p id="specialty-error" className="text-xs text-oxblood mt-1" role="alert">
+                {state.fieldErrors.specialty[0]}
+              </p>
             )}
           </div>
           <div className="grid grid-cols-2 gap-3">
@@ -93,9 +114,13 @@ export function RegisterForm({ defaultRole }: { defaultRole: string }) {
                 name="licenseNumber"
                 required
                 className="field mono"
+                aria-invalid={!!state.fieldErrors?.licenseNumber}
+                aria-describedby={state.fieldErrors?.licenseNumber ? "licenseNumber-error" : undefined}
               />
               {state.fieldErrors?.licenseNumber && (
-                <p className="text-xs text-oxblood mt-1">{state.fieldErrors.licenseNumber[0]}</p>
+                <p id="licenseNumber-error" className="text-xs text-oxblood mt-1" role="alert">
+                  {state.fieldErrors.licenseNumber[0]}
+                </p>
               )}
             </div>
             <div>
@@ -106,9 +131,13 @@ export function RegisterForm({ defaultRole }: { defaultRole: string }) {
                 required
                 placeholder="e.g. CA-USA"
                 className="field"
+                aria-invalid={!!state.fieldErrors?.licenseRegion}
+                aria-describedby={state.fieldErrors?.licenseRegion ? "licenseRegion-error" : undefined}
               />
               {state.fieldErrors?.licenseRegion && (
-                <p className="text-xs text-oxblood mt-1">{state.fieldErrors.licenseRegion[0]}</p>
+                <p id="licenseRegion-error" className="text-xs text-oxblood mt-1" role="alert">
+                  {state.fieldErrors.licenseRegion[0]}
+                </p>
               )}
             </div>
           </div>
@@ -129,9 +158,13 @@ export function RegisterForm({ defaultRole }: { defaultRole: string }) {
               required
               placeholder="e.g. Vellum Dispensary — Mission"
               className="field"
+              aria-invalid={!!state.fieldErrors?.pharmacyName}
+              aria-describedby={state.fieldErrors?.pharmacyName ? "pharmacyName-error" : undefined}
             />
             {state.fieldErrors?.pharmacyName && (
-              <p className="text-xs text-oxblood mt-1">{state.fieldErrors.pharmacyName[0]}</p>
+              <p id="pharmacyName-error" className="text-xs text-oxblood mt-1" role="alert">
+                {state.fieldErrors.pharmacyName[0]}
+              </p>
             )}
           </div>
           <div className="grid grid-cols-2 gap-3">
@@ -142,9 +175,13 @@ export function RegisterForm({ defaultRole }: { defaultRole: string }) {
                 name="licenseNumber"
                 required
                 className="field mono"
+                aria-invalid={!!state.fieldErrors?.licenseNumber}
+                aria-describedby={state.fieldErrors?.licenseNumber ? "licenseNumber-error" : undefined}
               />
               {state.fieldErrors?.licenseNumber && (
-                <p className="text-xs text-oxblood mt-1">{state.fieldErrors.licenseNumber[0]}</p>
+                <p id="licenseNumber-error" className="text-xs text-oxblood mt-1" role="alert">
+                  {state.fieldErrors.licenseNumber[0]}
+                </p>
               )}
             </div>
             <div>
@@ -155,9 +192,13 @@ export function RegisterForm({ defaultRole }: { defaultRole: string }) {
                 required
                 placeholder="e.g. CA-USA"
                 className="field"
+                aria-invalid={!!state.fieldErrors?.licenseRegion}
+                aria-describedby={state.fieldErrors?.licenseRegion ? "licenseRegion-error" : undefined}
               />
               {state.fieldErrors?.licenseRegion && (
-                <p className="text-xs text-oxblood mt-1">{state.fieldErrors.licenseRegion[0]}</p>
+                <p id="licenseRegion-error" className="text-xs text-oxblood mt-1" role="alert">
+                  {state.fieldErrors.licenseRegion[0]}
+                </p>
               )}
             </div>
           </div>

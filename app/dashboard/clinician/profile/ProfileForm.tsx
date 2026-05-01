@@ -47,9 +47,13 @@ export function ProfileForm({ initial }: { initial: Initial }) {
           maxLength={2000}
           className="w-full bg-paper-tint border border-[color:var(--rule-strong)] px-3 py-2 text-sm focus:outline-none focus:border-clay"
           placeholder="A short, factual bio your patients will see."
+          aria-invalid={!!fe.bio?.[0]}
+          aria-describedby={fe.bio?.[0] ? "bio-error" : undefined}
         />
         {fe.bio?.[0] && (
-          <p className="text-oxblood text-xs mt-1">{fe.bio[0]}</p>
+          <p id="bio-error" role="alert" className="text-oxblood text-xs mt-1">
+            {fe.bio[0]}
+          </p>
         )}
       </div>
 
@@ -103,10 +107,10 @@ export function ProfileForm({ initial }: { initial: Initial }) {
       />
 
       {state.error && (
-        <p className="text-oxblood text-sm">{state.error}</p>
+        <p role="alert" className="text-oxblood text-sm">{state.error}</p>
       )}
       {state.ok && (
-        <p className="text-moss text-sm">Profile saved.</p>
+        <p role="status" className="text-moss text-sm">Profile saved.</p>
       )}
 
       <button
@@ -153,12 +157,22 @@ function Field({
         className={`w-full bg-paper-tint border border-[color:var(--rule-strong)] px-3 py-2 text-sm focus:outline-none focus:border-clay ${
           mono ? "mono" : ""
         }`}
+        aria-invalid={!!errors?.[0]}
+        aria-describedby={
+          errors?.[0]
+            ? `${name}-error`
+            : hint
+              ? `${name}-hint`
+              : undefined
+        }
       />
       {hint && !errors?.length && (
-        <p className="text-xs text-ink-mute mt-1">{hint}</p>
+        <p id={`${name}-hint`} className="text-xs text-ink-mute mt-1">{hint}</p>
       )}
       {errors?.[0] && (
-        <p className="text-oxblood text-xs mt-1">{errors[0]}</p>
+        <p id={`${name}-error`} role="alert" className="text-oxblood text-xs mt-1">
+          {errors[0]}
+        </p>
       )}
     </div>
   );

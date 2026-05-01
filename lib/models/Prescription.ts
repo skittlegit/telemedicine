@@ -26,7 +26,7 @@ const PrescriptionSchema = new Schema(
     revokedAt: { type: Date },
     fulfilledAt: { type: Date },
   },
-  { timestamps: true },
+  { timestamps: true, strict: true },
 );
 
 export type PrescriptionDoc = InferSchemaType<typeof PrescriptionSchema> & { _id: string };

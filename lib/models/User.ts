@@ -15,7 +15,7 @@ const UserSchema = new Schema(
     status: { type: String, enum: ["active", "pending", "disabled"], default: "active", index: true },
     lastLoginAt: { type: Date },
   },
-  { timestamps: true },
+  { timestamps: true, strict: true },
 );
 
 export type UserDoc = InferSchemaType<typeof UserSchema> & { _id: string };

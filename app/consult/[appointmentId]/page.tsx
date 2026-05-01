@@ -6,6 +6,7 @@ import { Appointment } from "@/lib/models/Appointment";
 import { User } from "@/lib/models/User";
 import { decryptPHI } from "@/lib/crypto";
 import { requireSession } from "@/lib/authz";
+import { audit } from "@/lib/audit";
 import { ConsultRoom } from "./ConsultRoom";
 import { ProcessShim } from "./ProcessShim";
 import { env } from "@/lib/env";
@@ -63,8 +64,16 @@ export default async function ConsultPage({ params }: PageProps) {
   }
 
   const role = session.user.role;
-  const reason =
-    role === "doctor" && appt.reasonEnc ? decryptPHI(appt.reasonEnc) : null;
+  let reason: string | null = null;
+  if (role === "doctor" && appt.reasonEnc) {
+    reason = decryptPHI(appt.reasonEnc);
+    void audit({
+      actor: session.user.id,
+      actorRole: role,
+      action: "appointment.read_reason",
+      target: `Appointment:${appt._id}`,
+    });
+  }
   const peerName =
     role === "doctor" ? appt.patient.name : `Dr. ${appt.doctor.name}`;
 

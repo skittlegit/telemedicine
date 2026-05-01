@@ -34,7 +34,7 @@ const PharmacyProfileSchema = new Schema(
     country: { type: String, default: "" },
     phone: { type: String, default: "" },
   },
-  { timestamps: true },
+  { timestamps: true, strict: true },
 );
 
 export type PharmacyProfileDoc = InferSchemaType<typeof PharmacyProfileSchema> & {

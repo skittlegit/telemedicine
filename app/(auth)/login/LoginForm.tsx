@@ -21,6 +21,8 @@ export function LoginForm({ callbackUrl }: { callbackUrl?: string }) {
           required
           className="field"
           placeholder="you@example.com"
+          aria-invalid={!!state.error}
+          aria-describedby={state.error ? "login-error" : undefined}
         />
       </div>
 
@@ -33,11 +35,17 @@ export function LoginForm({ callbackUrl }: { callbackUrl?: string }) {
           autoComplete="current-password"
           required
           className="field"
+          aria-invalid={!!state.error}
+          aria-describedby={state.error ? "login-error" : undefined}
         />
       </div>
 
       {state.error && (
-        <p className="text-sm text-oxblood border border-oxblood/30 bg-clay-wash px-3 py-2">
+        <p
+          id="login-error"
+          role="alert"
+          className="text-sm text-oxblood border border-oxblood/30 bg-clay-wash px-3 py-2"
+        >
           {state.error}
         </p>
       )}

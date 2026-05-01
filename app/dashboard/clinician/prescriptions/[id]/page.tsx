@@ -7,6 +7,7 @@ import { Prescription } from "@/lib/models/Prescription";
 import { User } from "@/lib/models/User";
 import { requireSession } from "@/lib/authz";
 import { decryptPHI } from "@/lib/crypto";
+import { audit } from "@/lib/audit";
 import { prescriptionQrDataUrl } from "@/app/actions/prescription";
 import { env } from "@/lib/env";
 import { DashboardHeader } from "@/app/dashboard/_components/Shell";
@@ -56,6 +57,14 @@ export default async function PrescriptionPage({ params }: PageProps) {
 
   const qr = await prescriptionQrDataUrl(rx.verifyToken);
   const diagnosis = decryptPHI(rx.diagnosisEnc) ?? "";
+  if (rx.diagnosisEnc) {
+    void audit({
+      actor: me,
+      actorRole: role,
+      action: "prescription.read_diagnosis",
+      target: `Prescription:${rx._id}`,
+    });
+  }
 
   return (
     <main className="min-h-screen bg-paper text-ink">
