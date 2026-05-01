@@ -1,80 +1,16 @@
-import Link from "next/link";
 import type { ReactNode } from "react";
-import { signOutAction } from "@/app/actions/auth";
-import { Wordmark, Caduceus as MarkCaduceus } from "@/app/_components/MarketingChrome";
-import { DashboardMobileNav } from "./DashboardMobileNav";
 
 /**
- * Authenticated chrome. Identical visual frame to MarketingHeader so /dashboard
- * doesn't read as a different product from /. Only the nav list and the
- * right-side cluster change (role badge + sign out instead of sign in /
- * register CTAs).
+ * @deprecated The dashboard chrome is now provided by `app/dashboard/layout.tsx`
+ * (which renders <AppShell>). This export remains as a no-op shim so the
+ * existing per-page `<DashboardHeader user={...} />` calls keep compiling
+ * during the migration. It can be deleted once every page is cleaned up.
  */
-
-const NAV: Record<string, Array<{ href: string; label: string }>> = {
-  patient: [
-    { href: "/dashboard", label: "Overview" },
-    { href: "/doctors", label: "Find a doctor" },
-    { href: "/dashboard#prescriptions", label: "Records" },
-  ],
-  doctor: [
-    { href: "/dashboard", label: "Overview" },
-    { href: "/dashboard#schedule", label: "Schedule" },
-    { href: "/dashboard#rx", label: "Prescriptions" },
-    { href: "/dashboard/clinician/profile", label: "Profile" },
-  ],
-  pharmacist: [
-    { href: "/dashboard/pharmacy", label: "Queue" },
-    { href: "/dashboard/pharmacy#mine", label: "In progress" },
-    { href: "/dashboard/pharmacy/profile", label: "Profile" },
-  ],
-  admin: [
-    { href: "/dashboard/admin", label: "Overview" },
-    { href: "/dashboard/admin#approvals", label: "Approvals" },
-    { href: "/dashboard/admin#clinicians", label: "Clinicians" },
-    { href: "/dashboard/admin#audit", label: "Audit" },
-  ],
-};
-
-export function DashboardHeader({
-  user,
-}: {
+export function DashboardHeader(_props: {
   user: { name: string; role: string };
 }) {
-  const links = NAV[user.role] ?? [];
-  return (
-    <header className="border-b border-[color:var(--rule)] bg-paper/90 backdrop-blur-[2px] sticky top-0 z-50">
-      <div className="mx-auto w-full max-w-[1200px] px-5 sm:px-6 lg:px-8 h-[56px] flex items-center justify-between gap-3 sm:gap-6">
-        <Wordmark />
-        <nav className="hidden md:flex items-center gap-7 text-[13px] text-ink-soft">
-          {links.map((l) => (
-            <Link
-              key={l.label}
-              href={l.href}
-              prefetch
-              className="hover:text-ink transition-colors"
-            >
-              {l.label}
-            </Link>
-          ))}
-        </nav>
-        <div className="flex items-center gap-2">
-          <span className="hidden sm:inline-flex items-center gap-2 text-[12px] text-ink-mute">
-            <span className="px-1.5 py-0.5 border border-[color:var(--rule-strong)] bg-paper-tint text-clay text-[10.5px] tracking-[0.14em] uppercase font-medium">
-              {user.role}
-            </span>
-            <span className="hidden lg:inline text-ink-soft">{user.name}</span>
-          </span>
-          <form action={signOutAction} className="hidden md:block">
-            <button type="submit" className="btn btn-ghost btn-sm">
-              Sign out
-            </button>
-          </form>
-          <DashboardMobileNav links={links} user={user} />
-        </div>
-      </div>
-    </header>
-  );
+  void _props;
+  return null;
 }
 
 /**
@@ -271,4 +207,4 @@ export function StatusPill({ status }: { status: string }) {
  * so existing imports (`import { Caduceus } from "@/app/dashboard/_components/Shell"`)
  * keep compiling without per-file edits.
  */
-export const Caduceus = MarkCaduceus;
+export { Caduceus } from "@/app/_components/MarketingChrome";

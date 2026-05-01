@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Fraunces, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { PageTransition } from "./_components/PageTransition";
+import { NO_FLASH_SCRIPT } from "./_components/ThemeToggle";
 
 // Display: Fraunces — variable serif with optical sizing. Brings the
 // editorial confidence high-end design relies on; pairs cleanly with Inter.
@@ -52,6 +53,9 @@ export default function RootLayout({
       lang="en"
       className={`${display.variable} ${sans.variable} ${mono.variable} h-full antialiased`}
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: NO_FLASH_SCRIPT }} />
+      </head>
       <body className="min-h-full flex flex-col">
         <a href="#content" className="skip-link">Skip to content</a>
         <PageTransition>

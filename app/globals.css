@@ -10,6 +10,8 @@
    ===================================================================== */
 
 :root {
+  color-scheme: light;
+
   /* Surface — calm paper, slightly cooler than the prior warm-bone */
   --paper:        #F4F1E9;
   --paper-tint:   #EDE9DF;
@@ -39,6 +41,64 @@
 
   --background:   var(--paper);
   --foreground:   var(--ink);
+}
+
+/* Dark theme — same palette structure, inverted surfaces. The clay primary
+   shifts a little brighter so it stays AA on dark surfaces. Activated by
+   either an explicit [data-theme="dark"] on <html> (user preference) or by
+   the system preference when no preference is set. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --paper:        #131019;
+  --paper-tint:   #1B1726;
+  --paper-deep:   #241F32;
+
+  --ink:          #ECE7F5;
+  --ink-soft:     #C9C2DA;
+  --ink-mute:     #8C849D;
+  --ink-faint:    #524A63;
+
+  --clay:         #9B82FF;
+  --clay-deep:    #B6A2FF;
+  --clay-wash:    rgba(155, 130, 255, 0.14);
+
+  --accent:       #C893E8;
+
+  --moss:         #7AB089;
+  --amber:        #DDB46A;
+  --oxblood:      #E07A7A;
+
+  --rule:         rgba(236, 231, 245, 0.10);
+  --rule-strong:  rgba(236, 231, 245, 0.22);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --paper:        #131019;
+    --paper-tint:   #1B1726;
+    --paper-deep:   #241F32;
+
+    --ink:          #ECE7F5;
+    --ink-soft:     #C9C2DA;
+    --ink-mute:     #8C849D;
+    --ink-faint:    #524A63;
+
+    --clay:         #9B82FF;
+    --clay-deep:    #B6A2FF;
+    --clay-wash:    rgba(155, 130, 255, 0.14);
+
+    --accent:       #C893E8;
+
+    --moss:         #7AB089;
+    --amber:        #DDB46A;
+    --oxblood:      #E07A7A;
+
+    --rule:         rgba(236, 231, 245, 0.10);
+    --rule-strong:  rgba(236, 231, 245, 0.22);
+  }
 }
 
 @theme inline {
@@ -268,6 +328,113 @@ textarea.field { line-height: 1.5; }
   padding: 0.05rem 0.3rem;
   color: var(--ink-soft);
   background: var(--paper);
+}
+
+/* ===== Nav primitives — clinical-standard (One Medical-style) ====== */
+
+.nav-link {
+  font-family: var(--font-plex), sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--ink-soft);
+  padding: 0.4rem 0.1rem;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: color 120ms ease;
+}
+.nav-link:hover { color: var(--ink); }
+.nav-link[aria-current="page"],
+.nav-link[data-active="true"] {
+  color: var(--ink);
+}
+.nav-link[aria-current="page"]::after,
+.nav-link[data-active="true"]::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -18px;
+  height: 2px;
+  background: var(--clay);
+}
+
+/* Sidebar item — used inside dashboard left rail */
+.side-link {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.55rem 0.85rem;
+  font-family: var(--font-plex), sans-serif;
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--ink-soft);
+  border-radius: 4px;
+  position: relative;
+  transition: background 120ms ease, color 120ms ease;
+}
+.side-link:hover { background: var(--paper-deep); color: var(--ink); }
+.side-link[aria-current="page"],
+.side-link[data-active="true"] {
+  background: var(--clay-wash);
+  color: var(--ink);
+}
+.side-link[aria-current="page"]::before,
+.side-link[data-active="true"]::before {
+  content: "";
+  position: absolute;
+  left: -1px;
+  top: 8px;
+  bottom: 8px;
+  width: 2px;
+  background: var(--clay);
+  border-radius: 2px;
+}
+.side-link svg { color: var(--ink-mute); flex-shrink: 0; }
+.side-link[aria-current="page"] svg,
+.side-link[data-active="true"] svg { color: var(--clay); }
+
+/* Announcement strip — slim 32px primary CTA bar above the marketing nav */
+.announce {
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-plex), sans-serif;
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0;
+  padding: 0.45rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  text-align: center;
+}
+.announce a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in oklab, currentColor 40%, transparent);
+  text-underline-offset: 3px;
+  transition: text-decoration-color 120ms ease;
+}
+.announce a:hover { text-decoration-color: currentColor; }
+
+/* Mega-menu panel — opens under the marketing nav */
+.mega-panel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--paper);
+  border-bottom: 1px solid var(--rule-strong);
+  box-shadow: 0 12px 24px -16px rgba(0, 0, 0, 0.18);
+  animation: megaIn 140ms ease;
+}
+@keyframes megaIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* ===== Skip link ==================================================== */
