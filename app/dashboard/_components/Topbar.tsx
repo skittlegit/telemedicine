@@ -87,8 +87,11 @@ export function Topbar({
           </nav>
         </div>
 
-        <div className="flex items-center gap-2">
-          <span className="hidden sm:inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-clay-wash text-clay text-[11px] font-medium uppercase tracking-[0.06em]">
+        <div className="flex items-center gap-3">
+          <span
+            className="hidden sm:inline-flex items-center mono text-[10.5px] tracking-[0.18em] uppercase text-ink-mute"
+            aria-label={`Signed in as ${user.role}`}
+          >
             {user.role}
           </span>
         </div>

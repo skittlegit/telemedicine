@@ -4,138 +4,177 @@ import {
   MarketingFooter,
 } from "../_components/MarketingChrome";
 import { marketingHeaderProps } from "../_components/marketingHeaderProps";
-import {
-  CalendarIcon,
-  VideoIcon,
-  PillIcon,
-} from "../_components/icons";
 
-export const metadata = { title: "How it works — Vellum Health" };
+export const metadata = { title: "How a visit runs · Vellum Health" };
+
+const STEPS: ReadonlyArray<{
+  n: string;
+  head: string;
+  italic: string;
+  body: string;
+  detail: string;
+  filed: string;
+}> = [
+  {
+    n: "01",
+    head: "Book a clinician,",
+    italic: "in under a minute.",
+    body:
+      "Filter the directory by specialty, language, or the next open slot. Pay the flat fee and the room is yours, opening on the hour.",
+    detail:
+      "No insurance pre-authorisation, no triage questionnaire. The booking page asks for nothing the visit will not need. Cancel free up to the slot opening.",
+    filed: "Booking · /book/[doctor]",
+  },
+  {
+    n: "02",
+    head: "Speak to a clinician,",
+    italic: "by encrypted video.",
+    body:
+      "Thirty minutes, one to one, on a HIPAA-aligned WebRTC channel. Photos and prior labs can be shared inside the consult.",
+    detail:
+      "Video uses DTLS-SRTP end-to-end on the consult leg; no clinical media is recorded on our servers. Notes are typed by the clinician while you watch and confirm.",
+    filed: "Consult · /consult/[appointment]",
+  },
+  {
+    n: "03",
+    head: "Have it filled,",
+    italic: "the same day.",
+    body:
+      "Prescriptions carry an HMAC signature any pharmacist can verify against our public ledger. We route them to a partner pharmacy near you.",
+    detail:
+      "Pickup or delivery, your choice at checkout. Pharmacy fulfilment is at cost, separate from the consultation fee. Most metro orders arrive within hours.",
+    filed: "Pharmacy · /pharmacy/order",
+  },
+];
+
+const FEES: ReadonlyArray<{ label: string; price: string }> = [
+  { label: "General practice consultation", price: "₹499" },
+  { label: "Specialist consultation", price: "₹899" },
+  { label: "Mental health, fifty minutes", price: "₹1,199" },
+  { label: "Pharmacy delivery, metro routes", price: "from ₹49" },
+];
 
 export default async function HowItWorksPage() {
   const headerProps = await marketingHeaderProps();
+
   return (
     <main className="min-h-screen flex flex-col bg-paper text-ink">
       <MarketingHeader {...headerProps} />
 
-      <section className="mx-auto w-full max-w-[1200px] px-5 sm:px-6 lg:px-8 pt-12 sm:pt-16 pb-10">
-        <p className="eyebrow mb-2.5">How it works</p>
-        <h1 className="text-[34px] sm:text-[44px] lg:text-[52px] font-semibold tracking-[-0.025em] leading-[1.05] max-w-[22ch]">
-          From symptom to prescription, in three steps, one evening.
-        </h1>
-        <p className="mt-5 text-ink-soft text-[15.5px] leading-[1.65] max-w-[58ch]">
-          No insurance hoops, no waiting rooms, no fax machines. Vellum is a
-          flat-fee, video-first clinic with same-day pharmacy fulfilment.
-        </p>
-        <div className="mt-7 flex flex-wrap gap-2">
-          <Link href="/register" className="btn btn-clay" prefetch>
-            Book a consultation <span aria-hidden>→</span>
-          </Link>
-          <Link href="/doctors" className="btn btn-ghost" prefetch>
-            Browse doctors
-          </Link>
+      <section className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-10 pt-10">
+        <div className="masthead">
+          <span>How a visit runs</span>
+          <span className="meta">Three steps · One evening</span>
         </div>
       </section>
 
-      <section className="mx-auto w-full max-w-[1200px] px-5 sm:px-6 lg:px-8 py-10 sm:py-14">
-        <ol className="grid grid-cols-1 md:grid-cols-3 gap-px bg-[color:var(--rule)] border border-[color:var(--rule)]">
-          {[
-            {
-              n: "01",
-              icon: <CalendarIcon />,
-              title: "Book",
-              italic: "in under a minute",
-              body:
-                "Pick a clinician by specialty, language, and the next available slot. Pay a flat fee — no insurance hoops.",
-              detail:
-                "Filter the directory by specialty or language. You'll see real-time availability, the consultation fee, and patient ratings. Booking is one click.",
-            },
-            {
-              n: "02",
-              icon: <VideoIcon />,
-              title: "Consult",
-              italic: "by encrypted video",
-              body:
-                "Meet 1-on-1 over a HIPAA-aligned video call. Share symptoms, history, photos. Get a real diagnosis.",
-              detail:
-                "30-minute slot, peer-to-peer video with DTLS-SRTP. Upload photos and prior labs ahead of time so you spend the visit talking, not typing.",
-            },
-            {
-              n: "03",
-              icon: <PillIcon />,
-              title: "Fulfil",
-              italic: "the same day",
-              body:
-                "Receive a digitally signed prescription. We route it to a verified pharmacy near you for pickup or delivery.",
-              detail:
-                "Every prescription carries an HMAC-SHA256 signature any pharmacist can verify independently — no faxing, no forgery.",
-            },
-          ].map((s) => (
-            <li key={s.n} className="bg-paper p-6 lg:p-7">
-              <div className="flex items-center justify-between">
-                <span className="text-clay [&>svg]:w-6 [&>svg]:h-6">{s.icon}</span>
-                <span className="mono text-ink-mute text-[11px] tracking-[0.22em]">
-                  {s.n}
-                </span>
-              </div>
-              <h3 className="text-[18px] mt-5 font-semibold tracking-[-0.014em] leading-[1.25]">
-                {s.title}
-              </h3>
-              <p className="eyebrow mt-1.5 text-ink-mute">{s.italic}</p>
-              <p className="mt-4 text-ink-soft text-[13.5px] leading-[1.6]">
-                {s.body}
-              </p>
-              <p className="mt-3 text-ink-mute text-[12.5px] leading-[1.65] border-t border-[color:var(--rule)] pt-3">
-                {s.detail}
-              </p>
-            </li>
-          ))}
-        </ol>
-      </section>
-
-      {/* Pricing teaser */}
-      <section className="mx-auto w-full max-w-[1200px] px-5 sm:px-6 lg:px-8 py-10 sm:py-14 grid grid-cols-12 gap-x-10 gap-y-8">
-        <div className="col-span-12 lg:col-span-5">
-          <p className="eyebrow mb-2.5">Pricing</p>
-          <h2 className="text-[24px] sm:text-[28px] font-semibold tracking-[-0.018em] leading-[1.2]">
-            Flat fees. No surprises.
-          </h2>
-          <p className="mt-5 text-ink-soft text-[14.5px] leading-[1.65] max-w-[48ch]">
-            We don&apos;t take insurance directly — we charge one flat fee per
-            consultation. You get an itemised receipt for out-of-network
-            reimbursement.
+      {/* Hero */}
+      <section className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-10 pt-12 sm:pt-16 lg:pt-20 pb-14 grid grid-cols-12 gap-x-8 gap-y-10">
+        <div className="col-span-12 lg:col-span-9">
+          <p className="eyebrow">A method statement</p>
+          <h1 className="serif-display mt-5 text-[clamp(2.75rem,8vw,6.5rem)]">
+            From a symptom to a prescription,{" "}
+            <span className="italic-accent">in one evening.</span>
+          </h1>
+          <p className="mt-7 max-w-[58ch] text-[16.5px] leading-[1.65] text-ink-soft">
+            No insurance hoops. No fax machines. No second visit to confirm
+            the first. The page below describes, plainly, what happens
+            between the moment you book and the moment a pharmacist reads
+            your prescription.
           </p>
-          <Link
-            href="/pricing"
-            className="btn btn-ghost mt-6 inline-flex"
-            prefetch
-          >
-            See full pricing <span aria-hidden>→</span>
-          </Link>
         </div>
-        <dl className="col-span-12 lg:col-span-7 grid grid-cols-2 gap-px bg-[color:var(--rule)] border border-[color:var(--rule)] self-start">
-          {[
-            ["General practice", "₹499"],
-            ["Specialist visit", "₹899"],
-            ["Mental health", "₹1,199"],
-            ["Pharmacy delivery", "from ₹49"],
-          ].map(([k, v]) => (
-            <div key={k} className="bg-paper p-5">
-              <dt className="eyebrow mb-1.5">{k}</dt>
-              <dd className="text-[18px] font-semibold tracking-[-0.014em]">{v}</dd>
-            </div>
-          ))}
-        </dl>
+        <aside className="col-span-12 lg:col-span-3 lg:pl-8 lg:border-l border-[color:var(--rule)]">
+          <p className="sidenote">
+            <strong>On timing</strong>
+            Slots open on the hour. The clinic operates 19:00 to 02:00 IST,
+            every night of the year. Most consultations begin within
+            fifteen minutes of booking.
+          </p>
+        </aside>
       </section>
 
-      <section className="mx-auto w-full max-w-[1200px] px-5 sm:px-6 lg:px-8 pb-20">
-        <div className="border border-[color:var(--rule-strong)] bg-paper-tint p-8 sm:p-12 text-center rounded-sm">
-          <h2 className="text-[26px] sm:text-[32px] font-semibold tracking-[-0.022em] leading-[1.2] max-w-[24ch] mx-auto">
-            Ready when you are. Tonight, even.
+      {/* Numbered features, long-form */}
+      <section className="border-t border-[color:var(--rule-strong)] bg-paper">
+        <div className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-10 py-16 sm:py-24">
+          <ol className="space-y-16 sm:space-y-24">
+            {STEPS.map((s) => (
+              <li
+                key={s.n}
+                className="grid grid-cols-12 gap-x-8 gap-y-6 border-t border-[color:var(--rule)] pt-10 sm:pt-14"
+              >
+                <div className="col-span-12 md:col-span-3">
+                  <span className="numbered block">{s.n}</span>
+                  <p className="sidenote mt-6">
+                    <strong>Filed under</strong>
+                    {s.filed}
+                  </p>
+                </div>
+                <div className="col-span-12 md:col-span-9 lg:col-span-8">
+                  <h2 className="serif-section text-[clamp(1.75rem,4vw,2.6rem)] max-w-[24ch]">
+                    {s.head}{" "}
+                    <span className="italic-accent">{s.italic}</span>
+                  </h2>
+                  <p className="mt-6 max-w-[60ch] text-[16px] leading-[1.7] text-ink-soft">
+                    {s.body}
+                  </p>
+                  <p className="mt-4 max-w-[60ch] text-[14.5px] leading-[1.7] text-ink-mute">
+                    {s.detail}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      {/* Bill of fees */}
+      <section className="border-t border-[color:var(--rule-strong)] bg-paper-tint">
+        <div className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-10 py-16 sm:py-24 grid grid-cols-12 gap-x-8 gap-y-10">
+          <div className="col-span-12 md:col-span-4">
+            <p className="eyebrow">Bill of fees</p>
+            <h2 className="serif-section mt-3 text-[clamp(1.75rem,4vw,2.6rem)] max-w-[18ch]">
+              Flat. And{" "}
+              <span className="italic-accent">finished.</span>
+            </h2>
+            <p className="mt-5 max-w-[36ch] text-[14.5px] leading-[1.65] text-ink-soft">
+              Vellum is cash-pay. Each price below is the entire fee for the
+              consultation, with prescription, encrypted record, and
+              follow-up message included.
+            </p>
+            <Link href="/pricing" className="btn-link mt-6">
+              Read the full pricing note
+              <span aria-hidden>→</span>
+            </Link>
+          </div>
+          <div className="col-span-12 md:col-span-8 md:col-start-5">
+            <div role="list">
+              {FEES.map((row) => (
+                <div key={row.label} className="bill" role="listitem">
+                  <span className="label">{row.label}</span>
+                  <span className="leader" aria-hidden />
+                  <span className="price tabular">{row.price}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Closing CTA */}
+      <section className="border-t border-[color:var(--rule-strong)] bg-paper">
+        <div className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-10 py-16 sm:py-24">
+          <h2 className="serif-display text-[clamp(2.25rem,7vw,5rem)] max-w-[18ch]">
+            Ready when you are.{" "}
+            <span className="italic-accent">Tonight, even.</span>
           </h2>
-          <div className="mt-6 flex justify-center gap-2 flex-wrap">
-            <Link href="/register" className="btn btn-clay" prefetch>
-              Create patient account <span aria-hidden>→</span>
+          <div className="mt-8 flex flex-wrap items-center gap-3">
+            <Link href="/register" className="btn btn-clay btn-lg">
+              Create your account
+              <span aria-hidden>→</span>
+            </Link>
+            <Link href="/doctors" className="btn-link">
+              Browse the practice
+              <span aria-hidden>→</span>
             </Link>
           </div>
         </div>

@@ -173,44 +173,6 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ============ FROM THE PRACTICE — opening editorial ============ */}
-      <section className="border-t border-[color:var(--rule-strong)] bg-paper-tint">
-        <div className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-10 py-16 sm:py-24 grid grid-cols-12 gap-x-8 gap-y-10">
-          <div className="col-span-12 lg:col-span-3">
-            <p className="eyebrow">From the practice</p>
-            <p className="sidenote mt-6">
-              <strong>Statement of method</strong>
-              We take twelve patients a night, per clinician. After that
-              the slots close. There is no virtual queue, no holding
-              music, no back-of-house upsell.
-            </p>
-          </div>
-          <div className="col-span-12 lg:col-span-9">
-            <h2 className="serif-section text-[clamp(1.85rem,4.5vw,3.25rem)] max-w-[26ch]">
-              The clinic you would have built,{" "}
-              <span className="italic-accent">had you the time.</span>
-            </h2>
-            <div className="editorial-prose mt-8 dropcap">
-              <p>
-                A routine doctor visit, when it works, is a quiet thing.
-                A clinician asks the right two or three questions, names
-                what is happening, writes a prescription, and lets you
-                go. Nothing about that requires a waiting room, an
-                insurance form, or a fifteen-minute slot. Vellum is
-                arranged around what the visit actually is.
-              </p>
-              <p>
-                The booking page is plain. The fee is flat. The
-                prescription is signed in front of you, with a code your
-                pharmacist can verify independently. Records stay on the
-                clinical surface only, encrypted at the field level
-                before they ever touch the database.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* ============ SPECIALTIES INDEX ============ */}
       <section className="border-t border-[color:var(--rule-strong)] bg-paper">
         <div className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-10 py-16 sm:py-24">
@@ -317,50 +279,6 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ============ FAQ ============ */}
-      <section className="border-t border-[color:var(--rule-strong)] bg-paper">
-        <div className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-10 py-16 sm:py-24 grid grid-cols-12 gap-x-8 gap-y-10">
-          <div className="col-span-12 lg:col-span-4">
-            <p className="eyebrow">Letters to the editor</p>
-            <h2 className="serif-section mt-3 text-[clamp(1.85rem,4.5vw,2.85rem)] max-w-[18ch]">
-              Before you{" "}
-              <span className="italic-accent">book.</span>
-            </h2>
-          </div>
-          <div className="col-span-12 lg:col-span-8">
-            <div>
-              {FAQ.map(([q, a], i) => (
-                <details
-                  key={q}
-                  {...(i === 0 ? { open: true } : {})}
-                  className="group py-5 border-t border-[color:var(--rule)] last:border-b last:border-[color:var(--rule)]"
-                >
-                  <summary className="flex items-baseline justify-between gap-6 cursor-pointer list-none">
-                    <span className="flex items-baseline gap-4 min-w-0">
-                      <span className="mono text-ink-mute text-[12px] tabular shrink-0">
-                        {String(i + 1).padStart(2, "0")}
-                      </span>
-                      <span className="serif-section text-[clamp(1.1rem,2.4vw,1.4rem)]">
-                        {q}
-                      </span>
-                    </span>
-                    <span
-                      aria-hidden
-                      className="shrink-0 text-ink-mute group-open:rotate-45 transition-transform text-[20px] leading-none mono"
-                    >
-                      +
-                    </span>
-                  </summary>
-                  <p className="mt-4 ml-0 sm:ml-9 max-w-[58ch] text-[14.5px] leading-[1.7] text-ink-soft">
-                    {a}
-                  </p>
-                </details>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* ============ COLOPHON / FINAL CTA ============ */}
       <section className="border-t border-[color:var(--rule-strong)] bg-paper-tint">
         <div className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-10 py-16 sm:py-28">
@@ -458,25 +376,6 @@ const RECORDS: ReadonlyArray<readonly [string, string, string]> = [
   ["Compliance posture", "HIPAA-aligned", "BAA available with all clinical partners."],
   ["Prescription integrity", "HMAC-SHA256", "Verifiable independently of Vellum, by any pharmacist."],
   ["Access trail", "Immutable audit log", "Append-only. Patients can request the full ledger."],
-];
-
-const FAQ: Array<[string, string]> = [
-  [
-    "Can you actually prescribe medication?",
-    "Yes, for most non-controlled medications. A Vellum clinician can issue a digitally signed prescription during your consultation. Controlled substances (e.g., schedule II) require an in-person visit per federal rules.",
-  ],
-  [
-    "Do you take insurance?",
-    "Vellum is a flat-fee, cash-pay service starting at ₹499 per visit. We provide an itemised receipt you can submit to most insurers for out-of-network reimbursement.",
-  ],
-  [
-    "Is my information really private?",
-    "Every clinical field is encrypted before storage with AES-256-GCM, and access is logged immutably. Your doctor and you are the only people who can decrypt your record.",
-  ],
-  [
-    "What if I need to be seen in person?",
-    "If your clinician determines an in-person exam is necessary, they will refer you to a local provider and your consultation fee is fully refunded.",
-  ],
 ];
 
 /**

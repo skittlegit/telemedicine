@@ -8,9 +8,8 @@ import {
   MarketingFooter,
 } from "../_components/MarketingChrome";
 import { marketingHeaderProps } from "../_components/marketingHeaderProps";
-import { StarIcon } from "../_components/icons";
 
-export const metadata = { title: "Find a doctor — Vellum Health" };
+export const metadata = { title: "The directory · Vellum Health" };
 export const dynamic = "force-dynamic";
 
 interface PageProps {
@@ -34,14 +33,6 @@ interface DoctorRow {
   user: { _id: string; name: string };
 }
 
-function initialsOf(name: string): string {
-  return name
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((p) => p.charAt(0).toUpperCase())
-    .join("");
-}
-
 export default async function DoctorsPage({ searchParams }: PageProps) {
   const sp = await searchParams;
   await connectDB();
@@ -50,7 +41,7 @@ export default async function DoctorsPage({ searchParams }: PageProps) {
   const filter: Record<string, unknown> = {};
   if (sp.specialty) filter.specialty = sp.specialty;
 
-  const PAGE_SIZE = 12;
+  const PAGE_SIZE = 16;
   const page = Math.max(1, Number(sp.page) || 1);
   const sortKey = sp.sort ?? "rating";
   const sortMap: Record<string, Record<string, 1 | -1>> = {
@@ -94,187 +85,251 @@ export default async function DoctorsPage({ searchParams }: PageProps) {
     return qs ? `/doctors?${qs}` : "/doctors";
   }
 
+  function sortHref(key: string) {
+    const params = new URLSearchParams();
+    if (sp.specialty) params.set("specialty", sp.specialty);
+    if (sp.q) params.set("q", sp.q);
+    if (key !== "rating") params.set("sort", key);
+    const qs = params.toString();
+    return qs ? `/doctors?${qs}` : "/doctors";
+  }
+
   const headerProps = await marketingHeaderProps();
 
   return (
     <main className="min-h-screen flex flex-col bg-paper text-ink">
       <MarketingHeader {...headerProps} />
 
-      {/* HERO */}
-      <section className="mx-auto w-full max-w-[1200px] px-5 sm:px-6 lg:px-8 pt-12 sm:pt-14 pb-8">
-        <p className="eyebrow mb-2.5">The directory</p>
-        <h1 className="text-[34px] sm:text-[44px] lg:text-[52px] font-semibold tracking-[-0.025em] leading-[1.05] max-w-[20ch]">
-          Practitioners in residence.
-        </h1>
-        <p className="mt-5 text-ink-soft text-[15.5px] leading-[1.65] max-w-[58ch]">
-          Every clinician below is board-certified, background-checked, and has
-          had their licence verified by our admin team.
-        </p>
-
-        {/* Search */}
-        <form
-          className="mt-7 flex flex-wrap gap-2 items-end max-w-[640px]"
-          action="/doctors"
-        >
-          <div className="flex-1 min-w-0 w-full">
-            <label className="eyebrow block mb-1.5" htmlFor="q">
-              Search by name, specialty, or language
-            </label>
-            <input
-              id="q"
-              name="q"
-              defaultValue={sp.q ?? ""}
-              placeholder="e.g. Reyes, dermatology, Spanish"
-              className="field"
-            />
-          </div>
-          {sp.specialty && (
-            <input type="hidden" name="specialty" value={sp.specialty} />
-          )}
-          <button type="submit" className="btn btn-clay">
-            Search
-          </button>
-        </form>
-      </section>
-
-      {/* FILTER CHIPS */}
-      <section className="mx-auto w-full max-w-[1200px] px-5 sm:px-6 lg:px-8 py-6 border-t border-[color:var(--rule)]">
-        <p className="eyebrow mb-2.5">Filter by specialty</p>
-        <div className="flex flex-wrap gap-1.5">
-          <FilterChip
-            href={q ? `/doctors?q=${encodeURIComponent(q)}` : "/doctors"}
-            label="All"
-            active={!sp.specialty}
-          />
-          {specialties.map((s) => {
-            const params = new URLSearchParams();
-            params.set("specialty", s);
-            if (q) params.set("q", q);
-            return (
-              <FilterChip
-                key={s}
-                href={`/doctors?${params.toString()}`}
-                label={s}
-                active={sp.specialty === s}
-              />
-            );
-          })}
+      <section className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-10 pt-10">
+        <div className="masthead">
+          <span>The directory</span>
+          <span className="meta">
+            {totalCount} clinicians on file
+            {sp.specialty ? ` · ${sp.specialty}` : ""}
+          </span>
         </div>
       </section>
 
-      {/* RESULTS */}
-      <section className="mx-auto w-full max-w-[1200px] px-5 sm:px-6 lg:px-8 pb-20">
-        <div className="flex items-baseline justify-between mb-5">
+      {/* Hero */}
+      <section className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-10 pt-12 sm:pt-14 pb-10 grid grid-cols-12 gap-x-8 gap-y-8">
+        <div className="col-span-12 lg:col-span-9">
+          <p className="eyebrow">Practitioners in residence</p>
+          <h1 className="serif-display mt-5 text-[clamp(2.5rem,7vw,5.75rem)]">
+            Every clinician,{" "}
+            <span className="italic-accent">named.</span>
+          </h1>
+          <p className="mt-7 max-w-[58ch] text-[16px] leading-[1.65] text-ink-soft">
+            Each entry below has been licence-verified, background-checked,
+            and read by our admissions panel. The list is alphabetical
+            within sort order; you may filter by specialty or search by
+            name, language, or condition.
+          </p>
+        </div>
+        <aside className="col-span-12 lg:col-span-3 lg:pl-8 lg:border-l border-[color:var(--rule)]">
+          <p className="sidenote">
+            <strong>On admission</strong>
+            We do not list every applicant. Admission is by panel review.
+            New entries are marked <em>new</em> until they have completed
+            ten consultations on the platform.
+          </p>
+        </aside>
+      </section>
+
+      {/* Search + filter strip */}
+      <section className="border-y border-[color:var(--rule)] bg-paper-tint">
+        <div className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-10 py-6 grid grid-cols-12 gap-x-6 gap-y-5">
+          <form className="col-span-12 lg:col-span-5 flex gap-2 items-end" action="/doctors">
+            <div className="flex-1 min-w-0">
+              <label className="eyebrow block mb-1.5" htmlFor="q">
+                Search
+              </label>
+              <input
+                id="q"
+                name="q"
+                defaultValue={sp.q ?? ""}
+                placeholder="Name, specialty, or language"
+                className="field"
+              />
+            </div>
+            {sp.specialty && (
+              <input type="hidden" name="specialty" value={sp.specialty} />
+            )}
+            <button type="submit" className="btn btn-clay">
+              Find
+            </button>
+          </form>
+
+          <div className="col-span-12 lg:col-span-7 lg:pl-6 lg:border-l border-[color:var(--rule)]">
+            <p className="eyebrow mb-2.5">Sort by</p>
+            <div className="flex flex-wrap gap-x-5 gap-y-1.5 text-[13px]">
+              {[
+                ["rating", "Rating"],
+                ["experience", "Experience"],
+                ["fee_asc", "Fee, low to high"],
+                ["fee_desc", "Fee, high to low"],
+              ].map(([k, label]) => {
+                const active = sortKey === k;
+                return (
+                  <Link
+                    key={k}
+                    href={sortHref(k)}
+                    className={
+                      "transition-colors " +
+                      (active
+                        ? "text-ink underline underline-offset-4 decoration-clay decoration-[1.5px]"
+                        : "text-ink-mute hover:text-ink")
+                    }
+                  >
+                    {label}
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Specialty chips */}
+      <section className="border-b border-[color:var(--rule)]">
+        <div className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-10 py-5">
+          <div className="flex flex-wrap gap-x-1 gap-y-1.5 items-baseline">
+            <span className="eyebrow text-ink-mute mr-3">By specialty</span>
+            <SpecChip
+              href={q ? `/doctors?q=${encodeURIComponent(q)}` : "/doctors"}
+              label="All"
+              active={!sp.specialty}
+            />
+            {specialties.map((s) => {
+              const params = new URLSearchParams();
+              params.set("specialty", s);
+              if (q) params.set("q", q);
+              return (
+                <SpecChip
+                  key={s}
+                  href={`/doctors?${params.toString()}`}
+                  label={s}
+                  active={sp.specialty === s}
+                />
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Index list */}
+      <section className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-10 py-12 sm:py-16 flex-1">
+        <div className="flex items-baseline justify-between mb-6">
           <p className="eyebrow">
             {visible.length} {visible.length === 1 ? "result" : "results"}
-            {sp.specialty ? ` · ${sp.specialty}` : ""}
             {q ? ` · "${q}"` : ""}
+          </p>
+          <p className="eyebrow text-ink-mute hidden sm:block">
+            Page {page} of {totalPages}
           </p>
         </div>
 
         {visible.length === 0 ? (
-          <div className="border border-[color:var(--rule-strong)] bg-paper-tint p-10 text-center rounded-sm">
-            <p className="text-[18px] font-semibold tracking-[-0.014em]">
+          <div className="border-y border-[color:var(--rule-strong)] py-16 text-center">
+            <p className="serif-section text-[1.5rem]">
               No practitioners match.
             </p>
-            <p className="mt-1.5 text-ink-mute text-sm">
+            <p className="mt-3 text-ink-mute text-[14px]">
               Try a different specialty, or{" "}
               <Link href="/doctors" className="text-clay underline">
-                clear filters
+                clear the filters
               </Link>
               .
             </p>
-            <p className="mt-5 text-xs text-ink-mute">
-              Are you a clinician?{" "}
-              <Link
-                href="/register?role=doctor"
-                className="text-clay underline"
-              >
-                Apply for licensure review →
-              </Link>
-            </p>
           </div>
         ) : (
-          <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-[color:var(--rule)] border border-[color:var(--rule)]">
-            {visible.map((d) => (
-              <li key={d._id} className="bg-paper">
-                <Link
-                  href={`/doctors/${d._id}`}
-                  className="group block p-5 lg:p-6 hover:bg-paper-tint transition-colors h-full"
-                  prefetch
+          <ol>
+            {visible.map((d, i) => {
+              const indexNo = (page - 1) * PAGE_SIZE + i + 1;
+              return (
+                <li
+                  key={d._id}
+                  className="border-t border-[color:var(--rule)] last:border-b last:border-[color:var(--rule)]"
                 >
-                  <div className="flex items-start justify-between gap-4">
-                    <div
-                      className="w-12 h-12 rounded-full bg-clay-wash text-clay text-[15px] font-semibold flex items-center justify-center"
-                      aria-hidden
-                    >
-                      {initialsOf(d.user.name)}
+                  <Link
+                    href={`/doctors/${d._id}`}
+                    prefetch
+                    className="group grid grid-cols-12 gap-x-4 gap-y-2 py-5 sm:py-6 hover:bg-paper-tint transition-colors px-1"
+                  >
+                    <span className="col-span-2 sm:col-span-1 mono text-ink-mute text-[12px] tabular pt-1">
+                      {String(indexNo).padStart(2, "0")}
+                    </span>
+
+                    <div className="col-span-10 sm:col-span-5">
+                      <p className="serif-section text-[clamp(1.05rem,2vw,1.4rem)] text-ink group-hover:text-clay transition-colors">
+                        Dr. {d.user.name}
+                      </p>
+                      <p className="mono text-ink-mute text-[11px] tracking-[0.14em] uppercase mt-1.5">
+                        {d.specialty} · {d.yearsOfExperience}y experience
+                      </p>
+                      {d.bio && (
+                        <p className="mt-3 text-ink-soft text-[13.5px] leading-[1.55] max-w-[60ch] line-clamp-2">
+                          {d.bio}
+                        </p>
+                      )}
                     </div>
-                    {d.ratingCount > 0 ? (
-                      <span className="inline-flex items-center gap-1 eyebrow">
-                        <StarIcon className="w-3.5 h-3.5 text-clay" />
-                        {d.rating.toFixed(1)}
-                        <span className="text-ink-faint">
-                          ({d.ratingCount})
-                        </span>
+
+                    <div className="col-span-12 sm:col-span-3 text-[12.5px] text-ink-mute leading-[1.55] sm:pt-1">
+                      <p className="mono uppercase tracking-[0.14em] text-[10.5px] mb-1.5">
+                        Languages
+                      </p>
+                      <p className="text-ink-soft text-[13px]">
+                        {(d.languages ?? []).slice(0, 4).join(", ") || "English"}
+                      </p>
+                      {d.ratingCount > 0 ? (
+                        <p className="mt-2 mono text-[11px] text-ink-mute tabular">
+                          ★ {d.rating.toFixed(1)} · {d.ratingCount} reviews
+                        </p>
+                      ) : (
+                        <p className="mt-2 mono text-[11px] text-moss tracking-[0.14em] uppercase">
+                          New
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="col-span-12 sm:col-span-3 sm:text-right sm:pt-1">
+                      <p className="mono uppercase tracking-[0.14em] text-[10.5px] text-ink-mute mb-1.5">
+                        Consultation
+                      </p>
+                      <p className="serif-section text-[1.25rem] text-ink tabular">
+                        {formatINR(d.consultationFeeCents)}
+                      </p>
+                      <span
+                        aria-hidden
+                        className="inline-block mono text-[12px] text-ink-faint group-hover:text-clay transition-colors mt-2"
+                      >
+                        Read profile →
                       </span>
-                    ) : (
-                      <span className="inline-flex items-center gap-1.5 eyebrow text-moss">
-                        <span className="h-1.5 w-1.5 rounded-full bg-moss" />
-                        New
-                      </span>
-                    )}
-                  </div>
-
-                  <h3 className="text-[16px] mt-4 font-semibold tracking-[-0.012em] leading-[1.25]">
-                    Dr. {d.user.name}
-                  </h3>
-                  <p className="eyebrow mt-1">
-                    {d.specialty} · {d.yearsOfExperience}y exp.
-                  </p>
-
-                  {d.bio && (
-                    <p className="mt-3 text-ink-soft text-[13px] leading-[1.55] line-clamp-3">
-                      {d.bio}
-                    </p>
-                  )}
-
-                  <div className="mt-4 pt-4 border-t border-[color:var(--rule)] flex items-center justify-between text-[12.5px]">
-                    <span className="text-ink-mute truncate">
-                      {(d.languages ?? []).slice(0, 3).join(", ") || "English"}
-                    </span>
-                    <span className="font-semibold text-[14px]">
-                      {formatINR(d.consultationFeeCents)}
-                    </span>
-                  </div>
-
-                  <span className="mt-3 inline-block eyebrow text-clay group-hover:translate-x-0.5 transition-transform">
-                    View profile →
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
+                    </div>
+                  </Link>
+                </li>
+              );
+            })}
+          </ol>
         )}
 
         {visible.length > 0 && totalPages > 1 && (
           <nav
             aria-label="Pagination"
-            className="mt-8 flex items-center justify-between border-t border-[color:var(--rule)] pt-4 text-[13px]"
+            className="mt-10 flex items-center justify-between border-t border-[color:var(--rule-strong)] pt-6"
           >
             {page > 1 ? (
-              <Link href={pageHref(page - 1)} className="btn btn-ghost btn-sm">
-                ← Previous
+              <Link href={pageHref(page - 1)} className="btn-link">
+                <span aria-hidden>←</span> Previous
               </Link>
             ) : (
               <span aria-hidden />
             )}
-            <span className="eyebrow text-ink-mute">
-              Page {page} of {totalPages}
+            <span className="mono text-[12px] tracking-[0.14em] uppercase text-ink-mute tabular">
+              {String(page).padStart(2, "0")} / {String(totalPages).padStart(2, "0")}
             </span>
             {page < totalPages ? (
-              <Link href={pageHref(page + 1)} className="btn btn-ghost btn-sm">
-                Next →
+              <Link href={pageHref(page + 1)} className="btn-link">
+                Next <span aria-hidden>→</span>
               </Link>
             ) : (
               <span aria-hidden />
@@ -288,7 +343,7 @@ export default async function DoctorsPage({ searchParams }: PageProps) {
   );
 }
 
-function FilterChip({
+function SpecChip({
   href,
   label,
   active,
@@ -301,11 +356,12 @@ function FilterChip({
     <Link
       href={href}
       prefetch
-      className={`px-2.5 py-1 border eyebrow text-[10.5px] rounded-sm transition-colors ${
-        active
-          ? "bg-ink text-paper border-ink"
-          : "border-[color:var(--rule-strong)] hover:bg-paper-tint"
-      }`}
+      className={
+        "px-2.5 py-1 mono text-[10.5px] tracking-[0.14em] uppercase transition-colors " +
+        (active
+          ? "text-ink underline underline-offset-4 decoration-clay decoration-[1.5px]"
+          : "text-ink-mute hover:text-ink")
+      }
     >
       {label}
     </Link>

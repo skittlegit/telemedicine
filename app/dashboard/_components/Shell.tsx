@@ -14,9 +14,9 @@ export function DashboardHeader(_props: {
 }
 
 /**
- * Page header. Tightened from the prior editorial-clamp 4.5rem H1 to a
- * clinical text-3xl (~30px). Inter, not Fraunces. The serif moment is now
- * opt-in only via .serif-display on individual marketing pages.
+ * Page header. Editorial register: masthead rule + eyebrow + serif-display
+ * title with an optional italic-accent fragment. Container padding is
+ * supplied by AppShell so this renders inline.
  */
 export function PageHeader({
   eyebrow,
@@ -30,18 +30,25 @@ export function PageHeader({
   children?: ReactNode;
 }) {
   return (
-    <div className="mx-auto w-full max-w-[1200px] px-5 sm:px-6 lg:px-8 pt-8 sm:pt-10 pb-6">
-      <p className="eyebrow mb-2.5">{eyebrow}</p>
-      <h1 className="text-[26px] sm:text-[30px] font-semibold tracking-[-0.022em] leading-[1.15]">
+    <header className="mb-10">
+      <div className="masthead">
+        <span>{eyebrow}</span>
+      </div>
+      <h1 className="serif-display mt-6 text-[clamp(2rem,4.5vw,3.25rem)] max-w-[22ch]">
         {title}
-        {italic && <span className="text-ink-mute font-normal"> {italic}</span>}
+        {italic && (
+          <>
+            {" "}
+            <span className="italic-accent">{italic}</span>
+          </>
+        )}
       </h1>
       {children && (
-        <div className="mt-4 text-ink-soft text-[14px] max-w-[68ch] leading-[1.55]">
+        <div className="mt-5 text-ink-soft text-[14.5px] max-w-[68ch] leading-[1.7]">
           {children}
         </div>
       )}
-    </div>
+    </header>
   );
 }
 
@@ -55,13 +62,15 @@ export function StatTile({
   hint?: string;
 }) {
   return (
-    <div className="bg-paper px-5 py-4">
-      <p className="eyebrow mb-2 text-[10.5px]">{label}</p>
-      <p className="text-[26px] leading-none tracking-[-0.018em] font-semibold">
+    <div className="bg-paper px-5 py-5">
+      <p className="eyebrow mb-3">{label}</p>
+      <p className="serif-section text-[clamp(1.6rem,3vw,2.1rem)] tabular leading-none">
         {value}
       </p>
       {hint && (
-        <p className="text-[12px] text-ink-mute mt-1.5 leading-[1.45]">{hint}</p>
+        <p className="mono text-[11px] tracking-[0.12em] uppercase text-ink-mute mt-3">
+          {hint}
+        </p>
       )}
     </div>
   );
@@ -82,7 +91,7 @@ export function StatGrid({
         : "lg:grid-cols-3";
   return (
     <div
-      className={`grid grid-cols-2 ${colsClass} gap-px bg-[color:var(--rule)] border border-[color:var(--rule)]`}
+      className={`grid grid-cols-2 ${colsClass} gap-px bg-[color:var(--rule)] border-y border-[color:var(--rule-strong)]`}
     >
       {children}
     </div>
@@ -103,11 +112,11 @@ export function Section({
   children: ReactNode;
 }) {
   return (
-    <section id={id} className="mt-10">
-      <div className="flex flex-wrap items-end justify-between gap-3 mb-4 pb-2 border-b border-[color:var(--rule)]">
+    <section id={id} className="mt-14">
+      <div className="flex flex-wrap items-end justify-between gap-3 mb-6 pb-3 border-b border-[color:var(--rule-strong)]">
         <div>
-          {eyebrow && <p className="eyebrow mb-1.5">{eyebrow}</p>}
-          <h2 className="text-[18px] sm:text-[20px] font-semibold tracking-[-0.014em] leading-[1.2]">
+          {eyebrow && <p className="eyebrow mb-2">{eyebrow}</p>}
+          <h2 className="serif-section text-[clamp(1.25rem,2.4vw,1.6rem)]">
             {title}
           </h2>
         </div>
@@ -126,9 +135,11 @@ export function EmptyState({
   cta?: ReactNode;
 }) {
   return (
-    <div className="border border-dashed border-[color:var(--rule-strong)] rounded-sm p-8 text-center">
-      <p className="text-ink-mute text-sm">{message}</p>
-      {cta && <div className="mt-4 flex justify-center">{cta}</div>}
+    <div className="border-y border-[color:var(--rule)] py-10 text-center">
+      <p className="text-ink-mute text-[14px] leading-[1.6] max-w-[48ch] mx-auto">
+        {message}
+      </p>
+      {cta && <div className="mt-5 flex justify-center">{cta}</div>}
     </div>
   );
 }
