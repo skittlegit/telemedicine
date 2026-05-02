@@ -156,7 +156,7 @@ export function RegisterForm({ defaultRole }: { defaultRole: string }) {
               id="pharmacyName"
               name="pharmacyName"
               required
-              placeholder="e.g. Vellum Dispensary — Mission"
+              placeholder="e.g. Vellum Dispensary, Mission"
               className="field"
               aria-invalid={!!state.fieldErrors?.pharmacyName}
               aria-describedby={state.fieldErrors?.pharmacyName ? "pharmacyName-error" : undefined}

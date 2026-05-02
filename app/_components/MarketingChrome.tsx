@@ -58,8 +58,8 @@ export function Wordmark({ href = "/" }: { href?: string } = {}) {
 const NAV_LINKS: ReadonlyArray<{ href: string; label: string }> = [
   { href: "/doctors", label: "Doctors" },
   { href: "/specialties", label: "Specialties" },
+  { href: "/pharmacy", label: "Pharmacy" },
   { href: "/pricing", label: "Pricing" },
-  { href: "/security", label: "Security" },
 ];
 
 function isActive(pathname: string | null, href: string) {
@@ -151,6 +151,7 @@ export function MarketingFooter({ logoHref = "/" }: { logoHref?: string } = {}) 
           <ul className="space-y-2.5 text-[13.5px] text-ink-soft">
             <li><Link className="hover:text-clay transition-colors" href="/doctors">Doctors</Link></li>
             <li><Link className="hover:text-clay transition-colors" href="/specialties">Specialties</Link></li>
+            <li><Link className="hover:text-clay transition-colors" href="/pharmacy">Pharmacy</Link></li>
             <li><Link className="hover:text-clay transition-colors" href="/pricing">Pricing</Link></li>
           </ul>
         </div>
@@ -158,7 +159,6 @@ export function MarketingFooter({ logoHref = "/" }: { logoHref?: string } = {}) 
           <p className="eyebrow mb-4">About</p>
           <ul className="space-y-2.5 text-[13.5px] text-ink-soft">
             <li><Link className="hover:text-clay transition-colors" href="/how-it-works">How it works</Link></li>
-            <li><Link className="hover:text-clay transition-colors" href="/security">Security</Link></li>
           </ul>
         </div>
         <div className="md:col-span-2">

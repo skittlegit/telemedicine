@@ -4,7 +4,7 @@
 
 split
 
-The surface determines the register. `/`, `/how-it-works`, `/doctors`, `/specialties/*`, `/pricing`, `/security` are **brand**. `/dashboard/*`, `/book/*`, `/consult/*`, `/(auth)/*` are **product**. When a surface is ambiguous, default to brand unless the task is explicitly about app functionality.
+The surface determines the register. `/`, `/how-it-works`, `/doctors`, `/specialties/*`, `/pharmacy`, `/pricing` are **brand**. `/dashboard/*`, `/book/*`, `/consult/*`, `/(auth)/*` are **product**. When a surface is ambiguous, default to brand unless the task is explicitly about app functionality.
 
 ## Users
 

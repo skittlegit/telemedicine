@@ -292,7 +292,7 @@ async function ClinicianView({
             >
               {verified
                 ? `Verified by Vellum on ${new Date(profile.licenseVerifiedAt!).toLocaleDateString()}`
-                : "Pending admin verification — your account is read-only until approved."}
+                : "Pending admin verification. Your account is read-only until approved."}
             </p>
           </div>
           <Link

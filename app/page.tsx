@@ -234,23 +234,23 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ============ ON RECORDS — security ============ */}
+      {/* ============ ON DISPENSING — pharmacy ============ */}
       <section className="border-t border-[color:var(--rule-strong)] bg-paper">
         <div className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-10 py-16 sm:py-24 grid grid-cols-12 gap-x-8 gap-y-10">
           <div className="col-span-12 lg:col-span-5">
-            <p className="eyebrow">On records</p>
+            <p className="eyebrow">On dispensing</p>
             <h2 className="serif-section mt-3 text-[clamp(1.85rem,4.5vw,3rem)] max-w-[20ch]">
-              Read by you, and your doctor.{" "}
-              <span className="italic-accent">Alone.</span>
+              Signed scripts, fulfilled{" "}
+              <span className="italic-accent">by hand.</span>
             </h2>
             <p className="mt-6 max-w-[44ch] text-[15px] leading-[1.65] text-ink-soft">
-              Notes, allergies, history, and addresses are encrypted at
-              the field level before they touch our database.
-              Prescriptions carry a per-record HMAC any pharmacist can
-              verify independently of Vellum.
+              Every prescription carries an HMAC-SHA256 signature. A
+              partner pharmacist verifies it, claims the script
+              within minutes, and delivers same-day on metro routes.
+              No fax, no forgery, no insurance theatre.
             </p>
-            <Link href="/security" className="btn-link mt-7">
-              Read the security note
+            <Link href="/pharmacy" className="btn-link mt-7">
+              Read the dispensing note
               <span aria-hidden>→</span>
             </Link>
           </div>
@@ -370,12 +370,12 @@ const FEATURES: Array<{
 ];
 
 const RECORDS: ReadonlyArray<readonly [string, string, string]> = [
-  ["Encryption at rest", "AES-256-GCM", "Per-field, per-record. Keys rotate quarterly."],
-  ["Encryption in transit", "TLS 1.3", "Forward-secret. No long-lived session keys."],
-  ["Video signalling", "WebRTC · DTLS-SRTP", "End-to-end on the consult leg, no media on our servers."],
-  ["Compliance posture", "HIPAA-aligned", "BAA available with all clinical partners."],
-  ["Prescription integrity", "HMAC-SHA256", "Verifiable independently of Vellum, by any pharmacist."],
-  ["Access trail", "Immutable audit log", "Append-only. Patients can request the full ledger."],
+  ["Network", "42 partner pharmacies", "Independent dispensaries across nine metros, vetted quarterly."],
+  ["Verification", "HMAC-SHA256", "Pharmacists verify each script independently of Vellum."],
+  ["Same-day, metro", "₹49 standard", "Signature on receipt where the schedule requires it."],
+  ["Cold chain", "2–8°C maintained", "Validated containers for refrigerated medications."],
+  ["Refusal rate", "0.04% YTD", "Forgeries and tampered signatures, refused on verification."],
+  ["Audit trail", "Immutable ledger", "Every claim, dispense, and delivery, append-only."],
 ];
 
 /**

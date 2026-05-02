@@ -68,7 +68,7 @@ export default async function ApprovalsPage() {
 
       <Section eyebrow="Queue" title={`${pending.length} pending`}>
         {pending.length === 0 ? (
-          <EmptyState message="Nothing pending — inbox clear." />
+          <EmptyState message="Nothing pending. Inbox clear." />
         ) : (
           <ul className="divide-y divide-[color:var(--rule)] border border-[color:var(--rule)]">
             {pending.map((u) => {

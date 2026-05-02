@@ -119,7 +119,7 @@ export const SPECIALTIES: Array<{
     description:
       "Board-certified GPs handle everyday illness, ongoing prescriptions, and the screening conversations every adult should have once a year. If we can't help over video, we'll tell you within five minutes and refund the visit.",
     treats: [
-      "Acute illness — colds, flu, sinus, UTI, GI",
+      "Acute illness, colds, flu, sinus, UTI, GI",
       "Routine refills for stable medications",
       "Annual physicals and risk screenings",
       "Travel medicine and pre-travel scripts",
@@ -146,7 +146,7 @@ export const SPECIALTIES: Array<{
       "Couples and family sessions",
     ],
     doesnt: [
-      "Active suicidal crisis — call 988 or 911",
+      "Active suicidal crisis: call 988 or 911",
       "Schedule II stimulants in most states",
     ],
   },
@@ -186,7 +186,7 @@ export const SPECIALTIES: Array<{
       "Pre-surgery cardiac clearance discussion",
     ],
     doesnt: [
-      "Active chest pain — call 911",
+      "Active chest pain: call 911",
       "ECG, echo, stress testing (we refer)",
     ],
   },
@@ -215,7 +215,7 @@ export const SPECIALTIES: Array<{
     name: "Women's health",
     examples: "Contraception, hormones",
     icon: <FlowerIcon />,
-    tagline: "Hormones, contraception, perimenopause — handled.",
+    tagline: "Hormones, contraception, perimenopause, handled.",
     description:
       "Gynaecologists and women's-health specialists for the conversations that don't fit a 7-minute slot. Discreet, asynchronous photos and lab results welcome.",
     treats: [

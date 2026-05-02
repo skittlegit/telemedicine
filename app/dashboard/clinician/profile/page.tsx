@@ -43,7 +43,7 @@ export default async function ClinicianProfilePage() {
           <p className={`text-sm ${verified ? "text-moss" : "text-amber"}`}>
             {verified
               ? `Verified by Vellum on ${new Date(profile!.licenseVerifiedAt!).toLocaleDateString()}.`
-              : "Pending admin verification — your account is read-only until approved."}
+              : "Pending admin verification. Your account is read-only until approved."}
           </p>
         </div>
 

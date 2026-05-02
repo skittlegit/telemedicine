@@ -120,12 +120,10 @@ export default async function PatientProfilePage() {
 
       <Section eyebrow="Privacy" title="Your data">
         <p className="text-[14px] text-ink-soft leading-[1.65] max-w-[60ch]">
-          Vellum stores your medical record encrypted at rest. You can request
-          a full export or account deletion at any time — see{" "}
-          <a className="text-clay hover:underline" href="/security#rights">
-            Your rights
-          </a>{" "}
-          for the formal request flow.
+          Vellum stores your medical record encrypted at rest. You can
+          request a full export or account deletion at any time. Use the
+          channels in your registration confirmation email to file a
+          formal request; the team responds within five business days.
         </p>
       </Section>
     </>
