@@ -14,7 +14,9 @@ import {
   StatTile,
   Section,
   EmptyState,
+  LicenseBanner,
 } from "@/app/dashboard/_components/Shell";
+import { formatINR } from "@/lib/money";
 import { BookedBanner } from "@/app/dashboard/_components/BookedBanner";
 import {
   ApptRowItem,
@@ -146,16 +148,17 @@ async function PatientView({
         italic={`${firstName}.`}
       />
 
-      {/* Calm "Today" card */}
+      {/* Today's status card — calm, single-purpose */}
       <section className="mt-2 border border-[color:var(--rule-strong)] bg-paper p-6 sm:p-7">
-        <div className="flex flex-wrap items-center gap-2 mb-3">
+        <div className="flex flex-wrap items-center gap-3 mb-3">
           <span className="eyebrow text-ink-mute">Today</span>
-          {isVerified && (
-            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 border border-moss/40 bg-moss/10 eyebrow text-moss rounded-sm">
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                <path d="M5 12l5 5L20 7" />
-              </svg>
-              Verified
+          {isVerified ? (
+            <span className="inline-flex items-center gap-1.5 mono text-[10.5px] tracking-[0.14em] uppercase text-moss">
+              <span className="h-1.5 w-1.5 rounded-full bg-moss" /> Identity verified
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-1.5 mono text-[10.5px] tracking-[0.14em] uppercase text-amber">
+              <span className="h-1.5 w-1.5 rounded-full bg-amber" /> Email unverified
             </span>
           )}
         </div>
@@ -168,6 +171,9 @@ async function PatientView({
           </Link>
         </div>
       </section>
+
+      {/* heartbeat divider — clinical signature between hero and feed */}
+      <div className="my-12 heartbeat-rule" aria-hidden />
 
       {/* Recent activity */}
       <Section
@@ -273,35 +279,16 @@ async function ClinicianView({
         italic={`Dr. ${lastName}.`}
       >
         {profile?.specialty ?? "Clinician"} · {panelIds.length} patients in
-        your panel · ${(profile?.consultationFeeCents ?? 5000) / 100} per
+        your panel · {formatINR(profile?.consultationFeeCents ?? 5000)} per
         consult
       </PageHeader>
 
       {profile && (
-        <div
-          className={`mb-10 border p-4 flex flex-wrap items-center justify-between gap-3 ${
-            verified
-              ? "border-moss/40 bg-moss/5"
-              : "border-amber/40 bg-amber/10"
-          }`}
-        >
-          <div>
-            <p className="eyebrow mb-1">Licensure</p>
-            <p
-              className={`text-sm ${verified ? "text-moss" : "text-amber"}`}
-            >
-              {verified
-                ? `Verified by Vellum on ${new Date(profile.licenseVerifiedAt!).toLocaleDateString()}`
-                : "Pending admin verification. Your account is read-only until approved."}
-            </p>
-          </div>
-          <Link
-            href="/dashboard/clinician/profile"
-            className="btn btn-ghost text-xs"
-          >
-            Manage profile →
-          </Link>
-        </div>
+        <LicenseBanner
+          verified={verified}
+          verifiedAt={profile.licenseVerifiedAt}
+          manageHref="/dashboard/clinician/profile"
+        />
       )}
 
       <StatGrid cols={4}>

@@ -267,8 +267,8 @@ export default async function Home() {
                   Create your account
                   <span aria-hidden>→</span>
                 </Link>
-                <Link href="/how-it-works" className="btn-link">
-                  How a visit runs
+                <Link href="/doctors" className="btn-link">
+                  Browse the practice
                   <span aria-hidden>→</span>
                 </Link>
               </div>

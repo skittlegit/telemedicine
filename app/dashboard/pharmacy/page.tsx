@@ -10,7 +10,9 @@ import {
   StatTile,
   Section,
   EmptyState,
+  LicenseBanner,
 } from "@/app/dashboard/_components/Shell";
+import { formatINR2 } from "@/lib/money";
 
 export const dynamic = "force-dynamic";
 
@@ -82,30 +84,11 @@ export default async function PharmacyQueuePage() {
       </PageHeader>
 
       {profile && (
-        <div
-          className={`mb-10 border p-4 flex flex-wrap items-center justify-between gap-3 ${
-            verified
-              ? "border-moss/40 bg-moss/5"
-              : "border-amber/40 bg-amber/10"
-          }`}
-        >
-          <div>
-            <p className="eyebrow mb-1">Licensure</p>
-            <p
-              className={`text-sm ${verified ? "text-moss" : "text-amber"}`}
-            >
-              {verified
-                ? `Verified by Vellum on ${new Date(profile.licenseVerifiedAt!).toLocaleDateString()}`
-                : "Pending admin verification."}
-            </p>
-          </div>
-          <Link
-            href="/dashboard/pharmacy/profile"
-            className="btn btn-ghost text-xs"
-          >
-            Manage profile →
-          </Link>
-        </div>
+        <LicenseBanner
+          verified={verified}
+          verifiedAt={profile.licenseVerifiedAt}
+          manageHref="/dashboard/pharmacy/profile"
+        />
       )}
 
       <StatGrid cols={4}>
@@ -147,8 +130,8 @@ export default async function PharmacyQueuePage() {
                 <div>
                   <p className="font-medium">{o.patient.name}</p>
                   <p className="mono text-[11px] text-ink-mute mt-0.5">
-                    Received {new Date(o.createdAt).toLocaleString()} · $
-                    {(o.totalCents / 100).toFixed(2)}
+                    Received {new Date(o.createdAt).toLocaleString()} ·{" "}
+                    {formatINR2(o.totalCents)}
                   </p>
                 </div>
                 <form action={advanceOrderAction}>

@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import Link from "next/link";
 
 /**
  * @deprecated The dashboard chrome is now provided by `app/dashboard/layout.tsx`
@@ -32,7 +33,9 @@ export function PageHeader({
   return (
     <header className="mb-10">
       <div className="masthead">
-        <span>{eyebrow}</span>
+        <span>
+          <span className="rx-mark" aria-hidden /> {eyebrow}
+        </span>
       </div>
       <h1 className="serif-display mt-6 text-[clamp(2rem,4.5vw,3.25rem)] max-w-[22ch]">
         {title}
@@ -140,6 +143,43 @@ export function EmptyState({
         {message}
       </p>
       {cta && <div className="mt-5 flex justify-center">{cta}</div>}
+    </div>
+  );
+}
+
+/**
+ * Shared license / verification banner for clinician + pharmacy dashboards.
+ * Uses the .alert-band primitive: full hairline border, soft tinted bg,
+ * status implied by the leading dot. No side-stripe colored borders.
+ */
+export function LicenseBanner({
+  verified,
+  verifiedAt,
+  manageHref,
+}: {
+  verified: boolean;
+  verifiedAt?: Date;
+  manageHref: string;
+}) {
+  return (
+    <div
+      className="alert-band mb-10"
+      data-tone={verified ? "moss" : "amber"}
+      role="status"
+    >
+      <div className="flex flex-wrap items-center justify-between gap-3 flex-1">
+        <div>
+          <p className="eyebrow mb-1 text-[10px]">Licensure</p>
+          <p className="text-[13px] text-ink leading-[1.5]">
+            {verified && verifiedAt
+              ? `Verified by Vellum on ${new Date(verifiedAt).toLocaleDateString()}.`
+              : "Pending admin verification. Your account is read-only until approved."}
+          </p>
+        </div>
+        <Link href={manageHref} className="btn btn-ghost btn-sm">
+          Manage profile →
+        </Link>
+      </div>
     </div>
   );
 }

@@ -146,8 +146,8 @@ export default async function SpecialtiesPage() {
               Browse the directory
               <span aria-hidden>→</span>
             </Link>
-            <Link href="/how-it-works" className="btn-link">
-              How a visit runs
+            <Link href="/pharmacy" className="btn-link">
+              Visit the pharmacy
               <span aria-hidden>→</span>
             </Link>
           </div>

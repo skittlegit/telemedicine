@@ -156,7 +156,8 @@ export function MarketingFooter({ logoHref = "/" }: { logoHref?: string } = {}) 
         <div className="md:col-span-2">
           <p className="eyebrow mb-4">About</p>
           <ul className="space-y-2.5 text-[13.5px] text-ink-soft">
-            <li><Link className="hover:text-clay transition-colors" href="/how-it-works">How it works</Link></li>
+            <li><Link className="hover:text-clay transition-colors" href="/doctors">Practice</Link></li>
+            <li><Link className="hover:text-clay transition-colors" href="/pharmacy">Pharmacy</Link></li>
           </ul>
         </div>
         <div className="md:col-span-2">

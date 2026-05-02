@@ -37,7 +37,8 @@ export default async function AdminOverviewPage() {
   return (
     <>
       <PageHeader eyebrow="Admin" title="Operations" italic="overview.">
-        Approvals, clinician roster, and the audit log.
+        Approvals, clinician roster, and the audit log. Snapshot of activity
+        across the platform.
       </PageHeader>
 
       <StatGrid cols={4}>
@@ -51,11 +52,15 @@ export default async function AdminOverviewPage() {
         <StatTile label="Open orders" value={ordersOpen} />
       </StatGrid>
 
-      <StatGrid cols={3}>
-        <StatTile label="Visits booked (24h)" value={apptsToday} />
-        <StatTile label="Rx issued (24h)" value={rxToday} />
-        <StatTile label="Audit events (24h)" value={recentAudits} />
-      </StatGrid>
+      <div className="my-12 heartbeat-rule" aria-hidden />
+
+      <Section eyebrow="Last 24 hours" title="Platform activity">
+        <dl className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-[color:var(--rule)] border-y border-[color:var(--rule-strong)]">
+          <Stat label="Visits booked" value={apptsToday} />
+          <Stat label="Prescriptions issued" value={rxToday} />
+          <Stat label="Audit events" value={recentAudits} />
+        </dl>
+      </Section>
 
       <Section eyebrow="Workspaces" title="Jump to">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -77,6 +82,17 @@ export default async function AdminOverviewPage() {
         </div>
       </Section>
     </>
+  );
+}
+
+function Stat({ label, value }: { label: string; value: number }) {
+  return (
+    <div className="bg-paper px-4 py-5">
+      <dt className="eyebrow text-ink-mute text-[10px]">{label}</dt>
+      <dd className="serif-section text-[28px] tabular mt-1.5 text-ink leading-none">
+        {value}
+      </dd>
+    </div>
   );
 }
 
