@@ -1,54 +1,67 @@
-# Product
+﻿# Product
 
 ## Register
 
-brand
+split
 
-The primary surface is the marketing site (`/`, `/how-it-works`, `/specialties`, `/security`, `/doctors`). The dashboards (`/dashboard/*`) are a product surface but secondary scope for this engagement.
+The surface determines the register. `/`, `/how-it-works`, `/doctors`, `/specialties/*`, `/pricing`, `/security` are **brand**. `/dashboard/*`, `/book/*`, `/consult/*`, `/(auth)/*` are **product**. When a surface is ambiguous, default to brand unless the task is explicitly about app functionality.
 
 ## Users
 
-**Primary:** adults aged 28–55 in the US, comfortable enough with the web to book doctor visits online, who have been let down by traditional clinics (waiting rooms, insurance hoops, 15-minute visits) and by first-generation telemedicine (chat-only, formulaic upsells, no continuity of care).
+**Primary (patient):** adults 28-55 in the US, health-literate but not health-obsessed, comfortable booking things online, deeply skeptical of both hospital bureaucracy and chatbot-first telehealth. They arrive slightly anxious, often after self-diagnosing on their phone. They need to decide in 30 seconds whether this platform is a real clinic or another SaaS funnel.
 
-**Context of use:** evening hours on a phone or laptop, often after the user has tried to self-diagnose. Mood is somewhere between mildly anxious and irritated. They are deciding in 30 seconds whether this site looks like another clinical-teal SaaS or like a real clinic.
+**Secondary (clinician):** licensed physicians and pharmacists evaluating whether Vellum is a serious platform worth joining. They notice unprofessionalism immediately and will not apply if the product looks built by marketers.
 
-**Job to be done:** "I have a symptom or a refill. Show me a real licensed doctor I can talk to tonight, on a flat fee, with a prescription I can fill the same day."
-
-**Secondary user:** clinicians (doctor / pharmacist) browsing the marketing site to decide whether the platform is professional enough to apply.
+**In-session (active patient):** a patient already booked, navigating the dashboard or consult room. Low patience for friction. One task at a time. Every extra click is a failure.
 
 ## Product Purpose
 
-Vellum Health is a flat-fee, video-first telemedicine clinic with same-day pharmacy fulfilment and field-level encrypted records. It exists to remove the three drains on a routine doctor visit: insurance friction, waiting rooms, and prescription forgery. Success is the user finishing the booking flow on the first visit and feeling the same calm they would feel walking into a designer-led private practice — not a SaaS funnel.
+Vellum Health is a flat-fee, video-first telemedicine clinic with same-day pharmacy fulfilment and field-level encrypted records. It removes three drains from a routine doctor visit: insurance friction, waiting rooms, and prescription forgery.
+
+Success is threefold:
+1. A new patient completes booking on their first visit without abandoning.
+2. An active patient reaches a prescription or a resolved consultation with no dead ends.
+3. A clinician signs off on a prescription in under two minutes.
 
 ## Brand Personality
 
-**Three words:** clinical, efficient, modern — but delivered through editorial typography rather than the visual clichés of healthcare SaaS.
+**Three words:** precise, unhurried, earned.
 
-**Voice:** precise, unhurried, occasionally wry. Says exactly what the product does. Never markets emotion at the user ("Your wellness journey starts here"). Italic-serif accents are the only place warmth shows.
+**Voice:** direct and specific. Says what happens, in what order, for what flat fee, signed by whom. Never markets emotion at the user. The platform's confidence comes from its evidence (licensed doctors, verified IDs, encrypted records) — not from marketing copy.
 
-**Tone goals:** confident without being chest-puffing; clinical without being cold; designer without being unserious.
+**Italic-serif accent is the only warmth.** One Fraunces italic fragment per brand-surface page hero, in `--accent`. The rest of the typography is upright and functional.
+
+**Product surface tone:** quieter than marketing. Less editorial, more clinical. Labels are concise. Empty states explain the absence, not the potential. Error messages say what went wrong and what to do next.
 
 ## Anti-references
 
-Match-and-refuse list. If a design choice could be at home in any of these, rework it.
+Match-and-refuse. If any of these could describe a design choice, rework it.
 
-- **Generic telemedicine SaaS** (Hims, Ro, Teladoc-style): clinical-teal accents, soft-shadow rounded cards, gradient CTAs, stock photos of smiling models, "Get started in seconds" hero.
-- **Hospital-corporate**: navy + white, all-sans-serif, blue ribbons, "Care that puts you first" stock copy, sterile photography.
-- **Wellness-startup pastel**: mint/peach gradients, blob illustrations, rounded-everything, "Your journey to wellness", soft-friendly anthropomorphic mascots.
-- **Crypto/AI dark-mode reflex**: neon-on-black, glow effects, animated gradients, "Powered by AI" badges.
+- **Generic telemedicine SaaS** (Hims, Ro, Teladoc): clinical-teal accents, soft-shadow rounded cards, gradient CTAs, stock model photos, "Get started in seconds" hero.
+- **Hospital-corporate:** navy + white, all-sans, blue ribbons, "Care that puts you first," sterile photography.
+- **Wellness-startup pastel:** mint/peach gradients, blob illustrations, rounded-everything, anthropomorphic mascots.
+- **Crypto/AI dark-mode reflex:** neon-on-black, glow effects, animated gradients, "Powered by AI" badges.
+- **SaaS-dashboard-gray:** mid-gray sidebar, white card grid, blue accent buttons, icon-heavy navigation. This is the product-surface equivalent of the brand anti-references above.
 
-## Strategic Design Principles
+## Design Principles
 
-1. **Editorial over SaaS.** The page should look closer to a print magazine spread than to a product landing page. Long measure, deep margins, hairline rules, opinionated typography.
-2. **Italic accent is the whole brand.** The Fraunces italic-serif fragment inside a sans/serif headline is the recurring signature. Use it once per surface, not five times.
-3. **Hairline grids over cards.** Most "card" containers in this codebase are gap-px borders on a tinted surface, not boxed cards with shadows. Keep it that way.
-4. **Mono is for evidence, not decoration.** JetBrains Mono is reserved for clinical IDs, fee values, prescription codes, and audit trails — never headings or marketing copy.
-5. **No insurance-of-feeling.** The marketing surface never simulates emotion. It says what happens, in what order, for what flat fee, signed by whom.
+1. **Editorial over SaaS (brand surface).** The marketing site reads closer to a print magazine than a product landing page. Long measure, deep margins, hairline rules, display typography. If a design choice could belong on a SaaS landing page, rework it.
+
+2. **Evidence over persuasion.** On both surfaces: trust comes from specificity. A named doctor, a flat fee, a prescription ID. Not from claims like "better care." Show the fact, never the feeling.
+
+3. **One signature per surface.** Brand: the italic-accent Fraunces fragment in the hero headline. Product: the hairline-grid layout. Neither is repeated decoratively. One clear signal per page, used once.
+
+4. **Density without noise (product surface).** Dashboard layouts hold more information than marketing pages, but never more than the current task requires. Whitespace is a rest point between actions, not a design statement.
+
+5. **Mono is clinical evidence.** JetBrains Mono signals "this is a verifiable fact." Reserved for IDs, fees, timestamps, prescription codes, and audit trails. Never in headings or marketing copy.
+
+6. **Errors are instructions.** Form errors, empty states, and failed states say exactly what went wrong and what to do next. No vague "Something went wrong."
 
 ## Accessibility & Inclusion
 
-- WCAG 2.1 AA at minimum. All ink-on-paper combinations must clear 4.5:1; eyebrow / mute text 3:1 on the warm-bone background.
-- Italic-accent color (`#6D3F8E` on `#F6F2E9`) must be verified against the headline weight at the size used, never relied on as the only signal.
-- Reduced-motion respected for the `motion/react` page transitions and any in-view fades.
-- Keyboard-only path through the booking flow must be unbroken.
-- Forms remain usable down to 320px viewport width.
+- WCAG 2.1 AA minimum. All ink-on-paper combinations must clear 4.5:1; eyebrow and muted text 3:1 on `--paper`.
+- `--accent` italic on `--paper` verified for display headline weight only. Do not reuse on body text or buttons.
+- `prefers-reduced-motion`: all entrance animations collapse to 0.01ms duration.
+- Keyboard-only path through the booking and consult flows must be unbroken.
+- Forms remain usable at 320px. No horizontal scroll.
+- Color is never the only signal for status: success/warning/error always pair color with an icon or text label.

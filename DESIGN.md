@@ -1,146 +1,166 @@
-# Design
+﻿# Design
 
 ## Visual Theme
 
-**Editorial clinical.** The look is closer to a contemporary print magazine spread (think `Apartamento`, `Cabana`, `The Gentlewoman`) than to a SaaS landing page. Long measure, deep margins, hairline rules, opinionated serif display typography over a warm-bone surface.
+**Editorial clinical.** The look sits closer to a contemporary print magazine (Apartamento, The Gentlewoman, Disegno) than to a SaaS landing page. Warm-bone surface, deep margins, hairline rules, opinionated serif display typography.
 
-The recurring signature is a **single italic Fraunces fragment** inside otherwise upright headlines, in warm aubergine `--accent`. It is used once per surface — never as decoration on every line.
+**Two surfaces, one language.** The brand surface (marketing) is typographic and editorial. The product surface (dashboard, booking, consult) is precise and functional. Both share the same color tokens, type families, and hairline-grid component system — marketing uses the full expressive range; product uses restraint.
 
-Cards are hairline grids on a tinted surface (gap-px borders), not boxed cards with shadows. Buttons are 4px radius rectangles, not pills. There are no gradients on text and no soft drop-shadows.
+The recurring brand signature is a **single italic Fraunces fragment** inside an otherwise upright headline, colored `--accent`. Used once per brand-surface page hero. Never used on the product surface.
+
+Cards are hairline grids on a tinted surface (gap-px borders). Buttons are 4px radius rectangles. No gradients on text, no soft drop-shadows.
 
 ## Color
 
-OKLCH is the source of truth for new colors; values below are the legacy hex shipped in `app/globals.css`. The palette strategy is **Restrained**: a single brand chroma (violet `--clay`) and a single accent chroma (aubergine `--accent`), with three muted clinical-status colors that never appear in marketing chrome.
+OKLCH is the source of truth for new colors. The palette strategy is **Restrained**: tinted neutrals, one brand chroma (violet `--clay`), one reserved accent (aubergine `--accent`). The product is **light-only** — no dark mode.
 
-| Token            | Hex        | Role                                                              |
-| ---------------- | ---------- | ----------------------------------------------------------------- |
-| `--paper`        | `#F6F2E9`  | Primary surface (warm bone, never `#fff`).                        |
-| `--paper-tint`   | `#EFEAE0`  | Tinted band between sections, well backgrounds.                   |
-| `--paper-deep`   | `#E5DECF`  | Heaviest tinted band, footer, image placeholders.                 |
-| `--ink`          | `#1F1A2E`  | Body text, headlines, primary button background (never `#000`).   |
-| `--ink-soft`     | `#3D3450`  | Secondary body text inside long passages.                         |
-| `--ink-mute`     | `#7A6F8A`  | Eyebrow / metadata / mono labels.                                 |
-| `--ink-faint`    | `#B0A8BF`  | Disabled, placeholders, decorative dividers only.                 |
-| `--clay`         | `#5B3FCF`  | Primary brand violet. Buttons, focus ring, link underline.        |
-| `--clay-deep`    | `#3D2899`  | Hover/active state for clay; never used as a flat surface.        |
-| `--clay-wash`    | `#ECE5FF`  | Avatar backgrounds, subtle highlight tags.                        |
-| `--accent`       | `#6D3F8E`  | Italic-serif headline accent. **Reserved for italic-accent only.**|
-| `--moss`         | `#4D7D5A`  | Sage success — clinical surfaces only.                            |
-| `--amber`        | `#B8821A`  | Ochre warning — clinical surfaces only.                           |
-| `--oxblood`      | `#8B2E2E`  | Oxblood danger — clinical surfaces only.                          |
-| `--rule`         | `rgba(31,26,46,0.10)` | Default hairline rule.                                |
-| `--rule-strong`  | `rgba(31,26,46,0.20)` | Card border, table border, button-ghost border.       |
+| Token           | Hex                   | Role                                                              |
+| --------------- | --------------------- | ----------------------------------------------------------------- |
+| `--paper`       | `#F4F1E9`             | Primary surface (warm bone, never `#fff`)                         |
+| `--paper-tint`  | `#EDE9DF`             | Section bands, well backgrounds                                   |
+| `--paper-deep`  | `#E2DCCE`             | Footer, image placeholders, deepest bands                         |
+| `--ink`         | `#1F1A2E`             | Body, headlines, primary button fill (never `#000`)               |
+| `--ink-soft`    | `#3D3450`             | Secondary body in long passages                                   |
+| `--ink-mute`    | `#7A6F8A`             | Eyebrow, metadata, mono labels                                    |
+| `--ink-faint`   | `#B0A8BF`             | Disabled, placeholders, decorative rules                          |
+| `--clay`        | `#5B3FCF`             | Primary brand violet. Buttons, focus ring, link underline         |
+| `--clay-deep`   | `#3D2899`             | Hover/active for clay. Never used as a flat surface               |
+| `--clay-wash`   | `#ECE5FF`             | Avatar backgrounds, subtle highlight tags                         |
+| `--accent`      | `#6D3F8E`             | Italic-serif fragment only. Never on interactive elements         |
+| `--moss`        | `#4D7D5A`             | Success — clinical surfaces only                                  |
+| `--amber`       | `#B8821A`             | Warning — clinical surfaces only                                  |
+| `--oxblood`     | `#8B2E2E`             | Danger — clinical surfaces only                                   |
+| `--rule`        | `rgba(31,26,46,0.10)` | Default hairline                                                  |
+| `--rule-strong` | `rgba(31,26,46,0.20)` | Card/table/button-ghost border                                    |
 
-**Background atmosphere:** two very low-opacity radial gradients painted on `<html>`, one violet at top-left and one ochre at bottom-right, both at 5% alpha. This is the only place gradients are permitted.
+**Background atmosphere (brand surface only):** two very low-opacity radial gradients on `<html>`, one violet top-left and one ochre bottom-right at 5% alpha. Forbidden on the product surface.
 
 **Forbidden:**
-- `#000` and `#ffffff` as fill colors. Use `--ink` and `--paper`.
-- Gradient text or gradient buttons.
-- Teal, mint, navy, peach — they belong to anti-reference categories.
-- Any color outside the table above as a primary fill.
+- `#000` / `#ffffff` as fills. Use `--ink` / `--paper`.
+- Gradient buttons or gradient text.
+- Teal, mint, navy, peach — anti-reference palette.
+- Any fill color outside the table above.
 
 ## Typography
 
-Three families, each with one job.
+Three families, one job each.
 
-| Family                       | Variable               | Job                                                               |
-| ---------------------------- | ---------------------- | ----------------------------------------------------------------- |
-| **Fraunces** (variable)      | `--font-fraunces`      | Display headlines (`opsz 144`, `SOFT 50`) and italic-accent fragments (`opsz 144`, `SOFT 100`, italic). |
-| **IBM Plex Sans**            | `--font-plex`          | Body, labels, buttons, navigation. `font-feature-settings: "ss01","cv11"`. |
-| **IBM Plex Mono**            | `--font-plex-mono`     | Eyebrows, IDs, fee values, prescription codes, audit timestamps. Never marketing copy. |
+| Family                  | Variable          | Job                                                                                     |
+| ----------------------- | ----------------- | --------------------------------------------------------------------------------------- |
+| **Fraunces** (variable) | `--font-fraunces` | Display headlines (`opsz 144`, `SOFT 50`) and italic-accent fragments (`SOFT 100`, italic) |
+| **IBM Plex Sans**       | `--font-plex`     | Body, labels, buttons, navigation                                                       |
+| **JetBrains Mono**      | `--font-plex-mono`| IDs, fees, timestamps, prescription codes, audit trails. Never marketing copy           |
 
-**Type scale (display):** all big headlines use a `clamp()` so they never overflow at 320px. Reference values currently in the codebase:
+> **Implementation note:** `layout.tsx` currently imports `Inter` for `--font-plex`. This should be corrected to `IBM_Plex_Sans` from `next/font/google` for brand alignment. `JetBrains_Mono` is already correct.
 
-- Hero H1: `clamp(2rem, 8vw, 6.5rem)` with `break-words`.
-- Section H2: `clamp(1.6rem, 5vw, 3.5rem)` with `break-words`.
-- Final-CTA H2: `clamp(1.85rem, 6vw, 4.5rem)`.
-- Auth/dashboard page H1: `clamp(2rem, 8vw, 4rem)`.
+**Type scale (display):**
+- Hero H1: `clamp(2rem, 8vw, 6.5rem)`, `font-variation-settings: "opsz" 144, "SOFT" 50`, `letter-spacing: -0.025em`, `line-height: 0.98`
+- Section H2: `clamp(1.6rem, 5vw, 3.5rem)`, same variation settings
+- Final-CTA H2: `clamp(1.85rem, 6vw, 4.5rem)`
+- Dashboard page H1: `clamp(2rem, 8vw, 4rem)` (same variation settings, no italic accent)
 
-Display headlines always carry `font-variation-settings: "opsz" 144, "SOFT" 50` and `letter-spacing: -0.025em`, `line-height: 0.98`.
+**Eyebrow pattern:** `.eyebrow` — JetBrains Mono 11px, `letter-spacing: 0.16em`, uppercase, `--ink-mute`. Paired above a display headline. Never inside body copy.
 
-**Eyebrow pattern:** `.eyebrow` class — Plex Mono 11px, `letter-spacing 0.16em`, uppercase, `--ink-mute`. Always paired above a display headline. Never used inside body copy.
+**Italic accent rule:** exactly one italic-accent Fraunces fragment per brand-surface page hero. Color is `--accent`, never `--clay`. The fragment is an emotional unit (a verb, an adjective, a name) — never a connector word. Never used on the product surface.
 
-**Italic accent rule:** exactly one italic-accent fragment per page hero. Color is `--accent`, never `--clay`. The fragment is an emotional unit (a verb, an adjective, a name) — never a connector word.
-
-**Body measure:** 65–75ch maximum. The codebase enforces this through `max-w-prose` and explicit container widths.
+**Body measure:** 65-75ch max. Enforced via `max-w-prose`.
 
 **Forbidden:**
-- More than one italic-accent fragment in the same headline.
-- Mono used as a heading or marketing tagline.
-- Headlines without the optical-size axis pinned (will look fragile at large sizes).
-- All-caps body copy. All-caps is reserved for `.eyebrow` and `.stamp`.
+- More than one italic-accent fragment per headline.
+- JetBrains Mono as heading or marketing copy.
+- Headlines without `opsz` axis pinned (will look fragile at large sizes).
+- All-caps body. All-caps for `.eyebrow` and `.stamp` only.
 
 ## Spacing & Layout
 
-**Grid:** 12-col implied via Tailwind `grid-cols-{n}`. Hairlines between cells use `gap-px` on a `--rule-strong` background — this is the dominant card pattern. Never use `box-shadow` to separate cards.
+**Grid:** 12-col via Tailwind `grid-cols-{n}`. Hairlines between cells: `gap-px` on `bg-[--rule-strong]` with `bg-paper` cells. Never use `box-shadow` to separate cards.
 
-**Section padding:** `px-5 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-24`. Mobile minimum is 5 (`1.25rem`), not 4 — verified against 320px viewports.
-
-**Vertical rhythm:** sections separated by `<hr class="rule" />` or by a `border-t border-[--rule]` change in band tint. No empty `<div>` spacers.
+**Section padding:** `px-5 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-24`. Mobile minimum is `px-5` (1.25rem) — verified against 320px viewports.
 
 **Container widths:**
-- Marketing main: `max-w-[1280px] mx-auto`.
-- Editorial body copy: `max-w-prose` (≈65ch).
-- Dashboard shell: `max-w-[1400px]`.
+- Marketing main: `max-w-[1280px] mx-auto`
+- Body copy: `max-w-prose` (~65ch)
+- Dashboard shell: `max-w-[1400px]`
 
-**Radius scale:** `4px` for buttons, cards, wells, inputs (subtle). `0` for tables and section bands. No fully-rounded pills except the role badge in the dashboard mobile sheet.
+**Radius scale:** `4px` for buttons, inputs, wells, cards. `0` for tables and section bands. No pills except the role badge in the dashboard mobile sheet.
+
+**Vertical rhythm:** sections separated by `<hr class="rule" />` or `border-t border-[--rule]` change in band tint. No empty `<div>` spacers.
 
 ## Components
 
-Defined in `app/globals.css` and consumed across the app. Treat these as the primitive layer; do not ship one-off variants.
+Primitives defined in `app/globals.css`. Treat as the primitive layer — do not ship one-off variants.
 
-- **`.btn` / `.btn-clay` / `.btn-ghost`** — 4px radius, 13px Plex Sans, 0.7rem×1.2rem padding, 1px ink border. Hover swaps to `--clay-deep`. Focus ring is `0 0 0 3px rgba(91,63,207,0.25)`.
-- **`.field`** — bottom-rule input, no left/right/top border, focus underline is `--clay`.
-- **`.well`** — `paper-tint` background, hairline border, 4px radius, 1.5rem padding. Use for callouts and forms.
-- **`.card`** — `paper` background, `rule-strong` border. Used in directory grids and stat tiles.
-- **`.stamp`** — rotated -1.5° tag, mono 10.5px uppercase, `--clay` outline. Use sparingly for editorial marks ("flat fee", "verified").
+**Global primitives:**
+- **`.btn` / `.btn-clay` / `.btn-ghost`** — 4px radius, 13px Plex, `0.7rem x 1.2rem` padding, 1px ink border. Hover: `--clay-deep`. Focus ring: `0 0 0 3px rgba(91,63,207,0.25)`.
+- **`.field`** — bottom-rule input, no left/right/top border. Focus underline is `--clay`.
+- **`.well`** — `--paper-tint` background, hairline border, 4px radius, 1.5rem padding. For callouts and forms.
+- **`.card`** — `--paper` background, `--rule-strong` border. Used in directory grids and stat tiles.
+- **`.stamp`** — rotated -1.5 degrees, JetBrains Mono 10.5px uppercase, `--clay` outline. Sparingly, for editorial marks ("flat fee", "verified").
 - **`.eyebrow`** — see Typography.
 - **`.rule` / `.rule-double`** — horizontal hairlines.
 
-**Card grids:** `grid grid-cols-{n} gap-px bg-[--rule-strong]` with `bg-paper` cells. This produces the hairline-grid look without per-cell borders.
+**Card grid pattern:** `grid grid-cols-{n} gap-px bg-[--rule-strong]` with `bg-paper` cells. The hairline-grid look without per-cell borders.
 
-**Avatars:** circular, `bg-clay-wash text-clay`, initials in display Fraunces. Never photographic stock images.
+**Avatars:** circular, `bg-clay-wash text-clay`, initials in Fraunces. Never stock photography.
+
+**Layout components:**
+- **`MarketingChrome`** (`app/_components/MarketingChrome.tsx`) — sticky header at 85% paper opacity + `backdrop-blur`. Caduceus wordmark, main nav, MarketingFooter. Brand surface only.
+- **`AppShell`** (`app/dashboard/_components/AppShell.tsx`) — product surface shell, composes Sidebar + Topbar. `--paper` background.
+- **`Sidebar`** — `max-w-[240px]`, `--paper-tint` background, hairline right border. Active nav link uses `--clay`. No icons beside labels.
+- **`Topbar`** — `--paper` background, hairline bottom border. Minimal: breadcrumb or page title on the left, user menu on the right.
+- **`DashboardMobileNav` / `MobileBottomNav`** — below `sm`, a bottom sheet slides up. Uses the same token set.
+
+**Motion components:**
+- **`PageTransition`** (`app/_components/PageTransition.tsx`) — `AnimatePresence mode="wait"`, fade + 8px y-translate, 0.28s ease-out-quart `[0.22,0.61,0.36,1]`. Keyed on `pathname`.
+- **`FadeUp`** (`app/_components/FadeUp.tsx`) — stagger entrance helper. Opacity + 12px y-translate, same easing. For lists and grid items.
 
 ## Motion
 
-`motion/react` (NOT framer-motion). Two motion primitives:
+Library: `motion/react` (package: `motion ^12`). Not `framer-motion`.
 
-- **PageTransition** in `app/_components/PageTransition.tsx` — `AnimatePresence mode="wait"`, fade + 8px y-translate, `duration 0.28`, ease `[0.22,0.61,0.36,1]` (ease-out-quart). Keyed on `pathname`.
-- **MarketingHeader sheet** — same ease, slightly slower (`0.32`), translates from y:-16 to 0 with opacity.
+**Allowed:** opacity, transform (translate, scale up to 1.02). **Forbidden:** animating `width`, `height`, `top/left`, `margin`, `padding`, or any property that triggers layout recalculation.
 
-**Allowed entrance animations:** opacity, transform (translate, scale ≤1.02). **Forbidden:** animating `width`, `height`, `top/left`, `margin`, `padding`, or anything that triggers layout. Animate transforms only.
+**Easing:** ease-out-quart `cubic-bezier(0.22, 0.61, 0.36, 1)`. No bounce, no elastic.
 
-**Reduced motion:** all `*` animation-duration is 0.01ms under `prefers-reduced-motion: reduce`. Always test with the OS toggle on.
+**Durations:** 0.28s (page transitions), 0.32s (sheets), 0.18s (micro-interactions like button hover).
+
+**`prefers-reduced-motion`:** all `*` animation-duration collapses to 0.01ms. Test with OS toggle.
 
 ## Iconography
 
-Custom 24×24 stroke icons in `app/_components/icons.tsx`. `stroke-width="1.5"`, `stroke="currentColor"`, `fill="none"`. No Lucide, no Heroicons. New icons must match the existing line weight and corner style.
+Custom 24 x 24 stroke icons in `app/_components/icons.tsx`. `stroke-width="1.5"`, `stroke="currentColor"`, `fill="none"`. New icons must match this line weight and corner style.
+
+`lucide-react` is installed as a dependency but must not be used in the UI. All new icons go in `icons.tsx`.
 
 ## Accessibility
 
-- Color contrast: every ink/paper combo verified at AA. The `--accent` italic on `--paper` is verified for the display headline weight only — do not reuse it on body text.
+- Contrast: every ink/paper combo verified at AA (4.5:1 body, 3:1 muted/eyebrow).
+- `--accent` italic on `--paper` verified at display heading weight only. Do not reuse on body text.
 - Focus ring: `0 0 0 3px rgba(91,63,207,0.25)` on every interactive element. Never `outline: none` without a replacement.
-- Keyboard order: visual order matches DOM order in every page.
-- 320px viewport: no horizontal scroll. `html` and `body` carry `overflow-x: clip`. Long mono strings use `overflow-wrap: anywhere`.
+- DOM order matches visual order on all pages.
+- 320px: no horizontal scroll. `html` and `body` carry `overflow-x: clip`. Long mono strings use `overflow-wrap: anywhere`.
+- Status colors (moss/amber/oxblood) always paired with a text label or icon — never color alone.
 
 ## Responsive Breakpoints
 
 Tailwind defaults. Concrete behaviors:
 
-- `<sm` (≤639px): single column, hamburger nav, mobile sheet for dashboard.
-- `sm` (≥640px): two columns where applicable, padding bumps to `px-6`.
-- `md` (≥768px): doctors directory goes 2-column, dashboard sidebar visible.
-- `lg` (≥1024px): full marketing 3–5 column layouts, padding `px-8`.
+- `<sm` (up to 639px): single column, hamburger nav, bottom sheet for dashboard.
+- `sm` (640px and up): two columns where applicable, `px-6`.
+- `md` (768px and up): doctors grid 2-col, dashboard sidebar visible.
+- `lg` (1024px and up): full 3-5 column layouts, `px-8`.
 
 ## Anti-patterns (forbidden in this codebase)
 
 1. **Card shadows** — use hairline borders.
 2. **Gradient buttons or text** — solid fills only.
 3. **Stock photography** — initials avatars or none.
-4. **More than one italic-accent fragment per page hero.**
-5. **Heroicons / Lucide** — match existing custom set.
-6. **Pill-shaped buttons** (`border-radius: 999px`) — use 4px.
-7. **`#000` / `#fff`** — use ink/paper tokens.
+4. **More than one italic-accent fragment per hero.**
+5. **Heroicons / Lucide in the UI** — use `icons.tsx` only.
+6. **Pill-shaped buttons** — 4px radius only.
+7. **`#000` / `#fff` fills** — use ink/paper tokens.
 8. **Animating layout properties** (width/height/top/left/margin/padding).
 9. **Side-stripe accent borders on cards.**
-10. **Glassmorphism / blur-as-default** — backdrop-blur is allowed only on the sticky header at 85% paper.
+10. **Glassmorphism** — `backdrop-blur` only on the sticky header.
+11. **Dark mode** — the product is light-only. `ThemeToggle.tsx` and all dark-mode CSS should be removed.
+12. **Background atmosphere gradients on the product surface** — brand surface (`<html>`) only.

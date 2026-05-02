@@ -3,7 +3,6 @@
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { type SidebarSection } from "./Sidebar";
-import { ThemeToggle } from "@/app/_components/ThemeToggle";
 
 /**
  * Build a breadcrumb chain by matching the current pathname against the
@@ -92,7 +91,6 @@ export function Topbar({
           <span className="hidden sm:inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-clay-wash text-clay text-[11px] font-medium uppercase tracking-[0.06em]">
             {user.role}
           </span>
-          <ThemeToggle className="hidden lg:inline-flex" />
         </div>
       </div>
     </div>

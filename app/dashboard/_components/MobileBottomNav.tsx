@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { signOutAction } from "@/app/actions/auth";
-import { ThemeToggle } from "@/app/_components/ThemeToggle";
 import type { SidebarItem, SidebarSection } from "./Sidebar";
 
 function matches(pathname: string, item: SidebarItem) {
@@ -36,8 +35,8 @@ function MoreIcon() {
 /**
  * Fixed bottom navigation, mobile/tablet only (`< lg`). Picks the first 4
  * items of the first nav section as primary destinations, plus a "More"
- * button that opens a bottom sheet with the remaining items + account
- * controls (sign out, theme). Respects iOS safe-area insets.
+ * button that opens a bottom sheet with the remaining items + sign-out.
+ * Respects iOS safe-area insets.
  */
 export function MobileBottomNav({
   nav,
@@ -198,7 +197,6 @@ export function MobileBottomNav({
                   Sign out
                 </button>
               </form>
-              <ThemeToggle />
             </div>
           </div>
         </>

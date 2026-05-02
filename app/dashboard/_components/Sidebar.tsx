@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import { type ReactNode } from "react";
 import { signOutAction } from "@/app/actions/auth";
 import { Wordmark } from "@/app/_components/MarketingChrome";
-import { ThemeToggle } from "@/app/_components/ThemeToggle";
 
 export interface SidebarItem {
   href: string;
@@ -97,7 +96,6 @@ export function Sidebar({
               Sign out
             </button>
           </form>
-          <ThemeToggle />
         </div>
       </div>
     </aside>

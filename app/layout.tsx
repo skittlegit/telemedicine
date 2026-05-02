@@ -1,11 +1,11 @@
-import type { Metadata } from "next";
-import { Fraunces, Inter, JetBrains_Mono } from "next/font/google";
+﻿import type { Metadata } from "next";
+import { Fraunces, IBM_Plex_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { PageTransition } from "./_components/PageTransition";
-import { NO_FLASH_SCRIPT } from "./_components/ThemeToggle";
 
-// Display: Fraunces — variable serif with optical sizing. Brings the
-// editorial confidence high-end design relies on; pairs cleanly with Inter.
+// Display: Fraunces — variable serif with optical sizing. The editorial
+// signature on every brand-surface H1, paired with one italic-accent
+// fragment per page hero.
 const display = Fraunces({
   variable: "--font-fraunces",
   subsets: ["latin"],
@@ -13,13 +13,17 @@ const display = Fraunces({
   display: "swap",
 });
 
-const sans = Inter({
+// Body: IBM Plex Sans — clinical, slightly humanist, pairs cleanly with
+// Fraunces on the brand surface and reads as steady on the product surface.
+const sans = IBM_Plex_Sans({
   variable: "--font-plex",
   subsets: ["latin"],
   weight: ["400", "500", "600"],
   display: "swap",
 });
 
+// Mono: JetBrains Mono — clinical evidence type. IDs, fees, timestamps,
+// prescription codes, audit trails, eyebrow labels.
 const mono = JetBrains_Mono({
   variable: "--font-plex-mono",
   subsets: ["latin"],
@@ -40,7 +44,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport = {
-  themeColor: "#F6F2E9",
+  themeColor: "#F4F1E9",
 };
 
 export default function RootLayout({
@@ -53,9 +57,6 @@ export default function RootLayout({
       lang="en"
       className={`${display.variable} ${sans.variable} ${mono.variable} h-full antialiased`}
     >
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: NO_FLASH_SCRIPT }} />
-      </head>
       <body className="min-h-full flex flex-col">
         <a href="#content" className="skip-link">Skip to content</a>
         <PageTransition>

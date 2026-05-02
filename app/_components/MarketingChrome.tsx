@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { SPECIALTIES } from "./icons";
-import { ThemeToggle } from "./ThemeToggle";
 
 /**
  * Wordmark glyph. Single hairline stroke. Used by both marketing and
@@ -179,7 +178,6 @@ export function MarketingHeader({
           </nav>
 
           <div className="flex items-center gap-1.5">
-            <ThemeToggle className="hidden sm:inline-flex" />
             {authed ? (
               <Link href={dashboardHref} prefetch className="btn btn-clay btn-sm">
                 Dashboard →
@@ -317,10 +315,6 @@ export function MarketingHeader({
                     </Link>
                   </>
                 )}
-              </div>
-              <div className="mt-6 flex items-center justify-between text-[13px] text-ink-mute">
-                <span>Theme</span>
-                <ThemeToggle />
               </div>
             </nav>
           </div>

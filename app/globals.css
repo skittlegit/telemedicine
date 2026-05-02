@@ -1,104 +1,55 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
 
 /* =====================================================================
-   VELLUM HEALTH — clinic-modern token system
-   One palette + one shell for marketing AND authenticated product.
-   Paper surfaces (slightly cooler than warm-bone), aubergine ink,
-   plum-violet primary, ochre warning. Inter is the default sans for
-   everything; Fraunces is reserved for one .serif-display class on
-   page H1s only — no italic accents, no oversized clamps.
+   VELLUM HEALTH — editorial-clinical token system
+
+   One palette. Two registers.
+
+   Brand register (marketing): editorial. Big Fraunces display, italic-accent
+   in --accent, masthead blocks, numbered features, deep margins, hairline
+   rules, bill-of-fare price columns. Long measure, opinionated typography.
+
+   Product register (dashboard, booking, consult): clinical. Same tokens,
+   but expressive devices (italic-accent, large display, mastheads, drop
+   caps, marginalia) are not used. Tabular runs, hairline ruling between
+   rows, mono labels.
+
+   Light surface only. No dark mode in this product.
    ===================================================================== */
 
 :root {
   color-scheme: light;
 
-  /* Surface — calm paper, slightly cooler than the prior warm-bone */
+  /* Surface — warm bone, never #ffffff */
   --paper:        #F4F1E9;
   --paper-tint:   #EDE9DF;
   --paper-deep:   #E2DCCE;
 
-  /* Ink — deep aubergine-near-black */
+  /* Ink — deep aubergine-near-black, never #000000 */
   --ink:          #1F1A2E;
   --ink-soft:     #3D3450;
   --ink-mute:     #7A6F8A;
   --ink-faint:    #B0A8BF;
 
-  /* Brand — refined plum-violet (less SaaS, more designer) */
+  /* Brand — plum-violet (interactive, link, focus) */
   --clay:         #5B3FCF;
   --clay-deep:    #3D2899;
   --clay-wash:    #ECE5FF;
 
-  /* Highlight (used by .italic-accent) — warm aubergine, paired with violet */
+  /* Accent — warm aubergine, RESERVED for italic-accent fragment only.
+     Never on buttons, links, or interactive elements. */
   --accent:       #6D3F8E;
 
-  /* Status — muted, designer rather than candy */
-  --moss:         #4D7D5A;   /* sage success */
-  --amber:        #B8821A;   /* ochre warning */
-  --oxblood:      #8B2E2E;   /* oxblood danger */
+  /* Status — clinical surfaces only, never marketing chrome */
+  --moss:         #4D7D5A;
+  --amber:        #B8821A;
+  --oxblood:      #8B2E2E;
 
   --rule:         rgba(31, 26, 46, 0.10);
   --rule-strong:  rgba(31, 26, 46, 0.20);
 
   --background:   var(--paper);
   --foreground:   var(--ink);
-}
-
-/* Dark theme — same palette structure, inverted surfaces. The clay primary
-   shifts a little brighter so it stays AA on dark surfaces. Activated by
-   either an explicit [data-theme="dark"] on <html> (user preference) or by
-   the system preference when no preference is set. */
-:root[data-theme="dark"] {
-  color-scheme: dark;
-
-  --paper:        #131019;
-  --paper-tint:   #1B1726;
-  --paper-deep:   #241F32;
-
-  --ink:          #ECE7F5;
-  --ink-soft:     #C9C2DA;
-  --ink-mute:     #8C849D;
-  --ink-faint:    #524A63;
-
-  --clay:         #9B82FF;
-  --clay-deep:    #B6A2FF;
-  --clay-wash:    rgba(155, 130, 255, 0.14);
-
-  --accent:       #C893E8;
-
-  --moss:         #7AB089;
-  --amber:        #DDB46A;
-  --oxblood:      #E07A7A;
-
-  --rule:         rgba(236, 231, 245, 0.10);
-  --rule-strong:  rgba(236, 231, 245, 0.22);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    color-scheme: dark;
-
-    --paper:        #131019;
-    --paper-tint:   #1B1726;
-    --paper-deep:   #241F32;
-
-    --ink:          #ECE7F5;
-    --ink-soft:     #C9C2DA;
-    --ink-mute:     #8C849D;
-    --ink-faint:    #524A63;
-
-    --clay:         #9B82FF;
-    --clay-deep:    #B6A2FF;
-    --clay-wash:    rgba(155, 130, 255, 0.14);
-
-    --accent:       #C893E8;
-
-    --moss:         #7AB089;
-    --amber:        #DDB46A;
-    --oxblood:      #E07A7A;
-
-    --rule:         rgba(236, 231, 245, 0.10);
-    --rule-strong:  rgba(236, 231, 245, 0.22);
-  }
 }
 
 @theme inline {
@@ -134,6 +85,15 @@ html {
   overflow-x: clip;
 }
 
+/* Brand-surface only: two very low-opacity radial gradients on the page
+   ground. Product-surface roots opt out via [data-surface="product"]. */
+html:not([data-surface="product"]) {
+  background:
+    radial-gradient(80vw 60vh at 12% 0%, color-mix(in oklab, var(--clay) 5%, transparent), transparent 60%),
+    radial-gradient(70vw 50vh at 100% 100%, color-mix(in oklab, var(--amber) 5%, transparent), transparent 60%),
+    var(--paper);
+}
+
 body {
   font-family: var(--font-plex), ui-sans-serif, system-ui, sans-serif;
   font-feature-settings: "ss01", "cv11";
@@ -145,43 +105,58 @@ body {
   overflow-x: clip;
 }
 
-/*
- * Default heading family is Inter (inherits body). Use .serif-display ONLY
- * on page H1s when you want a single serif moment. This is the ONE place
- * Fraunces appears in the clinic-modern system.
- */
+/* ---------------------------------------------------------------------
+   .serif-display — the editorial signature for brand-surface H1/H2.
+   Pinned optical size, soft-axis at 50, tight tracking. Use clamp() at
+   each call site to control viewport response. Pair with .italic-accent
+   for the one signature italic fragment per page.
+   --------------------------------------------------------------------- */
 .serif-display {
+  font-family: var(--font-fraunces), "Times New Roman", serif;
+  font-variation-settings: "opsz" 144, "SOFT" 50;
+  font-weight: 500;
+  letter-spacing: -0.028em;
+  line-height: 0.96;
+  overflow-wrap: break-word;
+  text-wrap: balance;
+}
+
+/* Smaller editorial heading variant — section H2, not hero */
+.serif-section {
   font-family: var(--font-fraunces), "Times New Roman", serif;
   font-variation-settings: "opsz" 96, "SOFT" 50;
   font-weight: 500;
   letter-spacing: -0.022em;
-  line-height: 1.04;
+  line-height: 1.02;
   overflow-wrap: break-word;
+  text-wrap: balance;
+}
+
+/* ---------------------------------------------------------------------
+   .italic-accent — the recurring brand signature.
+   ONE fragment per brand-surface page hero. Italic Fraunces, --accent
+   color. The fragment is an emotional unit (verb, adjective, name),
+   never a connector word. Forbidden on the product surface.
+   --------------------------------------------------------------------- */
+.italic-accent {
+  font-family: var(--font-fraunces), "Times New Roman", serif;
+  font-style: italic;
+  font-variation-settings: "opsz" 144, "SOFT" 100;
+  font-weight: 400;
+  color: var(--accent);
+  letter-spacing: -0.02em;
 }
 
 /*
- * Back-compat: existing pages still reference .font-display. Map it to
- * Inter at its tightest — no Fraunces, no serif. Pages that explicitly
- * want a serif H1 must opt in via .serif-display. This lets us flip the
- * whole product clinical without touching every tsx file at once.
+ * Back-compat: .font-display kept for product-surface H1s. Maps to a
+ * tighter sans heading (Plex Sans semibold), not Fraunces. The product
+ * register is restrained: no serif display, no italic-accent.
  */
 .font-display {
   font-family: var(--font-plex), ui-sans-serif, system-ui, sans-serif;
   font-weight: 600;
   letter-spacing: -0.022em;
   line-height: 1.1;
-}
-
-/*
- * Italic-accent was the editorial signature. In clinic-modern it is a
- * no-op: text colour stays inherit, no italic, no Fraunces. Keeping the
- * class so existing markup doesn't break — but it stops *looking*
- * different from the rest of the line.
- */
-.italic-accent {
-  font-style: normal;
-  font-weight: inherit;
-  color: inherit;
 }
 
 .eyebrow {
@@ -200,6 +175,165 @@ body {
   overflow-wrap: anywhere;
 }
 
+/* Tabular numbers everywhere a price or fee or ID appears */
+.tabular { font-variant-numeric: tabular-nums; }
+
+/* ---------------------------------------------------------------------
+   .masthead — editorial section opener.
+   Section name on the left, page number / edition / date on the right,
+   with a top double rule and a bottom hairline. Wayfinding.
+   --------------------------------------------------------------------- */
+.masthead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 0.75rem 0 0.6rem;
+  border-top: 3px double var(--ink);
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink);
+  font-weight: 500;
+}
+.masthead > span,
+.masthead > a { display: inline-flex; gap: 0.5rem; }
+.masthead .meta { color: var(--ink-mute); }
+
+/* ---------------------------------------------------------------------
+   .numbered — feature numbering (01 / 02 / 03).
+   Large mono number sitting in the margin alongside a feature block.
+   Use as a sibling, not a wrapper.
+   --------------------------------------------------------------------- */
+.numbered {
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 400;
+  color: var(--ink);
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+/* ---------------------------------------------------------------------
+   .bill — bill-of-fare price column.
+   Mono price floated in the right margin against running display copy.
+   Used on pricing strips and the homepage "From ₹499" callout.
+   --------------------------------------------------------------------- */
+.bill {
+  display: flex;
+  align-items: baseline;
+  gap: 0.85rem;
+  border-top: 1px solid var(--rule);
+  padding: 1rem 0 0.85rem;
+}
+.bill .label {
+  flex: 1 1 auto;
+  font-family: var(--font-fraunces), serif;
+  font-variation-settings: "opsz" 96, "SOFT" 50;
+  font-size: clamp(1.1rem, 2.4vw, 1.55rem);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+.bill .leader {
+  flex: 0 1 auto;
+  border-bottom: 1px dotted var(--ink-faint);
+  min-width: 1rem;
+  height: 0.6em;
+}
+.bill .price {
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ---------------------------------------------------------------------
+   .sidenote — editorial marginalia.
+   Small mono caption sitting in a side column, used for citations,
+   fine print, "filed by" credits, edition stamps.
+   --------------------------------------------------------------------- */
+.sidenote {
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-size: 11px;
+  line-height: 1.5;
+  letter-spacing: 0;
+  color: var(--ink-mute);
+  text-transform: none;
+}
+.sidenote strong {
+  color: var(--ink);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 10.5px;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+/* ---------------------------------------------------------------------
+   .dropcap — first-letter editorial drop cap on long-form prose.
+   Three lines deep, Fraunces, --accent. Use sparingly: one drop cap
+   per page, on the opening paragraph of a feature.
+   --------------------------------------------------------------------- */
+.dropcap::first-letter {
+  font-family: var(--font-fraunces), serif;
+  font-variation-settings: "opsz" 144, "SOFT" 50;
+  font-weight: 500;
+  font-size: 4.2em;
+  line-height: 0.85;
+  float: left;
+  padding: 0.05em 0.12em 0 0;
+  color: var(--accent);
+  font-style: italic;
+}
+
+/* ---------------------------------------------------------------------
+   .editorial-prose — long-form running text.
+   Indented paragraphs, justified setting (only at large widths so it
+   doesn't get rivers at narrow ones), 65-75ch measure.
+   --------------------------------------------------------------------- */
+.editorial-prose {
+  font-family: var(--font-plex), ui-sans-serif, system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--ink-soft);
+  max-width: 64ch;
+}
+.editorial-prose p + p {
+  margin-top: 0;
+  text-indent: 1.5em;
+}
+.editorial-prose p:first-child { margin-top: 0; }
+
+/* ---------------------------------------------------------------------
+   .stamp — rotated editorial tag, mono, claymade outline.
+   For "flat fee", "verified", "edition" marks. Sparingly.
+   --------------------------------------------------------------------- */
+.stamp {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--clay);
+  border: 1px solid var(--clay);
+  padding: 0.25rem 0.5rem;
+  border-radius: 3px;
+  transform: rotate(-1.5deg);
+  transform-origin: center;
+  background: color-mix(in oklab, var(--clay) 6%, var(--paper));
+}
+
 /* ===== Hairline rule — the structural backbone ====================== */
 
 .rule {
@@ -210,7 +344,7 @@ body {
 
 .rule-double {
   border: 0;
-  border-top: 1px solid var(--rule-strong);
+  border-top: 1px solid var(--ink);
   border-bottom: 1px solid var(--rule);
   height: 4px;
 }
@@ -233,13 +367,14 @@ body {
   background: var(--ink);
   color: var(--paper);
   cursor: pointer;
-  transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+  transition: background 120ms ease, border-color 120ms ease, color 120ms ease, transform 120ms cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 .btn:hover { background: var(--clay-deep); border-color: var(--clay-deep); }
 .btn:focus-visible {
   outline: 2px solid color-mix(in oklab, var(--clay) 40%, transparent);
   outline-offset: 2px;
 }
+.btn:active { transform: translateY(1px); }
 .btn[disabled], .btn:disabled { opacity: 0.55; cursor: not-allowed; }
 
 .btn-ghost {
@@ -252,18 +387,34 @@ body {
 .btn-clay {
   background: var(--clay);
   border-color: var(--clay);
-  color: #ffffff;
+  color: var(--paper);
 }
-.btn-clay:hover { background: var(--clay-deep); border-color: var(--clay-deep); color: #ffffff; }
+.btn-clay:hover { background: var(--clay-deep); border-color: var(--clay-deep); color: var(--paper); }
 
 .btn-danger {
   background: var(--oxblood);
   border-color: var(--oxblood);
-  color: #ffffff;
+  color: var(--paper);
 }
-.btn-danger:hover { background: #6e2424; border-color: #6e2424; color: #ffffff; }
+.btn-danger:hover { background: #6e2424; border-color: #6e2424; }
 
 .btn-sm { min-height: 30px; padding: 0 0.7rem; font-size: 12px; }
+.btn-lg { min-height: 44px; padding: 0 1.25rem; font-size: 14px; }
+
+/* "Editorial CTA" — link-with-arrow, no box. Use in long-form copy. */
+.btn-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-plex), sans-serif;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--ink);
+  border-bottom: 1px solid var(--ink);
+  padding-bottom: 1px;
+  transition: color 120ms ease, border-color 120ms ease, gap 160ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.btn-link:hover { color: var(--clay); border-color: var(--clay); gap: 0.6rem; }
 
 /* ===== Inputs — bordered (clinical), not editorial bottom-rule ===== */
 
@@ -303,7 +454,7 @@ textarea.field { line-height: 1.5; }
   position: relative;
 }
 
-/* Row: list-row primitive used across /doctors, dashboard appointments,
+/* Row-list: shared list primitive for /doctors, dashboard appointments,
    Rx list, pharmacy queue. Same idiom everywhere. */
 .row-list {
   display: flex;
@@ -330,7 +481,7 @@ textarea.field { line-height: 1.5; }
   background: var(--paper);
 }
 
-/* ===== Nav primitives — clinical-standard (One Medical-style) ====== */
+/* ===== Nav primitives ============================================== */
 
 .nav-link {
   font-family: var(--font-plex), sans-serif;
@@ -361,7 +512,6 @@ textarea.field { line-height: 1.5; }
   background: var(--clay);
 }
 
-/* Sidebar item — used inside dashboard left rail */
 .side-link {
   display: flex;
   align-items: center;
@@ -397,7 +547,7 @@ textarea.field { line-height: 1.5; }
 .side-link[aria-current="page"] svg,
 .side-link[data-active="true"] svg { color: var(--clay); }
 
-/* Announcement strip — slim 32px primary CTA bar above the marketing nav */
+/* Announcement strip */
 .announce {
   background: var(--ink);
   color: var(--paper);
@@ -421,7 +571,7 @@ textarea.field { line-height: 1.5; }
 }
 .announce a:hover { text-decoration-color: currentColor; }
 
-/* Mega-menu panel — opens under the marketing nav */
+/* Mega-menu panel */
 .mega-panel {
   position: absolute;
   top: 100%;
@@ -430,7 +580,7 @@ textarea.field { line-height: 1.5; }
   background: var(--paper);
   border-bottom: 1px solid var(--rule-strong);
   box-shadow: 0 12px 24px -16px rgba(0, 0, 0, 0.18);
-  animation: megaIn 140ms ease;
+  animation: megaIn 140ms cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 @keyframes megaIn {
   from { opacity: 0; transform: translateY(-4px); }
@@ -452,7 +602,7 @@ textarea.field { line-height: 1.5; }
   padding: 0.55rem 0.95rem;
   border-radius: 4px;
   transform: translateY(calc(-100% - 1rem));
-  transition: transform 140ms ease;
+  transition: transform 140ms cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 .skip-link:focus,
 .skip-link:focus-visible {
@@ -463,7 +613,7 @@ textarea.field { line-height: 1.5; }
 
 ::selection {
   background: var(--clay);
-  color: #ffffff;
+  color: var(--paper);
 }
 
 * {
