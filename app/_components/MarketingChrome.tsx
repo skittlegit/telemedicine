@@ -59,7 +59,6 @@ const NAV_LINKS: ReadonlyArray<{ href: string; label: string }> = [
   { href: "/doctors", label: "Doctors" },
   { href: "/specialties", label: "Specialties" },
   { href: "/pharmacy", label: "Pharmacy" },
-  { href: "/pricing", label: "Pricing" },
 ];
 
 function isActive(pathname: string | null, href: string) {
@@ -152,7 +151,6 @@ export function MarketingFooter({ logoHref = "/" }: { logoHref?: string } = {}) 
             <li><Link className="hover:text-clay transition-colors" href="/doctors">Doctors</Link></li>
             <li><Link className="hover:text-clay transition-colors" href="/specialties">Specialties</Link></li>
             <li><Link className="hover:text-clay transition-colors" href="/pharmacy">Pharmacy</Link></li>
-            <li><Link className="hover:text-clay transition-colors" href="/pricing">Pricing</Link></li>
           </ul>
         </div>
         <div className="md:col-span-2">

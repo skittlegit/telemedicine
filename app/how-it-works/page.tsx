@@ -141,10 +141,6 @@ export default async function HowItWorksPage() {
               consultation, with prescription, encrypted record, and
               follow-up message included.
             </p>
-            <Link href="/pricing" className="btn-link mt-6">
-              Read the full pricing note
-              <span aria-hidden>→</span>
-            </Link>
           </div>
           <div className="col-span-12 md:col-span-8 md:col-start-5">
             <div role="list">

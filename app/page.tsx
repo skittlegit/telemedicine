@@ -33,7 +33,7 @@ export default async function Home() {
       <section className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-10 pt-6">
         <div className="masthead">
           <span>
-            <span>Vellum Health</span>
+            <span className="rx-mark" aria-hidden /> Vellum Health
             <span className="meta hidden sm:inline">Edition {issue.edition}</span>
           </span>
           <span className="meta">
@@ -98,43 +98,10 @@ export default async function Home() {
         </aside>
       </section>
 
-      {/* ============ BILL OF FARE ============ */}
-      <section className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-10 pb-16 sm:pb-20">
-        <div className="grid grid-cols-12 gap-x-8 gap-y-6">
-          <div className="col-span-12 md:col-span-4">
-            <p className="eyebrow">Bill of fare</p>
-            <h2 className="serif-section mt-3 text-[clamp(1.75rem,4vw,2.6rem)]">
-              What is{" "}
-              <span className="italic-accent">included.</span>
-            </h2>
-            <p className="mt-4 max-w-[36ch] text-[14px] leading-[1.65] text-ink-soft">
-              No upsells. No surprise add-ons at checkout. The fee covers
-              everything between booking and the prescription clearing
-              your pharmacist.
-            </p>
-          </div>
-          <div className="col-span-12 md:col-span-8 md:col-start-5">
-            <div role="list">
-              {BILL.map((row) => (
-                <div key={row.label} className="bill" role="listitem">
-                  <span className="label">{row.label}</span>
-                  <span className="leader" aria-hidden />
-                  <span className="price tabular">{row.price}</span>
-                </div>
-              ))}
-              <div className="bill" role="listitem" style={{ borderBottom: "1px solid var(--rule)" }}>
-                <span className="label" style={{ fontWeight: 600 }}>
-                  Total, per visit
-                </span>
-                <span className="leader" aria-hidden />
-                <span className="price tabular" style={{ fontSize: "1.25rem" }}>
-                  ₹499
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* heartbeat divider — the telemedicine signature */}
+      <div className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-10">
+        <div className="heartbeat-rule" aria-hidden />
+      </div>
 
       {/* ============ NUMBERED FEATURES ============ */}
       <section id="how" className="border-t border-[color:var(--rule-strong)] bg-paper">
@@ -331,14 +298,6 @@ export default async function Home() {
 /* ====================================================================
    Static content
    ==================================================================== */
-
-const BILL: Array<{ label: string; price: string }> = [
-  { label: "Booking and a thirty-minute consultation", price: "₹499" },
-  { label: "Digital prescription, signed and verifiable", price: "incl." },
-  { label: "Encrypted record of the visit, kept private", price: "incl." },
-  { label: "Pharmacy fulfilment routed near you", price: "at cost" },
-  { label: "Cancel or reschedule, until the slot opens", price: "free" },
-];
 
 const FEATURES: Array<{
   head: string;

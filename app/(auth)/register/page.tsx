@@ -15,7 +15,9 @@ export default async function RegisterPage({ searchParams }: PageProps) {
     <main className="min-h-screen bg-paper text-ink">
       <div className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-10 pt-10">
         <div className="masthead">
-          <span>Begin your record</span>
+          <span>
+            <span className="rx-mark" aria-hidden /> Begin your record
+          </span>
           <span className="meta">Vellum Health</span>
         </div>
       </div>
@@ -48,6 +50,19 @@ export default async function RegisterPage({ searchParams }: PageProps) {
             see you safely. Notes, allergies, and history are encrypted
             at the field level before they touch our database.
           </p>
+          <dl className="mt-6 border-t border-[color:var(--rule)]">
+            {[
+              ["Records", "Field-level encrypted"],
+              ["Prescriptions", "HMAC signed"],
+              ["Identity", "Email-verified"],
+              ["Cancel", "Free, anytime"],
+            ].map(([k, v]) => (
+              <div key={k} className="flex items-baseline justify-between border-b border-[color:var(--rule)] py-2">
+                <dt className="eyebrow text-[10px]">{k}</dt>
+                <dd className="mono text-[11.5px] text-ink tabular">{v}</dd>
+              </div>
+            ))}
+          </dl>
         </aside>
       </section>
     </main>

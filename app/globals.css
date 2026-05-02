@@ -343,6 +343,86 @@ body {
   background: color-mix(in oklab, var(--clay) 6%, var(--paper));
 }
 
+/* ---------------------------------------------------------------------
+   .rx-mark — the clinical signature.
+   A small "Rx" badge in mono that pairs with brand chrome to mark
+   medical surfaces (auth, prescriptions, pharmacy listings). Replaces
+   abstract iconography with an unmistakable telemedicine cue.
+   --------------------------------------------------------------------- */
+.rx-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-fraunces), serif;
+  font-variation-settings: "opsz" 144, "SOFT" 50;
+  font-style: italic;
+  font-weight: 500;
+  font-size: 12.5px;
+  width: 22px;
+  height: 22px;
+  color: var(--paper);
+  background: var(--ink);
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+.rx-mark::before { content: "R"; }
+.rx-mark::after  { content: "x"; margin-left: -0.04em; font-size: 0.78em; transform: translateY(0.15em); }
+
+/* Larger inline Rx for hero context */
+.rx-mark-lg {
+  width: 34px;
+  height: 34px;
+  font-size: 19px;
+}
+
+/* ---------------------------------------------------------------------
+   .heartbeat-rule — section divider with an EKG QRS spike.
+   Inline SVG drawn in --rule-strong for the flat baseline and --clay
+   for the spike. One-shot section break on telemedicine surfaces.
+   --------------------------------------------------------------------- */
+.heartbeat-rule {
+  width: 100%;
+  height: 24px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='320' height='24' viewBox='0 0 320 24' fill='none' preserveAspectRatio='none'><path d='M0 12 L130 12 L138 12 L142 4 L148 22 L154 8 L160 14 L168 12 L320 12' stroke='%231F1A2E' stroke-opacity='0.55' stroke-width='1' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+  background-repeat: repeat-x;
+  background-position: left center;
+  background-size: 320px 24px;
+}
+
+/* ---------------------------------------------------------------------
+   .alert-band — replacement for forbidden side-stripe borders.
+   Full hairline border, soft-tinted background; status implied by the
+   leading status dot, never by a colored left edge.
+   --------------------------------------------------------------------- */
+.alert-band {
+  display: flex;
+  gap: 0.65rem;
+  align-items: flex-start;
+  border: 1px solid var(--rule-strong);
+  background: var(--paper-tint);
+  padding: 0.7rem 0.95rem;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+  border-radius: 3px;
+}
+.alert-band::before {
+  content: "";
+  display: block;
+  width: 7px;
+  height: 7px;
+  margin-top: 0.55em;
+  border-radius: 999px;
+  background: var(--ink-mute);
+  flex-shrink: 0;
+}
+.alert-band[data-tone="amber"]::before  { background: var(--amber); }
+.alert-band[data-tone="oxblood"]::before { background: var(--oxblood); }
+.alert-band[data-tone="moss"]::before    { background: var(--moss); }
+.alert-band[data-tone="amber"]   { background: color-mix(in oklab, var(--amber) 7%, var(--paper)); border-color: color-mix(in oklab, var(--amber) 25%, var(--rule-strong)); }
+.alert-band[data-tone="oxblood"] { background: color-mix(in oklab, var(--oxblood) 6%, var(--paper)); border-color: color-mix(in oklab, var(--oxblood) 25%, var(--rule-strong)); }
+.alert-band[data-tone="moss"]    { background: color-mix(in oklab, var(--moss) 7%, var(--paper)); border-color: color-mix(in oklab, var(--moss) 25%, var(--rule-strong)); }
+
 /* ===== Hairline rule — the structural backbone ====================== */
 
 .rule {
