@@ -13,7 +13,7 @@ export default async function PharmacyPage() {
   return (
     <main className="min-h-screen flex flex-col">
       <MarketingHeader {...headerProps} />
-      <Marketplace />
+      <Marketplace authed={headerProps.authed} />
       <MarketingFooter logoHref={headerProps.logoHref} />
     </main>
   );

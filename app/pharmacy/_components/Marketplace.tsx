@@ -23,13 +23,17 @@ const SORT_LABEL: Record<SortKey, string> = {
   rating: "Rating",
 };
 
-export function Marketplace() {
+export function Marketplace({ authed = false }: { authed?: boolean } = {}) {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<Category | "all">("all");
   const [pharmacy, setPharmacy] = useState<string | "all">("all");
   const [sort, setSort] = useState<SortKey>("relevance");
   const [cart, setCart] = useState<CartLine[]>([]);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [confirmation, setConfirmation] = useState<
+    | { id: string; total: number; items: number }
+    | null
+  >(null);
 
   const filtered = useMemo(() => {
     let list = PRODUCTS.slice();
@@ -269,6 +273,27 @@ export function Marketplace() {
           onClose={() => setDrawerOpen(false)}
           onSetQty={setQty}
           total={cartTotal}
+          authed={authed}
+          onCheckout={() => {
+            const id =
+              "VL-" +
+              Math.random().toString(36).slice(2, 6).toUpperCase() +
+              "-" +
+              Math.random().toString(36).slice(2, 6).toUpperCase();
+            setConfirmation({ id, total: cartTotal, items: cartCount });
+            setCart([]);
+            setDrawerOpen(false);
+          }}
+        />
+      )}
+
+      {/* ORDER CONFIRMATION */}
+      {confirmation && (
+        <ConfirmationModal
+          orderId={confirmation.id}
+          total={confirmation.total}
+          items={confirmation.items}
+          onClose={() => setConfirmation(null)}
         />
       )}
     </div>
@@ -485,11 +510,15 @@ function CartDrawer({
   onClose,
   onSetQty,
   total,
+  authed,
+  onCheckout,
 }: {
   cart: CartLine[];
   onClose: () => void;
   onSetQty: (id: string, qty: number) => void;
   total: number;
+  authed: boolean;
+  onCheckout: () => void;
 }) {
   return (
     <div
@@ -590,12 +619,23 @@ function CartDrawer({
             Delivery and verification fees calculated at checkout. Prescription
             items require a valid Vellum script.
           </p>
-          <Link
-            href="/login?next=/dashboard/orders"
-            className="block w-full text-center bg-ink text-paper py-3 text-[13.5px] tracking-[-0.005em] hover:bg-clay-deep transition-colors"
-          >
-            Sign in to checkout →
-          </Link>
+          {authed ? (
+            <button
+              type="button"
+              onClick={onCheckout}
+              disabled={cart.length === 0}
+              className="block w-full text-center bg-ink text-paper py-3 text-[13.5px] tracking-[-0.005em] hover:bg-clay-deep transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              Place order →
+            </button>
+          ) : (
+            <Link
+              href="/login?callbackUrl=/pharmacy"
+              className="block w-full text-center bg-ink text-paper py-3 text-[13.5px] tracking-[-0.005em] hover:bg-clay-deep transition-colors"
+            >
+              Sign in to checkout →
+            </Link>
+          )}
         </footer>
       </aside>
     </div>
@@ -616,5 +656,80 @@ function SearchIcon() {
       <circle cx="11" cy="11" r="7" />
       <path d="m20 20-3.5-3.5" />
     </svg>
+  );
+}
+
+function ConfirmationModal({
+  orderId,
+  total,
+  items,
+  onClose,
+}: {
+  orderId: string;
+  total: number;
+  items: number;
+  onClose: () => void;
+}) {
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="order-confirmed"
+      className="fixed inset-0 z-[60] flex items-center justify-center bg-ink/30 backdrop-blur-[2px] p-4"
+      onClick={onClose}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="w-full max-w-[460px] bg-paper border border-[color:var(--rule-strong)]"
+      >
+        <div className="px-7 pt-7 pb-2">
+          <p className="eyebrow text-moss">Order placed</p>
+          <h2
+            id="order-confirmed"
+            className="serif-section text-[clamp(1.5rem,3vw,2rem)] mt-2 leading-[1.1]"
+          >
+            Thank you. <span className="italic-accent">On its way.</span>
+          </h2>
+          <p className="mt-3 text-[14px] text-ink-soft leading-[1.6]">
+            Your basket has been forwarded to the participating pharmacies.
+            Track delivery from your orders page.
+          </p>
+        </div>
+        <dl className="mx-7 my-5 grid grid-cols-3 gap-px bg-[color:var(--rule)] border-y border-[color:var(--rule-strong)]">
+          <div className="bg-paper px-3 py-3">
+            <dt className="eyebrow text-[10px]">Order</dt>
+            <dd className="mono text-[12px] mt-1 text-ink">{orderId}</dd>
+          </div>
+          <div className="bg-paper px-3 py-3">
+            <dt className="eyebrow text-[10px]">Items</dt>
+            <dd className="serif-section text-[18px] mt-1 tabular text-ink leading-none">
+              {items}
+            </dd>
+          </div>
+          <div className="bg-paper px-3 py-3">
+            <dt className="eyebrow text-[10px]">Total</dt>
+            <dd className="serif-section text-[18px] mt-1 tabular text-ink leading-none">
+              ₹{total.toLocaleString("en-IN")}
+            </dd>
+          </div>
+        </dl>
+        <div className="px-7 pb-7 flex flex-wrap items-center gap-3">
+          <Link
+            href="/dashboard/orders"
+            className="btn btn-clay btn-sm"
+            onClick={onClose}
+          >
+            View orders →
+          </Link>
+          <button
+            type="button"
+            onClick={onClose}
+            className="btn btn-ghost btn-sm"
+          >
+            Continue browsing
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }

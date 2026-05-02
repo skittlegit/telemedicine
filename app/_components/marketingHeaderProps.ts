@@ -1,16 +1,19 @@
 import { getSession } from "@/lib/authz";
 
 /**
- * Resolve the props the marketing header needs from the current session.
- * Logged-in users see a "Dashboard →" CTA and the wordmark logo points at
- * their dashboard so clicks don't dump them back to the public landing page.
+ * Resolve props for MarketingHeader from the current session.
+ * Logged-in users get role-aware nav (via PRODUCT_NAV_BY_ROLE in
+ * MarketingChrome) and a profile menu where the Login link sat.
  */
 export async function marketingHeaderProps() {
   const session = await getSession();
-  const authed = !!session?.user;
+  const u = session?.user as { name?: string; role?: string } | undefined;
+  const authed = !!u;
   return {
     authed,
     logoHref: authed ? "/dashboard" : "/",
-    dashboardHref: "/dashboard",
+    user: authed
+      ? { name: u?.name ?? "User", role: u?.role ?? "patient" }
+      : undefined,
   };
 }

@@ -25,7 +25,7 @@ export function BookedBanner() {
       aria-labelledby="booked-title"
       className="fixed inset-0 z-50 flex items-center justify-center bg-ink/30 backdrop-blur-[2px] p-4"
     >
-      <div className="w-full max-w-[440px] bg-paper border border-[color:var(--rule-strong)] shadow-2xl">
+      <div className="w-full max-w-[440px] bg-paper border border-[color:var(--rule-strong)]">
         <div className="px-6 pt-6 pb-2 flex items-start gap-4">
           <div
             className="w-10 h-10 rounded-full bg-moss/15 text-moss flex items-center justify-center shrink-0"

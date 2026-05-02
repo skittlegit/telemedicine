@@ -38,16 +38,18 @@ export default async function PharmacyProfilePage() {
 
       <div className="max-w-[820px]">
         <div
-          className={`mb-10 border p-4 ${
-            verified ? "border-moss/40 bg-moss/5" : "border-amber/40 bg-amber/10"
-          }`}
+          className="alert-band mb-10"
+          data-tone={verified ? "moss" : "amber"}
+          role="status"
         >
-          <p className="eyebrow mb-1">Licensure</p>
-          <p className={`text-sm ${verified ? "text-moss" : "text-amber"}`}>
-            {verified
-              ? `Verified by Vellum on ${new Date(profile!.licenseVerifiedAt!).toLocaleDateString()}.`
-              : "Pending admin verification — your account is read-only until approved."}
-          </p>
+          <div className="flex-1">
+            <p className="eyebrow mb-1 text-[10px]">Licensure</p>
+            <p className="text-[13px] text-ink leading-[1.5]">
+              {verified
+                ? `Verified by Vellum on ${new Date(profile!.licenseVerifiedAt!).toLocaleDateString()}.`
+                : "Pending admin verification. Your account is read-only until approved."}
+            </p>
+          </div>
         </div>
 
         <Section eyebrow="Edit" title="Pharmacy details">
