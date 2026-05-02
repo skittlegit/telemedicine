@@ -182,6 +182,58 @@ const VALID_CATS = [
   "cold-chain",
 ] as const;
 
+export type MarketplaceItemInput = {
+  productId: string;
+  name: string;
+  strength?: string;
+  qty: number;
+  priceCents: number;
+  pharmacyId?: string;
+};
+
+export async function placeMarketplaceOrderAction(
+  items: MarketplaceItemInput[],
+): Promise<{ ok?: boolean; orderId?: string; error?: string }> {
+  const session = await requireRole("patient");
+  if (!Array.isArray(items) || items.length === 0) {
+    return { error: "Basket is empty." };
+  }
+  const cleaned = items
+    .map((it) => ({
+      productId: String(it.productId ?? ""),
+      name: String(it.name ?? ""),
+      strength: String(it.strength ?? ""),
+      qty: Math.max(1, Math.floor(Number(it.qty) || 0)),
+      priceCents: Math.max(0, Math.floor(Number(it.priceCents) || 0)),
+      pharmacyId: String(it.pharmacyId ?? ""),
+    }))
+    .filter((it) => it.productId && it.name && it.qty > 0);
+  if (cleaned.length === 0) return { error: "Basket is empty." };
+
+  const totalCents = cleaned.reduce((s, it) => s + it.priceCents * it.qty, 0);
+
+  await connectDB();
+  const order = await PharmacyOrder.create({
+    kind: "marketplace",
+    patient: session.user.id,
+    status: "queued",
+    totalCents,
+    items: cleaned,
+    deliveryAddressEnc: "",
+  });
+
+  await audit({
+    actor: session.user.id,
+    actorRole: "patient",
+    action: "pharmacy.marketplace_order.create",
+    target: `PharmacyOrder:${order._id}`,
+    meta: { itemCount: cleaned.length, totalCents },
+  });
+
+  revalidatePath("/dashboard/orders");
+  return { ok: true, orderId: String(order._id) };
+}
+
 export async function addListingAction(
   _prev: { error?: string; ok?: boolean } | undefined,
   formData: FormData,

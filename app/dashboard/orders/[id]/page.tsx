@@ -26,13 +26,20 @@ interface OrderView {
   _id: string;
   patient: string;
   pharmacy?: string;
+  kind?: "rx" | "marketplace";
   status: string;
   totalCents: number;
   createdAt: Date;
   claimedAt?: Date;
   deliveredAt?: Date;
   deliveryAddressEnc: string;
-  prescription: {
+  items?: Array<{
+    name: string;
+    strength?: string;
+    qty: number;
+    priceCents: number;
+  }>;
+  prescription?: {
     _id: string;
     drugs: Array<{ name: string; dose: string; days: number }>;
     doctor?: { name: string };
@@ -150,23 +157,47 @@ export default async function PatientOrderDetailPage({ params }: PageProps) {
       </Section>
 
       <Section eyebrow="Prescription" title="What's being filled">
-        <ul className="divide-y divide-[color:var(--rule)] border border-[color:var(--rule)]">
-          {order.prescription.drugs.map((d, i) => (
-            <li
-              key={`${d.name}-${i}`}
-              className="px-4 py-3 flex justify-between items-center text-[14px]"
-            >
-              <span className="font-medium">{d.name}</span>
-              <span className="text-ink-mute mono text-[12px]">
-                {d.dose} · {d.days}d
-              </span>
-            </li>
-          ))}
-        </ul>
-        {order.prescription.doctor?.name && (
-          <p className="mt-3 text-[12.5px] text-ink-mute">
-            Issued by Dr. {order.prescription.doctor.name}
-          </p>
+        {order.kind === "marketplace" || !order.prescription ? (
+          <ul className="divide-y divide-[color:var(--rule)] border border-[color:var(--rule)]">
+            {(order.items ?? []).map((it, i) => (
+              <li
+                key={`${it.name}-${i}`}
+                className="px-4 py-3 flex justify-between items-center text-[14px]"
+              >
+                <span className="font-medium">
+                  {it.name}{" "}
+                  <span className="text-ink-mute font-normal">{it.strength ?? ""}</span>
+                </span>
+                <span className="text-ink-mute mono text-[12px] tabular">
+                  × {it.qty} · {formatINR2(it.priceCents * it.qty)}
+                </span>
+              </li>
+            ))}
+            {(order.items ?? []).length === 0 && (
+              <li className="px-4 py-3 text-[13px] text-ink-mute">No items.</li>
+            )}
+          </ul>
+        ) : (
+          <>
+            <ul className="divide-y divide-[color:var(--rule)] border border-[color:var(--rule)]">
+              {order.prescription.drugs.map((d, i) => (
+                <li
+                  key={`${d.name}-${i}`}
+                  className="px-4 py-3 flex justify-between items-center text-[14px]"
+                >
+                  <span className="font-medium">{d.name}</span>
+                  <span className="text-ink-mute mono text-[12px]">
+                    {d.dose} · {d.days}d
+                  </span>
+                </li>
+              ))}
+            </ul>
+            {order.prescription.doctor?.name && (
+              <p className="mt-3 text-[12.5px] text-ink-mute">
+                Issued by Dr. {order.prescription.doctor.name}
+              </p>
+            )}
+          </>
         )}
       </Section>
 

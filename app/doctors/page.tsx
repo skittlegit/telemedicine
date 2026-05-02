@@ -173,6 +173,7 @@ export default async function DoctorsPage({ searchParams }: PageProps) {
                   <Link
                     key={k}
                     href={sortHref(k)}
+                    prefetch
                     className={
                       "transition-colors " +
                       (active
@@ -250,19 +251,19 @@ export default async function DoctorsPage({ searchParams }: PageProps) {
                   key={d._id}
                   className="border-t border-[color:var(--rule)] last:border-b last:border-[color:var(--rule)] group"
                 >
-                  <div className="grid grid-cols-12 gap-x-4 gap-y-2 py-5 sm:py-6 px-1">
+                  <Link
+                    href={`/doctors/${d._id}`}
+                    prefetch
+                    className="grid grid-cols-12 gap-x-4 gap-y-2 py-5 sm:py-6 px-1 hover:bg-paper-tint transition-colors"
+                  >
                     <span className="col-span-2 sm:col-span-1 mono text-ink-mute text-[12px] tabular pt-1">
                       {String(indexNo).padStart(2, "0")}
                     </span>
 
                     <div className="col-span-10 sm:col-span-5">
-                      <Link
-                        href={`/doctors/${d._id}`}
-                        prefetch
-                        className="serif-section text-[clamp(1.05rem,2vw,1.4rem)] text-ink hover:text-clay transition-colors"
-                      >
+                      <span className="serif-section text-[clamp(1.05rem,2vw,1.4rem)] text-ink group-hover:text-clay transition-colors">
                         Dr. {d.user.name}
-                      </Link>
+                      </span>
                       <p className="mono text-ink-mute text-[11px] tracking-[0.14em] uppercase mt-1.5">
                         {d.specialty} · {d.yearsOfExperience}y experience
                       </p>
@@ -298,14 +299,11 @@ export default async function DoctorsPage({ searchParams }: PageProps) {
                       <p className="serif-section text-[1.25rem] text-ink tabular">
                         {formatINR(d.consultationFeeCents)}
                       </p>
-                      <Link
-                        href={`/doctors/${d._id}`}
-                        className="inline-block mono text-[12px] text-ink-faint hover:text-clay transition-colors mt-2"
-                      >
+                      <span className="inline-block mono text-[12px] text-ink-faint group-hover:text-clay transition-colors mt-2">
                         Read profile →
-                      </Link>
+                      </span>
                     </div>
-                  </div>
+                  </Link>
                 </li>
               );
             })}

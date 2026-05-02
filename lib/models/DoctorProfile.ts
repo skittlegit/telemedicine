@@ -29,6 +29,10 @@ const DoctorProfileSchema = new Schema(
 );
 
 DoctorProfileSchema.index({ specialty: 1, "rating": -1 });
+DoctorProfileSchema.index({ rating: -1, ratingCount: -1, createdAt: -1 });
+DoctorProfileSchema.index({ yearsOfExperience: -1, rating: -1 });
+DoctorProfileSchema.index({ consultationFeeCents: 1, rating: -1 });
+DoctorProfileSchema.index({ consultationFeeCents: -1, rating: -1 });
 
 export type DoctorProfileDoc = InferSchemaType<typeof DoctorProfileSchema> & { _id: string };
 

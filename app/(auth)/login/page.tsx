@@ -64,7 +64,7 @@ export default async function LoginPage({ searchParams }: PageProps) {
             <summary className="cursor-pointer eyebrow text-ink-mute hover:text-ink select-none">
               Demo accounts
             </summary>
-            <p className="text-[12.5px] text-ink-mute mt-4 leading-[1.65] max-w-[58ch]">
+            <p className="text-[12.5px] text-ink-mute mt-4 leading-[1.65]">
               Pre-seeded reviewer accounts. The patient, doctor, and pharmacist credentials only resolve in non-production environments. The admin password shown is the development default; production deployments require <code className="mono">ADMIN_PASSWORD</code> to be set.
               {isProd && (
                 <>
@@ -75,10 +75,10 @@ export default async function LoginPage({ searchParams }: PageProps) {
             </p>
             <ul className="mono text-[12px] mt-4 border-t border-[color:var(--rule)]">
               {DEMO_ACCOUNTS.map(([role, email, pw]) => (
-                <li key={email} className="grid grid-cols-12 gap-3 py-2.5 border-b border-[color:var(--rule)]">
+                <li key={email} className="grid grid-cols-12 gap-3 py-2.5 border-b border-[color:var(--rule)] items-baseline">
                   <span className="col-span-3 eyebrow text-clay">{role}</span>
-                  <span className="col-span-6 truncate">{email}</span>
-                  <span className="col-span-3 text-ink-mute text-right tabular">{pw}</span>
+                  <span className="col-span-6 break-all">{email}</span>
+                  <span className="col-span-3 text-ink-mute text-right tabular break-all">{pw}</span>
                 </li>
               ))}
             </ul>

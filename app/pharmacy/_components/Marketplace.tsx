@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useTransition } from "react";
 import Link from "next/link";
 import {
   PRODUCTS,
@@ -11,6 +11,7 @@ import {
   type Product,
   type Pharmacy,
 } from "../_data";
+import { placeMarketplaceOrderAction } from "@/app/actions/pharmacy";
 
 type SortKey = "relevance" | "price-asc" | "price-desc" | "rating";
 
@@ -34,6 +35,8 @@ export function Marketplace({ authed = false }: { authed?: boolean } = {}) {
     | { id: string; total: number; items: number }
     | null
   >(null);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
 
   const filtered = useMemo(() => {
     let list = PRODUCTS.slice();
@@ -89,9 +92,22 @@ export function Marketplace({ authed = false }: { authed?: boolean } = {}) {
 
   return (
     <div data-surface="product" className="min-h-screen bg-paper">
+      {/* MASTHEAD — matches every other editorial page */}
+      <section className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-10 pt-6">
+        <div className="masthead">
+          <span>
+            <span className="rx-mark" aria-hidden /> Marketplace
+            <span className="meta hidden sm:inline">§ pharmacy</span>
+          </span>
+          <span className="meta">
+            {PHARMACIES.length} verified sellers · {PRODUCTS.length} listings
+          </span>
+        </div>
+      </section>
+
       {/* HERO STRIP */}
       <section className="border-b border-[color:var(--rule)]">
-        <div className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-10 pt-10 pb-8">
+        <div className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-10 pt-8 pb-8">
           <div className="flex flex-wrap items-end justify-between gap-6">
             <div>
               <p className="eyebrow">Marketplace · §pharmacy</p>
@@ -173,6 +189,40 @@ export function Marketplace({ authed = false }: { authed?: boolean } = {}) {
         </div>
       </section>
 
+      {/* PHARMACY SWITCHER BANNER — visible whenever a single seller is filtered.
+          One-click clear back to "All pharmacies", and a horizontal scroll of
+          quick-switch chips so the user never has to open the dropdown. */}
+      {pharmacy !== "all" && (
+        <section className="border-b border-[color:var(--rule)] bg-paper-tint">
+          <div className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-10 py-3 flex flex-wrap items-center gap-3">
+            <span className="eyebrow text-[10px]">Browsing</span>
+            <span className="text-[13.5px] text-ink font-medium">
+              {pharmacyById(pharmacy)?.name}
+            </span>
+            <button
+              type="button"
+              onClick={() => setPharmacy("all")}
+              className="mono text-[11px] tracking-[0.12em] uppercase text-ink-mute hover:text-clay underline underline-offset-4 decoration-[1.5px] decoration-[color:var(--rule-strong)] hover:decoration-clay"
+            >
+              Show all →
+            </button>
+            <div className="ml-auto flex items-center gap-2 overflow-x-auto max-w-full">
+              <span className="eyebrow text-[10px] whitespace-nowrap">Switch to</span>
+              {PHARMACIES.filter((p) => p.id !== pharmacy).slice(0, 6).map((p) => (
+                <button
+                  key={p.id}
+                  type="button"
+                  onClick={() => setPharmacy(p.id)}
+                  className="whitespace-nowrap px-2.5 py-1 text-[11.5px] tracking-[-0.005em] border border-[color:var(--rule)] bg-paper text-ink-soft hover:border-ink hover:text-ink transition-colors"
+                >
+                  {p.name}
+                </button>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* FEATURED PHARMACIES */}
       {pharmacy === "all" && !query && category === "all" && (
         <section className="border-b border-[color:var(--rule)]">
@@ -243,6 +293,7 @@ export function Marketplace({ authed = false }: { authed?: boolean } = {}) {
                   product={p}
                   inCart={cart.find((l) => l.productId === p.id)?.qty ?? 0}
                   onAdd={() => addToCart(p.id)}
+                  onSetQty={(qty) => setQty(p.id, qty)}
                   onSelectPharmacy={() => setPharmacy(p.pharmacyId)}
                 />
               ))}
@@ -273,17 +324,43 @@ export function Marketplace({ authed = false }: { authed?: boolean } = {}) {
           cart={cart}
           onClose={() => setDrawerOpen(false)}
           onSetQty={setQty}
+          onClear={() => setCart([])}
           total={cartTotal}
           authed={authed}
+          pending={isPending}
+          error={checkoutError}
           onCheckout={() => {
-            const id =
-              "VL-" +
-              Math.random().toString(36).slice(2, 6).toUpperCase() +
-              "-" +
-              Math.random().toString(36).slice(2, 6).toUpperCase();
-            setConfirmation({ id, total: cartTotal, items: cartCount });
-            setCart([]);
-            setDrawerOpen(false);
+            setCheckoutError(null);
+            startTransition(async () => {
+              const payload = cart
+                .map((l) => {
+                  const p = PRODUCTS.find((x) => x.id === l.productId);
+                  if (!p) return null;
+                  return {
+                    productId: p.id,
+                    name: p.name,
+                    strength: p.strength,
+                    qty: l.qty,
+                    priceCents: Math.round(p.price * 100),
+                    pharmacyId: p.pharmacyId,
+                  };
+                })
+                .filter(Boolean) as Parameters<typeof placeMarketplaceOrderAction>[0];
+              const res = await placeMarketplaceOrderAction(payload);
+              if (res?.error) {
+                setCheckoutError(res.error);
+                return;
+              }
+              if (res?.ok && res.orderId) {
+                setConfirmation({
+                  id: res.orderId.slice(-6).toUpperCase(),
+                  total: cartTotal,
+                  items: cartCount,
+                });
+                setCart([]);
+                setDrawerOpen(false);
+              }
+            });
           }}
         />
       )}
@@ -317,7 +394,7 @@ function SearchField({
       <span className="sr-only">Search products</span>
       <span
         aria-hidden
-        className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-mute"
+        className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-mute pointer-events-none"
       >
         <SearchIcon />
       </span>
@@ -325,7 +402,7 @@ function SearchField({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder="Search by molecule, brand, or pharmacy"
-        className="w-full pl-10 pr-3 py-2.5 bg-paper-tint border border-[color:var(--rule)] focus:outline-none focus:border-ink text-[13.5px] placeholder:text-ink-faint"
+        className="field pl-9"
       />
     </label>
   );
@@ -348,7 +425,7 @@ function SelectField({
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="bg-paper-tint border border-[color:var(--rule)] text-[13px] text-ink py-2 pl-2.5 pr-7 focus:outline-none focus:border-ink"
+        className="field py-1.5 pr-7 w-auto"
       >
         {options.map((o) => (
           <option key={o.value} value={o.value}>
@@ -417,11 +494,13 @@ function ProductTile({
   product,
   inCart,
   onAdd,
+  onSetQty,
   onSelectPharmacy,
 }: {
   product: Product;
   inCart: number;
   onAdd: () => void;
+  onSetQty: (qty: number) => void;
   onSelectPharmacy: () => void;
 }) {
   const ph = pharmacyById(product.pharmacyId);
@@ -492,16 +571,39 @@ function ProductTile({
 
       <button
         onClick={onAdd}
-        disabled={!product.inStock}
+        disabled={!product.inStock || inCart > 0}
         className={
-          "mt-2 text-[12.5px] tracking-[-0.005em] py-2 border transition-colors disabled:opacity-40 disabled:cursor-not-allowed " +
+          "mt-2 text-[12.5px] tracking-[-0.005em] py-2 border transition-colors disabled:cursor-not-allowed " +
           (inCart > 0
-            ? "border-ink bg-ink text-paper"
-            : "border-ink text-ink hover:bg-ink hover:text-paper")
+            ? "hidden"
+            : "border-ink text-ink hover:bg-ink hover:text-paper disabled:opacity-40")
         }
       >
-        {inCart > 0 ? `In basket · ${inCart}` : "Add to basket"}
+        Add to basket
       </button>
+      {inCart > 0 && (
+        <div className="mt-2 flex items-stretch border border-ink">
+          <button
+            type="button"
+            onClick={() => onSetQty(inCart - 1)}
+            aria-label="Decrease quantity"
+            className="w-9 text-ink hover:bg-ink hover:text-paper transition-colors"
+          >
+            −
+          </button>
+          <span className="flex-1 text-center mono tabular text-[12.5px] py-2 bg-ink text-paper">
+            In basket · {inCart}
+          </span>
+          <button
+            type="button"
+            onClick={() => onSetQty(inCart + 1)}
+            aria-label="Increase quantity"
+            className="w-9 text-ink hover:bg-ink hover:text-paper transition-colors"
+          >
+            +
+          </button>
+        </div>
+      )}
     </article>
   );
 }
@@ -510,15 +612,21 @@ function CartDrawer({
   cart,
   onClose,
   onSetQty,
+  onClear,
   total,
   authed,
+  pending,
+  error,
   onCheckout,
 }: {
   cart: CartLine[];
   onClose: () => void;
   onSetQty: (id: string, qty: number) => void;
+  onClear: () => void;
   total: number;
   authed: boolean;
+  pending: boolean;
+  error: string | null;
   onCheckout: () => void;
 }) {
   return (
@@ -538,13 +646,24 @@ function CartDrawer({
             <p className="eyebrow text-[10px]">Basket</p>
             <h2 className="font-display text-[18px] mt-0.5">Your order</h2>
           </div>
-          <button
-            onClick={onClose}
-            aria-label="Close"
-            className="text-ink-mute hover:text-ink text-[20px] leading-none"
-          >
-            ✕
-          </button>
+          <div className="flex items-center gap-3">
+            {cart.length > 0 && (
+              <button
+                type="button"
+                onClick={onClear}
+                className="mono text-[11px] tracking-[0.12em] uppercase text-ink-mute hover:text-oxblood transition-colors"
+              >
+                Empty
+              </button>
+            )}
+            <button
+              onClick={onClose}
+              aria-label="Close"
+              className="text-ink-mute hover:text-ink text-[20px] leading-none"
+            >
+              ✕
+            </button>
+          </div>
         </header>
 
         <div className="flex-1 overflow-y-auto px-5 py-4">
@@ -620,14 +739,19 @@ function CartDrawer({
             Delivery and verification fees calculated at checkout. Prescription
             items require a valid Vellum script.
           </p>
+          {error && (
+            <div role="alert" className="alert-band" data-tone="oxblood">
+              <span>{error}</span>
+            </div>
+          )}
           {authed ? (
             <button
               type="button"
               onClick={onCheckout}
-              disabled={cart.length === 0}
+              disabled={cart.length === 0 || pending}
               className="block w-full text-center bg-ink text-paper py-3 text-[13.5px] tracking-[-0.005em] hover:bg-clay-deep transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             >
-              Place order →
+              {pending ? "Placing order…" : "Place order →"}
             </button>
           ) : (
             <Link

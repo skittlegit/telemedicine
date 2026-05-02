@@ -14,10 +14,13 @@ export const dynamic = "force-dynamic";
 
 interface OrderListRow {
   _id: string;
+  kind?: "rx" | "marketplace";
   status: string;
   createdAt: Date;
   claimedAt?: Date;
-  prescription: string;
+  prescription?: string;
+  totalCents?: number;
+  items?: Array<{ name: string; strength?: string; qty: number }>;
 }
 
 export default async function PatientOrdersPage() {
@@ -74,10 +77,17 @@ export default async function PatientOrdersPage() {
                 <div className="flex flex-wrap items-start justify-between gap-3 mb-5">
                   <div>
                     <p className="font-medium text-[14px]">
-                      Order {String(o._id).slice(-6).toUpperCase()}
+                      {o.kind === "marketplace" ? "Marketplace order" : "Order"}{" "}
+                      {String(o._id).slice(-6).toUpperCase()}
                     </p>
                     <p className="mono text-[11px] text-ink-mute mt-0.5">
                       Placed {new Date(o.createdAt).toLocaleString()}
+                      {o.items && o.items.length > 0 && (
+                        <>
+                          {" · "}
+                          {o.items.length} item{o.items.length === 1 ? "" : "s"}
+                        </>
+                      )}
                     </p>
                   </div>
                   <Link
@@ -87,6 +97,18 @@ export default async function PatientOrdersPage() {
                     Details →
                   </Link>
                 </div>
+                {o.items && o.items.length > 0 && (
+                  <ul className="mb-4 text-[13px] text-ink-soft">
+                    {o.items.slice(0, 4).map((it, idx) => (
+                      <li key={idx} className="flex justify-between py-0.5">
+                        <span>
+                          {it.name} {it.strength ?? ""}
+                        </span>
+                        <span className="mono tabular text-ink-mute">× {it.qty}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
                 <OrderTimeline
                   status={o.status}
                   claimedAt={o.claimedAt ? o.claimedAt.toISOString() : null}

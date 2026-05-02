@@ -173,26 +173,29 @@ export default async function Home() {
               {SPECIALTIES.map((s, i) => (
                 <li
                   key={s.slug}
-                  className="grid grid-cols-12 gap-4 items-baseline border-t border-[color:var(--rule)] py-5 group"
+                  className="border-t border-[color:var(--rule)] group"
                 >
-                  <span className="col-span-2 sm:col-span-1 mono text-ink-mute text-[12px] tabular pt-1">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
                   <Link
                     href={`/specialties/${s.slug}`}
-                    className="col-span-10 sm:col-span-5 serif-section text-[clamp(1.05rem,2.4vw,1.45rem)] text-ink hover:text-clay transition-colors"
+                    prefetch
+                    className="grid grid-cols-12 gap-4 items-baseline py-5 hover:bg-paper-tint transition-colors"
                   >
-                    {s.name}
+                    <span className="col-span-2 sm:col-span-1 mono text-ink-mute text-[12px] tabular pt-1">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <span className="col-span-10 sm:col-span-5 serif-section text-[clamp(1.05rem,2.4vw,1.45rem)] text-ink group-hover:text-clay transition-colors">
+                      {s.name}
+                    </span>
+                    <span className="col-span-12 sm:col-span-5 text-[13px] text-ink-soft leading-snug pt-0.5">
+                      {s.examples}
+                    </span>
+                    <span
+                      aria-hidden
+                      className="col-span-12 sm:col-span-1 text-right mono text-ink-faint group-hover:text-clay transition-colors text-[14px]"
+                    >
+                      →
+                    </span>
                   </Link>
-                  <span className="col-span-12 sm:col-span-5 text-[13px] text-ink-soft leading-snug pt-0.5">
-                    {s.examples}
-                  </span>
-                  <span
-                    aria-hidden
-                    className="col-span-12 sm:col-span-1 text-right mono text-ink-faint group-hover:text-clay transition-colors text-[14px]"
-                  >
-                    →
-                  </span>
                 </li>
               ))}
               <li className="border-t border-[color:var(--rule-strong)]" />

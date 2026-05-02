@@ -31,13 +31,14 @@
   --ink-mute:     #7A6F8A;
   --ink-faint:    #B0A8BF;
 
-  /* Brand — plum-violet (interactive, link, focus) */
-  --clay:         #5B3FCF;
-  --clay-deep:    #3D2899;
-  --clay-wash:    #ECE5FF;
+  /* Brand — warm aubergine. One purple across the whole product. The
+     same hue as italic-accent in the masthead, used as the interactive
+     colour for buttons, links, and focus rings. */
+  --clay:         #6D3F8E;
+  --clay-deep:    #4F2C68;
+  --clay-wash:    #EFE7F4;
 
-  /* Accent — warm aubergine, RESERVED for italic-accent fragment only.
-     Never on buttons, links, or interactive elements. */
+  /* Accent — alias kept for back-compat. Identical to --clay. */
   --accent:       #6D3F8E;
 
   /* Status — clinical surfaces only, never marketing chrome */
