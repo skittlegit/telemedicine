@@ -2,8 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
-import { signOutAction } from "@/app/actions/auth";
 
 /* ============================================================
    Editorial chrome — single header used by every surface.
@@ -44,10 +42,17 @@ export function Wordmark({ href = "/" }: { href?: string } = {}) {
   return (
     <Link
       href={href}
-      className="flex items-center gap-2 shrink-0 text-ink hover:text-clay transition-colors"
+      className="flex items-baseline gap-1.5 shrink-0 text-ink hover:text-clay transition-colors"
     >
-      <Caduceus className="text-clay" size={16} />
-      <span className="font-semibold text-[14.5px] tracking-[-0.012em] leading-none">
+      <span className="rx-mark text-clay" aria-hidden />
+      <span
+        className="text-[18px] tracking-[-0.018em] leading-none"
+        style={{
+          fontFamily: "var(--font-fraunces), 'Times New Roman', serif",
+          fontVariationSettings: '"opsz" 96, "SOFT" 50',
+          fontWeight: 500,
+        }}
+      >
         Vellum Health
       </span>
     </Link>
@@ -68,10 +73,9 @@ const PUBLIC_NAV: ReadonlyArray<NavLink> = [
 export const PRODUCT_NAV_BY_ROLE: Record<string, ReadonlyArray<NavLink>> = {
   patient: [
     { href: "/dashboard", label: "Today", exact: true },
-    { href: "/dashboard/doctors", label: "Doctors" },
+    { href: "/doctors", label: "Doctors" },
     { href: "/pharmacy", label: "Pharmacy" },
-    { href: "/dashboard/visits", label: "Visits" },
-    { href: "/dashboard/prescriptions", label: "Prescriptions" },
+    { href: "/dashboard/visits", label: "Visits & Rx" },
     { href: "/dashboard/orders", label: "Orders" },
   ],
   doctor: [
@@ -82,6 +86,7 @@ export const PRODUCT_NAV_BY_ROLE: Record<string, ReadonlyArray<NavLink>> = {
   pharmacist: [
     { href: "/dashboard/pharmacy", label: "Queue", exact: true },
     { href: "/dashboard/pharmacy/active", label: "Active" },
+    { href: "/dashboard/pharmacy/listings", label: "Listings" },
     { href: "/dashboard/pharmacy/history", label: "History" },
   ],
   admin: [
@@ -105,102 +110,38 @@ function profileHrefFor(role: string) {
   return "/dashboard/profile";
 }
 
-function UserMenu({ user }: { user: { name: string; role: string } }) {
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+function ProfileLink({ user }: { user: { name: string; role: string } }) {
   const initial = (user.name?.[0] ?? "?").toUpperCase();
   const profileHref = profileHrefFor(user.role);
-
-  useEffect(() => {
-    if (!open) return;
-    function onClick(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
-    }
-    function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") setOpen(false);
-    }
-    window.addEventListener("mousedown", onClick);
-    window.addEventListener("keydown", onKey);
-    return () => {
-      window.removeEventListener("mousedown", onClick);
-      window.removeEventListener("keydown", onKey);
-    };
-  }, [open]);
-
   return (
-    <div ref={ref} className="relative">
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        aria-haspopup="menu"
-        aria-expanded={open}
-        aria-label={`Account menu, signed in as ${user.name}`}
-        className="flex items-center gap-2 group"
+    <Link
+      href={profileHref}
+      prefetch
+      aria-label={`Open profile for ${user.name}`}
+      className="flex items-center gap-2 group"
+    >
+      <span
+        className="grid place-items-center h-8 w-8 bg-clay-wash text-clay text-[12px] font-semibold tracking-[-0.01em] ring-1 ring-inset ring-[color:var(--rule-strong)] group-hover:ring-clay/40 transition-shadow"
+        aria-hidden
       >
-        <span
-          className="grid place-items-center h-8 w-8 rounded-full bg-clay-wash text-clay text-[12px] font-semibold tracking-[-0.01em] ring-1 ring-inset ring-[color:var(--rule-strong)] group-hover:ring-clay/40 transition-shadow"
-          aria-hidden
-        >
-          {initial}
-        </span>
-        <span className="hidden sm:inline text-[13px] text-ink-mute group-hover:text-ink transition-colors">
-          {user.name.split(" ")[0]}
-        </span>
-        <span
-          aria-hidden
-          className={`hidden sm:inline text-ink-mute text-[10px] transition-transform ${open ? "rotate-180" : ""}`}
-        >
-          ▾
-        </span>
-      </button>
-
-      {open && (
-        <div
-          role="menu"
-          className="absolute right-0 mt-3 w-[240px] bg-paper border border-[color:var(--rule-strong)] z-40"
-        >
-          <div className="px-4 pt-4 pb-3 border-b border-[color:var(--rule)]">
-            <p className="text-[13.5px] font-medium text-ink truncate">{user.name}</p>
-            <p className="mono text-[10.5px] tracking-[0.14em] uppercase text-ink-mute mt-1">
-              {user.role}
-            </p>
-          </div>
-          <ul className="py-1.5">
-            <li>
-              <Link
-                href="/dashboard"
-                role="menuitem"
-                onClick={() => setOpen(false)}
-                className="block px-4 py-2 text-[13px] text-ink-soft hover:text-ink hover:bg-paper-tint transition-colors"
-              >
-                Dashboard
-              </Link>
-            </li>
-            <li>
-              <Link
-                href={profileHref}
-                role="menuitem"
-                onClick={() => setOpen(false)}
-                className="block px-4 py-2 text-[13px] text-ink-soft hover:text-ink hover:bg-paper-tint transition-colors"
-              >
-                Profile
-              </Link>
-            </li>
-          </ul>
-          <form action={signOutAction} className="border-t border-[color:var(--rule)]">
-            <button
-              type="submit"
-              role="menuitem"
-              className="w-full text-left px-4 py-2.5 text-[13px] text-oxblood hover:bg-paper-tint transition-colors"
-            >
-              Sign out
-            </button>
-          </form>
-        </div>
-      )}
-    </div>
+        {initial}
+      </span>
+      <span
+        className="hidden sm:inline text-[15px] text-ink group-hover:text-clay transition-colors leading-none"
+        style={{
+          fontFamily: "var(--font-fraunces), 'Times New Roman', serif",
+          fontVariationSettings: '"opsz" 96, "SOFT" 50',
+          fontWeight: 500,
+        }}
+      >
+        {user.name.split(" ")[0]}
+      </span>
+    </Link>
   );
 }
+
+// Suppress unused-import warning when UserMenu is removed.
+
 
 export function MarketingHeader({
   logoHref = "/",
@@ -251,24 +192,15 @@ export function MarketingHeader({
 
         <div className="flex items-center gap-4 shrink-0">
           {authed && user ? (
-            <UserMenu user={user} />
+            <ProfileLink user={user} />
           ) : (
-            <>
-              <Link
-                href="/login"
-                prefetch
-                className="hidden sm:inline text-[13px] text-ink-mute hover:text-ink transition-colors"
-              >
-                Login
-              </Link>
-              <Link
-                href="/register"
-                prefetch
-                className="text-[13px] text-ink hover:text-clay transition-colors inline-flex items-center gap-1.5"
-              >
-                Register <span aria-hidden>→</span>
-              </Link>
-            </>
+            <Link
+              href="/login"
+              prefetch
+              className="text-[13px] text-ink hover:text-clay transition-colors inline-flex items-center gap-1.5"
+            >
+              Login <span aria-hidden>→</span>
+            </Link>
           )}
         </div>
       </div>

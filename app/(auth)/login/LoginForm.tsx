@@ -41,13 +41,14 @@ export function LoginForm({ callbackUrl }: { callbackUrl?: string }) {
       </div>
 
       {state.error && (
-        <p
+        <div
           id="login-error"
           role="alert"
-          className="text-sm text-oxblood border border-oxblood/30 bg-clay-wash px-3 py-2"
+          className="alert-band"
+          data-tone="oxblood"
         >
-          {state.error}
-        </p>
+          <span>{state.error}</span>
+        </div>
       )}
 
       <button type="submit" disabled={pending} className="btn btn-clay w-full justify-center">

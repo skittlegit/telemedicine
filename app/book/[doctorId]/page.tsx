@@ -92,7 +92,7 @@ export default async function BookPage({ params }: PageProps) {
     <main className="min-h-screen bg-paper text-ink">
       <div className="mx-auto w-full max-w-[860px] px-5 sm:px-8 py-10 sm:py-12">
         <Link
-          href={`/dashboard/doctors/${doc._id}`}
+          href={`/doctors/${doc._id}`}
           className="eyebrow text-ink-mute hover:text-clay"
         >
           ← Back to profile

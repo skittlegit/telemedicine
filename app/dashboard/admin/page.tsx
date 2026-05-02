@@ -11,6 +11,7 @@ import {
   StatGrid,
   StatTile,
   Section,
+  SignOutSection,
 } from "@/app/dashboard/_components/Shell";
 
 export const dynamic = "force-dynamic";
@@ -81,6 +82,8 @@ export default async function AdminOverviewPage() {
           />
         </div>
       </Section>
+
+      <SignOutSection />
     </>
   );
 }

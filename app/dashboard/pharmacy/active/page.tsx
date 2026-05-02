@@ -2,6 +2,7 @@ import Link from "next/link";
 import { connectDB } from "@/lib/db";
 import { PharmacyOrder } from "@/lib/models/PharmacyOrder";
 import { requireRole } from "@/lib/authz";
+import { advanceOrderAction } from "@/app/actions/pharmacy";
 import {
   PageHeader,
   Section,
@@ -86,6 +87,7 @@ function Stage({ label, rows }: { label: string; rows: MyRow[] }) {
             </div>
             <div className="flex items-center gap-3">
               <StatusPill status={o.status} />
+              <NextStatusForm id={o._id} status={o.status} />
               <Link
                 href={`/dashboard/pharmacy/${o._id}`}
                 className="btn btn-clay text-xs"
@@ -97,5 +99,32 @@ function Stage({ label, rows }: { label: string; rows: MyRow[] }) {
         ))}
       </ul>
     </Section>
+  );
+}
+
+function NextStatusForm({ id, status }: { id: string; status: string }) {
+  const next =
+    status === "claimed"
+      ? "preparing"
+      : status === "preparing"
+        ? "out_for_delivery"
+        : status === "out_for_delivery"
+          ? "delivered"
+          : null;
+  if (!next) return null;
+  const label =
+    next === "preparing"
+      ? "Mark preparing"
+      : next === "out_for_delivery"
+        ? "Out for delivery"
+        : "Mark delivered";
+  return (
+    <form action={advanceOrderAction}>
+      <input type="hidden" name="orderId" value={id} />
+      <input type="hidden" name="next" value={next} />
+      <button type="submit" className="btn btn-ghost btn-sm">
+        {label} →
+      </button>
+    </form>
   );
 }

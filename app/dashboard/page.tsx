@@ -105,7 +105,7 @@ async function PatientView({
       when: r.issuedAt,
       title: `Prescription · ${r.drugs.map((d) => d.name).slice(0, 2).join(", ")}${r.drugs.length > 2 ? "…" : ""}`,
       detail: `Issued ${new Date(r.issuedAt).toLocaleDateString()} · Dr. ${r.doctor?.name ?? ""}`.trim(),
-      href: "/dashboard/prescriptions",
+      href: "/dashboard/visits",
     })),
     ...recentOrders.map<Activity>((o) => ({
       when: o.createdAt,
@@ -133,7 +133,7 @@ async function PatientView({
   } else {
     todayLine = {
       text: "Nothing on your calendar. Find a doctor to book your first visit.",
-      cta: { href: "/dashboard/doctors", label: "Find a doctor →" },
+      cta: { href: "/doctors", label: "Find a doctor →" },
     };
   }
 

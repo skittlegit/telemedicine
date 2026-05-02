@@ -47,7 +47,7 @@ export default async function PatientOrdersPage() {
         eyebrow="In progress"
         title="Active orders"
         action={
-          <Link href="/dashboard/prescriptions" className="btn btn-ghost text-xs">
+          <Link href="/dashboard/visits" className="btn btn-ghost text-xs">
             Your prescriptions →
           </Link>
         }
@@ -57,7 +57,7 @@ export default async function PatientOrdersPage() {
             message="No active orders."
             cta={
               <Link
-                href="/dashboard/prescriptions"
+                href="/dashboard/visits"
                 className="btn btn-clay text-xs"
               >
                 See prescriptions →

@@ -3,7 +3,7 @@ import { User } from "@/lib/models/User";
 import { PatientProfile } from "@/lib/models/PatientProfile";
 import { requireRole } from "@/lib/authz";
 import { decryptPHI } from "@/lib/crypto";
-import { PageHeader, Section } from "@/app/dashboard/_components/Shell";
+import { PageHeader, Section, SignOutSection } from "@/app/dashboard/_components/Shell";
 import {
   PatientProfileForm,
   type PatientFormInitial,
@@ -126,6 +126,8 @@ export default async function PatientProfilePage() {
           formal request; the team responds within five business days.
         </p>
       </Section>
+
+      <SignOutSection />
     </>
   );
 }

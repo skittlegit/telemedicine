@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
+import { signOutAction } from "@/app/actions/auth";
 
 /**
  * @deprecated The dashboard chrome is now provided by `app/dashboard/layout.tsx`
@@ -250,6 +251,29 @@ export function StatusPill({ status }: { status: string }) {
       <span className={`h-1.5 w-1.5 rounded-full ${t.dot}`} />
       {status.replace(/_/g, " ")}
     </span>
+  );
+}
+
+/**
+ * Sign-out card placed at the foot of every profile page.
+ * Lives next to the rest of the account controls so users always know
+ * exactly where to end the session.
+ */
+export function SignOutSection() {
+  return (
+    <Section eyebrow="Session" title="Sign out">
+      <div className="flex flex-wrap items-center justify-between gap-4 border border-[color:var(--rule)] px-4 py-4">
+        <p className="text-[13.5px] text-ink-soft leading-[1.55] max-w-[52ch]">
+          Ends this session on this device. You can sign back in any time
+          from the top right of any page.
+        </p>
+        <form action={signOutAction}>
+          <button type="submit" className="btn btn-ghost btn-sm text-oxblood">
+            Sign out →
+          </button>
+        </form>
+      </div>
+    </Section>
   );
 }
 

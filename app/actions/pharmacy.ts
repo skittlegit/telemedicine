@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 import { Types } from "mongoose";
 import { connectDB } from "@/lib/db";
 import { Prescription } from "@/lib/models/Prescription";
@@ -13,6 +14,7 @@ import { stripe, isStripeConfigured } from "@/lib/stripe";
 import { env } from "@/lib/env";
 import { PharmacyOrderCreateSchema } from "@/lib/schemas";
 import { PharmacyProfile } from "@/lib/models/PharmacyProfile";
+import { PharmacyListing } from "@/lib/models/PharmacyListing";
 
 export type PharmacyFormState = { error?: string };
 
@@ -164,4 +166,111 @@ export async function advanceOrderAction(formData: FormData): Promise<void> {
     target: `PharmacyOrder:${orderId}`,
   });
   redirect(`/dashboard/pharmacy/${orderId}`);
+}
+
+/* ====================================================================
+   Pharmacy listings — create / update stock + active flag.
+   Each pharmacist owns their own listings.
+   ==================================================================== */
+
+const VALID_CATS = [
+  "otc",
+  "rx",
+  "wellness",
+  "devices",
+  "first-aid",
+  "cold-chain",
+] as const;
+
+export async function addListingAction(
+  _prev: { error?: string; ok?: boolean } | undefined,
+  formData: FormData,
+): Promise<{ error?: string; ok?: boolean }> {
+  const session = await requireRole("pharmacist");
+  const name = String(formData.get("name") ?? "").trim();
+  const generic = String(formData.get("generic") ?? "").trim();
+  const category = String(formData.get("category") ?? "otc");
+  const priceRupees = Number(formData.get("priceRupees") ?? 0);
+  const stock = Number(formData.get("stock") ?? 0);
+
+  if (!name) return { error: "Name is required." };
+  if (!VALID_CATS.includes(category as (typeof VALID_CATS)[number]))
+    return { error: "Invalid category." };
+  if (!Number.isFinite(priceRupees) || priceRupees < 0)
+    return { error: "Price must be a positive number." };
+  if (!Number.isFinite(stock) || stock < 0)
+    return { error: "Stock must be zero or greater." };
+
+  await connectDB();
+  await PharmacyListing.create({
+    pharmacy: session.user.id,
+    name,
+    generic,
+    category: category as (typeof VALID_CATS)[number],
+    priceCents: Math.round(priceRupees * 100),
+    stock: Math.floor(stock),
+    active: true,
+  });
+  await audit({
+    actor: session.user.id,
+    actorRole: "pharmacist",
+    action: "pharmacy.listing.create",
+    target: `PharmacyListing:${name}`,
+  });
+  revalidatePath("/dashboard/pharmacy/listings");
+  return { ok: true };
+}
+
+export async function updateListingAction(formData: FormData): Promise<void> {
+  const session = await requireRole("pharmacist");
+  const id = String(formData.get("id") ?? "");
+  if (!Types.ObjectId.isValid(id)) return;
+
+  await connectDB();
+  const update: Record<string, unknown> = {};
+  if (formData.has("stock")) {
+    const stock = Number(formData.get("stock"));
+    if (Number.isFinite(stock) && stock >= 0) update.stock = Math.floor(stock);
+  }
+  if (formData.has("active")) {
+    update.active = formData.get("active") === "1";
+  }
+  if (formData.has("priceRupees")) {
+    const r = Number(formData.get("priceRupees"));
+    if (Number.isFinite(r) && r >= 0) update.priceCents = Math.round(r * 100);
+  }
+
+  if (Object.keys(update).length === 0) return;
+
+  await PharmacyListing.findOneAndUpdate(
+    { _id: id, pharmacy: session.user.id },
+    update,
+  );
+  await audit({
+    actor: session.user.id,
+    actorRole: "pharmacist",
+    action: "pharmacy.listing.update",
+    target: `PharmacyListing:${id}`,
+    meta: update,
+  });
+  revalidatePath("/dashboard/pharmacy/listings");
+}
+
+export async function deleteListingAction(formData: FormData): Promise<void> {
+  const session = await requireRole("pharmacist");
+  const id = String(formData.get("id") ?? "");
+  if (!Types.ObjectId.isValid(id)) return;
+
+  await connectDB();
+  await PharmacyListing.findOneAndDelete({
+    _id: id,
+    pharmacy: session.user.id,
+  });
+  await audit({
+    actor: session.user.id,
+    actorRole: "pharmacist",
+    action: "pharmacy.listing.delete",
+    target: `PharmacyListing:${id}`,
+  });
+  revalidatePath("/dashboard/pharmacy/listings");
 }

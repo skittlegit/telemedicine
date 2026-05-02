@@ -5,6 +5,7 @@ import {
   PageHeader,
   Section,
   LicenseBanner,
+  SignOutSection,
 } from "@/app/dashboard/_components/Shell";
 import { ProfileForm } from "./ProfileForm";
 
@@ -57,6 +58,8 @@ export default async function ClinicianProfilePage() {
             }}
           />
         </Section>
+
+        <SignOutSection />
       </div>
     </>
   );

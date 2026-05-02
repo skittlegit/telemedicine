@@ -1,7 +1,7 @@
 import { connectDB } from "@/lib/db";
 import { PharmacyProfile } from "@/lib/models/PharmacyProfile";
 import { requireRole } from "@/lib/authz";
-import { PageHeader, Section } from "@/app/dashboard/_components/Shell";
+import { PageHeader, Section, SignOutSection } from "@/app/dashboard/_components/Shell";
 import { PharmacyProfileForm } from "./PharmacyProfileForm";
 
 export const dynamic = "force-dynamic";
@@ -68,6 +68,8 @@ export default async function PharmacyProfilePage() {
             }}
           />
         </Section>
+
+        <SignOutSection />
       </div>
     </>
   );

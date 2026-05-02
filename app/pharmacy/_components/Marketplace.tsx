@@ -95,8 +95,9 @@ export function Marketplace({ authed = false }: { authed?: boolean } = {}) {
           <div className="flex flex-wrap items-end justify-between gap-6">
             <div>
               <p className="eyebrow">Marketplace · §pharmacy</p>
-              <h1 className="font-display mt-3 text-[clamp(1.75rem,4vw,2.6rem)] tracking-tight">
-                Verified pharmacies. One basket.
+              <h1 className="serif-display mt-3 text-[clamp(2.25rem,5vw,3.75rem)]">
+                Verified pharmacies.{" "}
+                <span className="italic-accent">One basket.</span>
               </h1>
               <p className="mt-3 max-w-[58ch] text-[14.5px] leading-[1.6] text-ink-soft">
                 Vellum hosts a marketplace of independent, verified pharmacies.

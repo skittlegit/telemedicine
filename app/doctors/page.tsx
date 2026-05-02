@@ -248,21 +248,21 @@ export default async function DoctorsPage({ searchParams }: PageProps) {
               return (
                 <li
                   key={d._id}
-                  className="border-t border-[color:var(--rule)] last:border-b last:border-[color:var(--rule)]"
+                  className="border-t border-[color:var(--rule)] last:border-b last:border-[color:var(--rule)] group"
                 >
-                  <Link
-                    href={`/doctors/${d._id}`}
-                    prefetch
-                    className="group grid grid-cols-12 gap-x-4 gap-y-2 py-5 sm:py-6 hover:bg-paper-tint transition-colors px-1"
-                  >
+                  <div className="grid grid-cols-12 gap-x-4 gap-y-2 py-5 sm:py-6 px-1">
                     <span className="col-span-2 sm:col-span-1 mono text-ink-mute text-[12px] tabular pt-1">
                       {String(indexNo).padStart(2, "0")}
                     </span>
 
                     <div className="col-span-10 sm:col-span-5">
-                      <p className="serif-section text-[clamp(1.05rem,2vw,1.4rem)] text-ink group-hover:text-clay transition-colors">
+                      <Link
+                        href={`/doctors/${d._id}`}
+                        prefetch
+                        className="serif-section text-[clamp(1.05rem,2vw,1.4rem)] text-ink hover:text-clay transition-colors"
+                      >
                         Dr. {d.user.name}
-                      </p>
+                      </Link>
                       <p className="mono text-ink-mute text-[11px] tracking-[0.14em] uppercase mt-1.5">
                         {d.specialty} · {d.yearsOfExperience}y experience
                       </p>
@@ -298,14 +298,14 @@ export default async function DoctorsPage({ searchParams }: PageProps) {
                       <p className="serif-section text-[1.25rem] text-ink tabular">
                         {formatINR(d.consultationFeeCents)}
                       </p>
-                      <span
-                        aria-hidden
-                        className="inline-block mono text-[12px] text-ink-faint group-hover:text-clay transition-colors mt-2"
+                      <Link
+                        href={`/doctors/${d._id}`}
+                        className="inline-block mono text-[12px] text-ink-faint hover:text-clay transition-colors mt-2"
                       >
                         Read profile →
-                      </span>
+                      </Link>
                     </div>
-                  </Link>
+                  </div>
                 </li>
               );
             })}
