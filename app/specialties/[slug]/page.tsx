@@ -48,7 +48,12 @@ export default async function SpecialtyPage({ params }: PageProps) {
   await connectDB();
   void User;
 
-  const doctors = await DoctorProfile.find({ specialty: spec.name })
+  // Match specialty case-insensitively so legacy data with mixed casing
+  // ("General Practice" vs "General practice") still surfaces here.
+  const escaped = spec.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const doctors = await DoctorProfile.find({
+    specialty: { $regex: new RegExp(`^${escaped}$`, "i") },
+  })
     .populate("user", "name status")
     .sort({ rating: -1, ratingCount: -1, createdAt: -1 })
     .limit(12)

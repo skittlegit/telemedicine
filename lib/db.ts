@@ -64,33 +64,126 @@ export const HARDCODED_ADMIN = {
 export const HARDCODED_DEMO_USERS = [
   {
     email: "patient@vellum.test",
-    name: "Demo Patient",
-    password: "patient123",
+    name: "Eve Patient",
+    password: "password123",
     role: "patient" as const,
   },
+  // Doctors — three named clinicians spanning specialties. Demo accounts
+  // come from the database, not from a single canned doctor login.
   {
-    email: "doctor@vellum.test",
-    name: "Demo Doctor",
-    password: "doctor123",
+    email: "doc.gp@vellum.test",
+    name: "Ben Stone",
+    password: "password123",
     role: "doctor" as const,
     doctorProfile: {
-      specialty: "Internal medicine",
+      // Must match the slug list in app/_components/icons.tsx (lowercase "p").
+      specialty: "General practice",
+      bio: "Board-certified GP. Demo seed.",
       licenseNumber: "DEMO-DR-0001",
-      licenseRegion: "CA-USA",
-      yearsOfExperience: 8,
+      licenseRegion: "DEMO",
+      yearsOfExperience: 12,
       languages: ["English"],
       consultationFeeCents: 89900,
     },
   },
   {
-    email: "pharmacist@vellum.test",
-    name: "Demo Pharmacist",
-    password: "pharmacist123",
+    email: "doc.cardio@vellum.test",
+    name: "Alice Heart",
+    password: "password123",
+    role: "doctor" as const,
+    doctorProfile: {
+      specialty: "Cardiology",
+      bio: "Board-certified in Cardiology. Demo seed.",
+      licenseNumber: "DEMO-DR-0002",
+      licenseRegion: "DEMO",
+      yearsOfExperience: 14,
+      languages: ["English"],
+      consultationFeeCents: 89900,
+    },
+  },
+  {
+    email: "doc.derm@vellum.test",
+    name: "Cara Skin",
+    password: "password123",
+    role: "doctor" as const,
+    doctorProfile: {
+      specialty: "Dermatology",
+      bio: "Board-certified in Dermatology. Demo seed.",
+      licenseNumber: "DEMO-DR-0003",
+      licenseRegion: "DEMO",
+      yearsOfExperience: 9,
+      languages: ["English"],
+      consultationFeeCents: 89900,
+    },
+  },
+  // Pharmacies — four verified dispensaries. The first surfaces as the
+  // demo pharmacist account on the login page.
+  {
+    email: "rx-1@vellum.test",
+    name: "Dovetail Pharmacy",
+    password: "password123",
     role: "pharmacist" as const,
     pharmacyProfile: {
-      pharmacyName: "Vellum Demo Pharmacy",
-      licenseNumber: "DEMO-PH-0001",
-      licenseRegion: "CA-USA",
+      pharmacyName: "Dovetail Pharmacy",
+      licenseNumber: "RX-2026-0001",
+      licenseRegion: "NY",
+      addressLine1: "212 Smith Street",
+      city: "Brooklyn",
+      region: "NY",
+      postalCode: "11231",
+      country: "US",
+      phone: "+1 718 555 0101",
+    },
+  },
+  {
+    email: "rx-2@vellum.test",
+    name: "Cedar Apothecary",
+    password: "password123",
+    role: "pharmacist" as const,
+    pharmacyProfile: {
+      pharmacyName: "Cedar Apothecary",
+      licenseNumber: "RX-2026-0002",
+      licenseRegion: "TX",
+      addressLine1: "1108 East Cesar Chavez St",
+      city: "Austin",
+      region: "TX",
+      postalCode: "78702",
+      country: "US",
+      phone: "+1 512 555 0102",
+    },
+  },
+  {
+    email: "rx-3@vellum.test",
+    name: "Riverside Rx",
+    password: "password123",
+    role: "pharmacist" as const,
+    pharmacyProfile: {
+      pharmacyName: "Riverside Rx",
+      licenseNumber: "RX-2026-0003",
+      licenseRegion: "OR",
+      addressLine1: "4140 SE Hawthorne Blvd",
+      city: "Portland",
+      region: "OR",
+      postalCode: "97214",
+      country: "US",
+      phone: "+1 503 555 0103",
+    },
+  },
+  {
+    email: "rx-4@vellum.test",
+    name: "Lantern Pharmacy",
+    password: "password123",
+    role: "pharmacist" as const,
+    pharmacyProfile: {
+      pharmacyName: "Lantern Pharmacy",
+      licenseNumber: "RX-2026-0004",
+      licenseRegion: "MA",
+      addressLine1: "1320 Massachusetts Ave",
+      city: "Cambridge",
+      region: "MA",
+      postalCode: "02138",
+      country: "US",
+      phone: "+1 617 555 0104",
     },
   },
 ] as const;
@@ -190,16 +283,26 @@ async function ensureHardcodedAdmin(): Promise<void> {
       if (!doc) continue;
 
       if ("doctorProfile" in u && u.doctorProfile) {
+        const dp = u.doctorProfile as {
+          specialty: string;
+          licenseNumber: string;
+          licenseRegion: string;
+          yearsOfExperience: number;
+          languages: ReadonlyArray<string>;
+          consultationFeeCents: number;
+          bio?: string;
+        };
         await DoctorProfile.updateOne(
           { user: doc._id },
           {
             $set: {
-              specialty: u.doctorProfile.specialty,
-              licenseNumber: u.doctorProfile.licenseNumber,
-              licenseRegion: u.doctorProfile.licenseRegion,
-              yearsOfExperience: u.doctorProfile.yearsOfExperience,
-              languages: [...u.doctorProfile.languages],
-              consultationFeeCents: u.doctorProfile.consultationFeeCents,
+              specialty: dp.specialty,
+              bio: dp.bio,
+              licenseNumber: dp.licenseNumber,
+              licenseRegion: dp.licenseRegion,
+              yearsOfExperience: dp.yearsOfExperience,
+              languages: [...dp.languages],
+              consultationFeeCents: dp.consultationFeeCents,
               licenseVerifiedAt: now,
             },
             $setOnInsert: { user: doc._id },
@@ -208,13 +311,30 @@ async function ensureHardcodedAdmin(): Promise<void> {
         );
       }
       if ("pharmacyProfile" in u && u.pharmacyProfile) {
+        const pp = u.pharmacyProfile as {
+          pharmacyName: string;
+          licenseNumber: string;
+          licenseRegion: string;
+          addressLine1?: string;
+          city?: string;
+          region?: string;
+          postalCode?: string;
+          country?: string;
+          phone?: string;
+        };
         await PharmacyProfile.updateOne(
           { user: doc._id },
           {
             $set: {
-              pharmacyName: u.pharmacyProfile.pharmacyName,
-              licenseNumber: u.pharmacyProfile.licenseNumber,
-              licenseRegion: u.pharmacyProfile.licenseRegion,
+              pharmacyName: pp.pharmacyName,
+              licenseNumber: pp.licenseNumber,
+              licenseRegion: pp.licenseRegion,
+              addressLine1: pp.addressLine1,
+              city: pp.city,
+              region: pp.region,
+              postalCode: pp.postalCode,
+              country: pp.country,
+              phone: pp.phone,
               licenseVerifiedAt: now,
             },
             $setOnInsert: { user: doc._id },

@@ -29,7 +29,7 @@ export default async function PatientVisitsPage() {
   const [upcoming, past, rx, orders] = await Promise.all([
     Appointment.find({
       patient: userId,
-      status: { $in: ["scheduled", "in_progress"] },
+      status: { $in: ["pending_payment", "scheduled", "in_progress"] },
       startAt: { $gte: new Date(now.getTime() - JOIN_WINDOW_MS) },
     })
       .populate("doctor", "name")

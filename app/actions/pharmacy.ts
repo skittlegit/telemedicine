@@ -11,6 +11,7 @@ import { encryptPHI } from "@/lib/crypto";
 import { requireRole } from "@/lib/authz";
 import { audit } from "@/lib/audit";
 import { stripe, isStripeConfigured } from "@/lib/stripe";
+import { paymentsEnabled } from "@/lib/settings";
 import { env } from "@/lib/env";
 import { PharmacyOrderCreateSchema } from "@/lib/schemas";
 import { PharmacyProfile } from "@/lib/models/PharmacyProfile";
@@ -62,15 +63,20 @@ export async function createPharmacyOrderAction(
   }).lean<{ user: Types.ObjectId } | null>();
   if (!pharmacy) return { error: "That pharmacy is unavailable. Please pick another." };
 
+  // Order starts in `queued` state. The chosen pharmacy must claim it from
+  // their dashboard — nothing here auto-advances the order. The `pharmacy`
+  // field locks ownership; `pharmacist` is set on claim.
+  const usePayments = isStripeConfigured() && (await paymentsEnabled());
   const order = await PharmacyOrder.create({
     prescription: rx._id,
     patient: session.user.id,
     pharmacy: pharmacyId,
-    pharmacist: pharmacyId, // auto-claimed by chosen pharmacy
-    status: "claimed",
-    claimedAt: new Date(),
+    status: "queued",
     deliveryAddressEnc: encryptPHI(JSON.stringify(address)) ?? "",
     totalCents: FULFILMENT_FEE_CENTS,
+    // When payments are disabled platform-wide, mark as paid immediately so
+    // the order surfaces in the pharmacy queue without waiting on a webhook.
+    paidAt: usePayments ? undefined : new Date(),
   });
 
   await audit({
@@ -81,7 +87,7 @@ export async function createPharmacyOrderAction(
     meta: { pharmacy: pharmacyId },
   });
 
-  if (!isStripeConfigured()) {
+  if (!usePayments) {
     redirect(`/dashboard/orders/${order._id}?placed=1`);
   }
 
@@ -122,8 +128,16 @@ export async function claimOrderAction(formData: FormData): Promise<void> {
   if (!Types.ObjectId.isValid(orderId)) return;
 
   await connectDB();
+  // Only the pharmacy the patient picked may claim the order. The order
+  // must also be paid before it appears in the queue — we double-check
+  // here so a webhook race can't allow claiming an unpaid order.
   const updated = await PharmacyOrder.findOneAndUpdate(
-    { _id: orderId, status: "queued" },
+    {
+      _id: orderId,
+      status: "queued",
+      pharmacy: session.user.id,
+      paidAt: { $ne: null },
+    },
     { status: "claimed", pharmacist: session.user.id, claimedAt: new Date() },
     { new: true },
   );
@@ -149,8 +163,15 @@ export async function advanceOrderAction(formData: FormData): Promise<void> {
   const update: Record<string, unknown> = { status: next };
   if (next === "delivered") update.deliveredAt = new Date();
 
+  // Lock transitions to the pharmacy that owns the order AND the pharmacist
+  // who claimed it. Both checks are required so an unrelated pharmacist
+  // employed by the same pharmacy can't override transitions in flight.
   const order = await PharmacyOrder.findOneAndUpdate(
-    { _id: orderId, pharmacist: session.user.id },
+    {
+      _id: orderId,
+      pharmacy: session.user.id,
+      pharmacist: session.user.id,
+    },
     update,
     { new: true },
   );

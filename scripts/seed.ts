@@ -9,6 +9,7 @@ import { User } from "../lib/models/User";
 import { DoctorProfile } from "../lib/models/DoctorProfile";
 import { PatientProfile } from "../lib/models/PatientProfile";
 import { PharmacyProfile } from "../lib/models/PharmacyProfile";
+import { PharmacyListing } from "../lib/models/PharmacyListing";
 import { Appointment } from "../lib/models/Appointment";
 import { Prescription } from "../lib/models/Prescription";
 import { signPrescription } from "../lib/crypto";
@@ -48,7 +49,7 @@ async function main() {
 
   const docs = [
     { email: "doc.cardio@vellum.test", name: "Alice Heart", specialty: "Cardiology" },
-    { email: "doc.gp@vellum.test", name: "Ben Stone", specialty: "General Practice" },
+    { email: "doc.gp@vellum.test", name: "Ben Stone", specialty: "General practice" },
     { email: "doc.derm@vellum.test", name: "Cara Skin", specialty: "Dermatology" },
   ];
   for (const d of docs) {
@@ -152,6 +153,57 @@ async function main() {
     );
     console.log(`  pharmacy: ${p.name} (${p.city}, ${p.region}) → ${u._id}`);
   }
+
+  // Marketplace listings — a small but realistic catalog spread across the
+  // four pharmacies. Idempotent: skipped when the listing name already
+  // exists for that pharmacy.
+  const pharmacyUsers = await User.find({ role: "pharmacist" })
+    .select("_id email")
+    .lean<{ _id: import("mongoose").Types.ObjectId; email: string }[]>();
+  const byEmail = new Map(pharmacyUsers.map((u) => [u.email, u._id]));
+  const catalog: Array<{
+    email: string;
+    name: string;
+    generic: string;
+    category: "otc" | "rx" | "wellness" | "devices" | "first-aid" | "cold-chain";
+    priceCents: number;
+    stock: number;
+  }> = [
+    { email: "rx-1@vellum.test", name: "Paracetamol 500", generic: "Paracetamol", category: "otc", priceCents: 4900, stock: 240 },
+    { email: "rx-1@vellum.test", name: "Ibuprofen 400", generic: "Ibuprofen", category: "otc", priceCents: 6900, stock: 180 },
+    { email: "rx-1@vellum.test", name: "Amoxicillin 500", generic: "Amoxicillin", category: "rx", priceCents: 18900, stock: 60 },
+    { email: "rx-1@vellum.test", name: "Vitamin D3 1000IU", generic: "Cholecalciferol", category: "wellness", priceCents: 39900, stock: 120 },
+    { email: "rx-2@vellum.test", name: "Omeprazole 20", generic: "Omeprazole", category: "rx", priceCents: 14900, stock: 80 },
+    { email: "rx-2@vellum.test", name: "Cetirizine 10", generic: "Cetirizine", category: "otc", priceCents: 5900, stock: 200 },
+    { email: "rx-2@vellum.test", name: "Digital Thermometer", generic: "Thermometer", category: "devices", priceCents: 49900, stock: 35 },
+    { email: "rx-2@vellum.test", name: "Multivitamin Daily", generic: "Multivitamin", category: "wellness", priceCents: 59900, stock: 150 },
+    { email: "rx-3@vellum.test", name: "Insulin Glargine", generic: "Insulin Glargine", category: "cold-chain", priceCents: 129900, stock: 20 },
+    { email: "rx-3@vellum.test", name: "Adhesive Bandages", generic: "Bandages", category: "first-aid", priceCents: 9900, stock: 300 },
+    { email: "rx-3@vellum.test", name: "Levothyroxine 50", generic: "Levothyroxine", category: "rx", priceCents: 11900, stock: 90 },
+    { email: "rx-4@vellum.test", name: "Pulse Oximeter", generic: "SpO2 Monitor", category: "devices", priceCents: 119900, stock: 40 },
+    { email: "rx-4@vellum.test", name: "Salbutamol Inhaler", generic: "Salbutamol", category: "rx", priceCents: 24900, stock: 70 },
+    { email: "rx-4@vellum.test", name: "Magnesium Glycinate", generic: "Magnesium", category: "wellness", priceCents: 49900, stock: 110 },
+    { email: "rx-4@vellum.test", name: "First Aid Kit", generic: "First Aid Kit", category: "first-aid", priceCents: 79900, stock: 50 },
+  ];
+  for (const item of catalog) {
+    const ownerId = byEmail.get(item.email);
+    if (!ownerId) continue;
+    const exists = await PharmacyListing.findOne({
+      pharmacy: ownerId,
+      name: item.name,
+    });
+    if (exists) continue;
+    await PharmacyListing.create({
+      pharmacy: ownerId,
+      name: item.name,
+      generic: item.generic,
+      category: item.category,
+      priceCents: item.priceCents,
+      stock: item.stock,
+      active: true,
+    });
+  }
+  console.log(`  listings: ${catalog.length} marketplace items seeded`);
 
   await upsertUser({
     email: "admin@vellum.test",

@@ -100,7 +100,7 @@ lib/
   email.ts, stripe.ts, storage.ts, ratelimit.ts, money.ts, utils.ts
   schemas.ts              Zod schemas (RegisterSchema, LoginSchema, BookingSchema, PrescriptionSchema, …)
   models/                 Mongoose: User, Appointment, Prescription, PharmacyOrder, PharmacyListing,
-                            PharmacyProfile, DoctorProfile, PatientProfile, Payment, AuditLog
+                            PharmacyProfile, DoctorProfile, PatientProfile, Payment, AuditLog, Setting
   pdf/PrescriptionPdf.tsx
 ```
 
@@ -148,7 +148,8 @@ All ObjectIds via Mongoose. Timestamps on every collection.
 - **DoctorProfile / PharmacyProfile / PatientProfile** — sit alongside User; profiles can be looked up by `_id` (used as `doctorId` in URLs).
 - **Appointment** — `patient`, `doctor`, `startAt`, `endAt`, `durationMinutes` (default 30), `reasonEnc`, `notesEnc`, `status` (`pending_payment | scheduled | in_progress | completed | cancelled | no_show`), `feeCents`, `paymentIntentId`, `roomId`.
 - **Prescription** — `appointment`, `doctor`, `patient`, `drugs[]`, `diagnosisEnc`, `issuedAt`, `signature` (HMAC), `verifyToken` (unique, public), `revokedAt`, `fulfilledAt`. Compound indexes on `(patient, createdAt)` and `(doctor, createdAt)` — keep them.
-- **PharmacyOrder** — `kind` (`rx | marketplace`), `prescription?`, `patient`, `pharmacist?`, `pharmacy?`, `status` (`queued | claimed | preparing | out_for_delivery | delivered | cancelled`), `deliveryAddressEnc`, `totalCents`, `items[]`, `paymentIntentId`, timestamps for state transitions.
+- **PharmacyOrder** — `kind` (`rx | marketplace`), `prescription?`, `patient`, `pharmacist?`, `pharmacy?`, `status` (`queued | claimed | preparing | out_for_delivery | delivered | cancelled`), `deliveryAddressEnc`, `totalCents`, `items[]`, `paymentIntentId`, `paidAt`, timestamps for state transitions. Rx orders start as `queued` and only the assigned `pharmacy` (User) can claim once `paidAt` is set; transitions then require both `pharmacy` and `pharmacist` to match the actor.
+- **Setting** — singleton key/value store. Currently used for `payments.enabled`. Read via `paymentsEnabled()` from [lib/settings.ts](lib/settings.ts); when false, booking and pharmacy actions skip Stripe Checkout and confirm directly.
 - **PharmacyListing** — marketplace inventory.
 - **Payment** — Stripe session/intent tracking.
 - **AuditLog** — `actor`, `actorRole`, `action`, `target`, `ip`, `userAgent`, `meta` (sanitized).
@@ -192,7 +193,7 @@ Single source of truth: [lib/env.ts](lib/env.ts). The schema fails fast at start
 
 Generate fresh keys with `npm run keys`.
 
-If Stripe envs are missing, booking and pharmacy flows skip Checkout and auto-confirm. SMTP-less environments log emails to stdout.
+If Stripe envs are missing, booking and pharmacy flows skip Checkout and auto-confirm. **Admins can also force payments off at runtime** via `/dashboard/admin/settings` — same effect (`paymentsEnabled()` short-circuits the Stripe path). SMTP-less environments log emails to stdout.
 
 ---
 

@@ -11,6 +11,7 @@ import { encryptPHI, token } from "@/lib/crypto";
 import { requireRole } from "@/lib/authz";
 import { audit } from "@/lib/audit";
 import { stripe, isStripeConfigured } from "@/lib/stripe";
+import { paymentsEnabled } from "@/lib/settings";
 import { env } from "@/lib/env";
 import { BookingSchema } from "@/lib/schemas";
 
@@ -93,8 +94,9 @@ export async function bookAppointmentAction(
     meta: { doctor: String(doctorProfile.user._id), feeCents: doctorProfile.consultationFeeCents },
   });
 
-  // Skip Stripe in dev if not configured — auto-confirm the appointment.
-  if (!isStripeConfigured()) {
+  // Skip Stripe when not configured OR when admin has disabled payments —
+  // auto-confirm the appointment without Checkout.
+  if (!isStripeConfigured() || !(await paymentsEnabled())) {
     appt.status = "scheduled";
     await appt.save();
     redirect(`/dashboard?booked=${appt._id}`);

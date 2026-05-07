@@ -3,7 +3,7 @@ import { connectDB } from "@/lib/db";
 import { PharmacyOrder } from "@/lib/models/PharmacyOrder";
 import { PharmacyProfile } from "@/lib/models/PharmacyProfile";
 import { requireRole } from "@/lib/authz";
-import { advanceOrderAction } from "@/app/actions/pharmacy";
+import { claimOrderAction } from "@/app/actions/pharmacy";
 import {
   PageHeader,
   StatGrid,
@@ -39,7 +39,8 @@ export default async function PharmacyQueuePage() {
       } | null>(),
       PharmacyOrder.find({
         pharmacy: session.user.id,
-        status: "claimed",
+        status: "queued",
+        paidAt: { $ne: null },
       })
         .populate("patient", "name")
         .sort({ createdAt: 1 })
@@ -47,7 +48,7 @@ export default async function PharmacyQueuePage() {
         .lean<QueueRow[]>(),
       PharmacyOrder.countDocuments({
         pharmacy: session.user.id,
-        status: { $in: ["preparing", "out_for_delivery"] },
+        status: { $in: ["claimed", "preparing", "out_for_delivery"] },
       }),
       PharmacyOrder.countDocuments({
         pharmacy: session.user.id,
@@ -134,11 +135,10 @@ export default async function PharmacyQueuePage() {
                     {formatINR2(o.totalCents)}
                   </p>
                 </div>
-                <form action={advanceOrderAction}>
+                <form action={claimOrderAction}>
                   <input type="hidden" name="orderId" value={o._id} />
-                  <input type="hidden" name="next" value="preparing" />
                   <button type="submit" className="btn btn-clay text-xs">
-                    Start preparing →
+                    Claim order →
                   </button>
                 </form>
               </li>

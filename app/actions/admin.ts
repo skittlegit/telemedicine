@@ -8,6 +8,7 @@ import { DoctorProfile } from "@/lib/models/DoctorProfile";
 import { PharmacyProfile } from "@/lib/models/PharmacyProfile";
 import { requireRole } from "@/lib/authz";
 import { audit } from "@/lib/audit";
+import { setPaymentsEnabled } from "@/lib/settings";
 
 async function setUserStatus(formData: FormData, status: "active" | "disabled") {
   const session = await requireRole("admin");
@@ -62,4 +63,23 @@ export async function approveUserAction(formData: FormData) {
 
 export async function disableUserAction(formData: FormData) {
   await setUserStatus(formData, "disabled");
+}
+
+/**
+ * Toggle whether Stripe Checkout is used for bookings & pharmacy orders.
+ * When disabled, those flows confirm directly without payment — useful for
+ * demos and offline-payment clinics.
+ */
+export async function setPaymentsEnabledAction(formData: FormData) {
+  const session = await requireRole("admin");
+  const enabled = formData.get("enabled") === "1";
+  await setPaymentsEnabled(enabled, session.user.id);
+  await audit({
+    actor: session.user.id,
+    actorRole: "admin",
+    action: enabled ? "admin.settings.payments_enabled" : "admin.settings.payments_disabled",
+    target: "Setting:payments.enabled",
+  });
+  revalidatePath("/dashboard/admin");
+  revalidatePath("/dashboard/admin/settings");
 }

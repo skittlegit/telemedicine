@@ -39,7 +39,12 @@ export default async function DoctorsPage({ searchParams }: PageProps) {
   void User;
 
   const filter: Record<string, unknown> = {};
-  if (sp.specialty) filter.specialty = sp.specialty;
+  if (sp.specialty) {
+    // Case-insensitive match so links from /specialties/* work regardless
+    // of how individual doctor profiles capitalised the field.
+    const escaped = sp.specialty.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    filter.specialty = { $regex: new RegExp(`^${escaped}$`, "i") };
+  }
 
   const PAGE_SIZE = 16;
   const page = Math.max(1, Number(sp.page) || 1);

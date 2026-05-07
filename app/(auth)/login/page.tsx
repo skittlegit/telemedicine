@@ -8,9 +8,9 @@ interface PageProps {
 }
 
 const DEMO_ACCOUNTS: ReadonlyArray<readonly [string, string, string]> = [
-  ["patient",    "patient@vellum.test",     "patient123"],
-  ["doctor",     "doctor@vellum.test",      "doctor123"],
-  ["pharmacist", "pharmacist@vellum.test",  "pharmacist123"],
+  ["patient",    "patient@vellum.test",     "password123"],
+  ["doctor",     "doc.gp@vellum.test",      "password123"],
+  ["pharmacist", "rx-1@vellum.test",        "password123"],
   ["admin",      "admin@vellum.health",     "admin123"],
 ];
 

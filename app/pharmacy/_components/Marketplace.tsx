@@ -2,16 +2,63 @@
 
 import { useMemo, useState, useTransition } from "react";
 import Link from "next/link";
-import {
-  PRODUCTS,
-  PHARMACIES,
-  CATEGORY_LABEL,
-  pharmacyById,
-  type Category,
-  type Product,
-  type Pharmacy,
-} from "../_data";
 import { placeMarketplaceOrderAction } from "@/app/actions/pharmacy";
+
+/* =============================================================
+   Types & constants — the marketplace UI shape. The page-level
+   server component is responsible for mapping PharmacyProfile +
+   PharmacyListing rows from the database into these props.
+   ============================================================= */
+
+export type Category =
+  | "otc"
+  | "rx"
+  | "wellness"
+  | "devices"
+  | "first-aid"
+  | "cold-chain";
+
+export const CATEGORY_LABEL: Record<Category, string> = {
+  otc: "Over the counter",
+  rx: "Prescription",
+  wellness: "Wellness",
+  devices: "Devices",
+  "first-aid": "First aid",
+  "cold-chain": "Cold chain",
+};
+
+export type Pharmacy = {
+  id: string;
+  name: string;
+  monogram: string;
+  city: string;
+  state: string;
+  rating: number;
+  reviewCount: number;
+  deliveryHours: string;
+  joined: string;
+  verified: boolean;
+  coldChain: boolean;
+  fulfilled: number;
+  tagline: string;
+};
+
+export type Product = {
+  id: string;
+  name: string;
+  generic: string;
+  strength: string;
+  pack: string;
+  category: Category;
+  price: number;
+  mrp: number;
+  monogramHue: number;
+  tag: string | null;
+  rxRequired: boolean;
+  inStock: boolean;
+  rating: number;
+  pharmacyId: string;
+};
 
 type SortKey = "relevance" | "price-asc" | "price-desc" | "rating";
 
@@ -24,7 +71,20 @@ const SORT_LABEL: Record<SortKey, string> = {
   rating: "Rating",
 };
 
-export function Marketplace({ authed = false }: { authed?: boolean } = {}) {
+export function Marketplace({
+  authed = false,
+  pharmacies,
+  products,
+}: {
+  authed?: boolean;
+  pharmacies: Pharmacy[];
+  products: Product[];
+}) {
+  // Local aliases keep the rest of the body unchanged from the original
+  // mock-data implementation.
+  const PHARMACIES = pharmacies;
+  const PRODUCTS = products;
+  const pharmacyById = (id: string) => PHARMACIES.find((p) => p.id === id);
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<Category | "all">("all");
   const [pharmacy, setPharmacy] = useState<string | "all">("all");
@@ -291,6 +351,7 @@ export function Marketplace({ authed = false }: { authed?: boolean } = {}) {
                 <ProductTile
                   key={p.id}
                   product={p}
+                  pharmacyName={pharmacyById(p.pharmacyId)?.name ?? ""}
                   inCart={cart.find((l) => l.productId === p.id)?.qty ?? 0}
                   onAdd={() => addToCart(p.id)}
                   onSetQty={(qty) => setQty(p.id, qty)}
@@ -322,6 +383,8 @@ export function Marketplace({ authed = false }: { authed?: boolean } = {}) {
       {drawerOpen && (
         <CartDrawer
           cart={cart}
+          products={PRODUCTS}
+          pharmacies={PHARMACIES}
           onClose={() => setDrawerOpen(false)}
           onSetQty={setQty}
           onClear={() => setCart([])}
@@ -492,18 +555,19 @@ function PharmacyCard({
 
 function ProductTile({
   product,
+  pharmacyName,
   inCart,
   onAdd,
   onSetQty,
   onSelectPharmacy,
 }: {
   product: Product;
+  pharmacyName: string;
   inCart: number;
   onAdd: () => void;
   onSetQty: (qty: number) => void;
   onSelectPharmacy: () => void;
 }) {
-  const ph = pharmacyById(product.pharmacyId);
   const off = Math.round(((product.mrp - product.price) / product.mrp) * 100);
   const tileBg = `oklch(0.93 0.04 ${product.monogramHue})`;
   const tileText = `oklch(0.42 0.12 ${product.monogramHue})`;
@@ -552,7 +616,7 @@ function ProductTile({
           onClick={onSelectPharmacy}
           className="text-[11.5px] text-ink-soft hover:text-clay text-left transition-colors mt-0.5"
         >
-          {ph?.name}
+          {pharmacyName}
         </button>
         <div className="flex items-baseline gap-2 mt-1">
           <span className="mono tabular text-[15px] text-ink font-semibold">
@@ -610,6 +674,8 @@ function ProductTile({
 
 function CartDrawer({
   cart,
+  products,
+  pharmacies,
   onClose,
   onSetQty,
   onClear,
@@ -620,6 +686,8 @@ function CartDrawer({
   onCheckout,
 }: {
   cart: CartLine[];
+  products: Product[];
+  pharmacies: Pharmacy[];
   onClose: () => void;
   onSetQty: (id: string, qty: number) => void;
   onClear: () => void;
@@ -629,6 +697,7 @@ function CartDrawer({
   error: string | null;
   onCheckout: () => void;
 }) {
+  const pharmacyById = (id: string) => pharmacies.find((p) => p.id === id);
   return (
     <div
       className="fixed inset-0 z-50 flex justify-end"
@@ -672,7 +741,7 @@ function CartDrawer({
           ) : (
             <ul className="divide-y divide-[color:var(--rule)]">
               {cart.map((l) => {
-                const p = PRODUCTS.find((x) => x.id === l.productId);
+                const p = products.find((x) => x.id === l.productId);
                 if (!p) return null;
                 return (
                   <li key={l.productId} className="py-4 flex gap-3">

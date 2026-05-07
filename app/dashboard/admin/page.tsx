@@ -6,6 +6,7 @@ import { Prescription } from "@/lib/models/Prescription";
 import { PharmacyOrder } from "@/lib/models/PharmacyOrder";
 import { AuditLog } from "@/lib/models/AuditLog";
 import { requireRole } from "@/lib/authz";
+import { paymentsEnabled } from "@/lib/settings";
 import {
   PageHeader,
   StatGrid,
@@ -34,6 +35,8 @@ export default async function AdminOverviewPage() {
       }),
       AuditLog.countDocuments({ createdAt: { $gte: last24h } }),
     ]);
+
+  const payEnabled = await paymentsEnabled();
 
   return (
     <>
@@ -64,7 +67,7 @@ export default async function AdminOverviewPage() {
       </Section>
 
       <Section eyebrow="Workspaces" title="Jump to">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <AdminTile
             href="/dashboard/admin/approvals"
             label="Approvals"
@@ -79,6 +82,11 @@ export default async function AdminOverviewPage() {
             href="/dashboard/admin/audit"
             label="Audit log"
             hint="Last 24h activity"
+          />
+          <AdminTile
+            href="/dashboard/admin/settings"
+            label="Settings"
+            hint={`Payments ${payEnabled ? "ON" : "OFF"}`}
           />
         </div>
       </Section>
