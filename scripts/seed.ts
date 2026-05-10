@@ -37,7 +37,7 @@ async function main() {
 
   const patient = await upsertUser({
     email: "patient@vellum.test",
-    name: "Eve Patient",
+    name: "Priya Mehta",
     role: "patient",
     password: "password123",
   });
@@ -48,9 +48,9 @@ async function main() {
   );
 
   const docs = [
-    { email: "doc.cardio@vellum.test", name: "Alice Heart", specialty: "Cardiology" },
-    { email: "doc.gp@vellum.test", name: "Ben Stone", specialty: "General practice" },
-    { email: "doc.derm@vellum.test", name: "Cara Skin", specialty: "Dermatology" },
+    { email: "doc.cardio@vellum.test", name: "Dr. Ananya Krishnan", specialty: "Cardiology" },
+    { email: "doc.gp@vellum.test", name: "Dr. Arjun Sharma", specialty: "General practice" },
+    { email: "doc.derm@vellum.test", name: "Dr. Rohan Verma", specialty: "Dermatology" },
   ];
   for (const d of docs) {
     const u = await upsertUser({
@@ -64,12 +64,12 @@ async function main() {
       {
         user: u._id,
         specialty: d.specialty,
-        bio: `Board-certified in ${d.specialty}. Demo seed.`,
+        bio: `MBBS, MD – ${d.specialty}. Demo seed.`,
         licenseNumber: "DEMO-1234",
-        licenseRegion: "DEMO",
+        licenseRegion: "IN",
         licenseVerifiedAt: new Date(),
         yearsOfExperience: 10,
-        languages: ["English"],
+        languages: ["English", "Hindi"],
         consultationFeeCents: 89900,
       },
       { upsert: true, new: true },
@@ -82,43 +82,43 @@ async function main() {
   const pharmacies = [
     {
       email: "rx-1@vellum.test",
-      name: "Dovetail Pharmacy",
-      city: "Brooklyn",
-      region: "NY",
-      addressLine1: "212 Smith Street",
-      postalCode: "11231",
+      name: "Apollo Medicals",
+      city: "Mumbai",
+      region: "MH",
+      addressLine1: "14 Linking Road, Bandra West",
+      postalCode: "400050",
       licenseNumber: "RX-2026-0001",
-      phone: "+1 718 555 0101",
+      phone: "+91 22 2655 0101",
     },
     {
       email: "rx-2@vellum.test",
-      name: "Cedar Apothecary",
-      city: "Austin",
-      region: "TX",
-      addressLine1: "1108 East Cesar Chavez St",
-      postalCode: "78702",
+      name: "MedPlus Pharmacy",
+      city: "Bengaluru",
+      region: "KA",
+      addressLine1: "82 Brigade Road",
+      postalCode: "560025",
       licenseNumber: "RX-2026-0002",
-      phone: "+1 512 555 0102",
+      phone: "+91 80 4112 0202",
     },
     {
       email: "rx-3@vellum.test",
-      name: "Riverside Rx",
-      city: "Portland",
-      region: "OR",
-      addressLine1: "4140 SE Hawthorne Blvd",
-      postalCode: "97214",
+      name: "Wellness Forever",
+      city: "New Delhi",
+      region: "DL",
+      addressLine1: "C-12 Connaught Place",
+      postalCode: "110001",
       licenseNumber: "RX-2026-0003",
-      phone: "+1 503 555 0103",
+      phone: "+91 11 4155 0303",
     },
     {
       email: "rx-4@vellum.test",
-      name: "Lantern Pharmacy",
-      city: "Cambridge",
-      region: "MA",
-      addressLine1: "1320 Massachusetts Ave",
-      postalCode: "02138",
+      name: "Netmeds Store",
+      city: "Chennai",
+      region: "TN",
+      addressLine1: "45 Anna Salai",
+      postalCode: "600002",
       licenseNumber: "RX-2026-0004",
-      phone: "+1 617 555 0104",
+      phone: "+91 44 2851 0404",
     },
   ];
   for (const p of pharmacies) {
@@ -140,7 +140,7 @@ async function main() {
         city: p.city,
         region: p.region,
         postalCode: p.postalCode,
-        country: "US",
+        country: "IN",
         phone: p.phone,
       },
       { upsert: true, new: true },
@@ -252,15 +252,19 @@ async function main() {
         signature,
         verifyToken,
       });
-      console.log("  prescription: demo Rx for Eve Patient (orderable)");
+      console.log("  prescription: demo Rx for Priya Mehta (orderable)");
     }
   }
 
   console.log("✔ Seed complete. Demo accounts (password: password123):");
-  console.log("  patient@vellum.test");
-  console.log("  doc.cardio@vellum.test, doc.gp@vellum.test, doc.derm@vellum.test");
-  console.log("  pharmacist@vellum.test");
-  console.log("  rx-1..4@vellum.test (4 verified pharmacies)");
+  console.log("  patient@vellum.test  (Priya Mehta)");
+  console.log("  doc.gp@vellum.test   (Dr. Arjun Sharma, General practice, Delhi)");
+  console.log("  doc.cardio@vellum.test (Dr. Ananya Krishnan, Cardiology, Bengaluru)");
+  console.log("  doc.derm@vellum.test (Dr. Rohan Verma, Dermatology, Mumbai)");
+  console.log("  rx-1@vellum.test     (Apollo Medicals, Mumbai)");
+  console.log("  rx-2@vellum.test     (MedPlus Pharmacy, Bengaluru)");
+  console.log("  rx-3@vellum.test     (Wellness Forever, New Delhi)");
+  console.log("  rx-4@vellum.test     (Netmeds Store, Chennai)");
   console.log("  admin@vellum.test");
   process.exit(0);
 }
