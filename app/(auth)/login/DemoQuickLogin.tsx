@@ -21,11 +21,9 @@ const PHARMACIES = [
   { email: "rx-5@vellum.test", label: "Medlink Pharmacy — Hyderabad" },
 ];
 
-export function DemoQuickLogin({ isProd }: { isProd: boolean }) {
+export function DemoQuickLogin() {
   const [doctorEmail, setDoctorEmail] = useState(DOCTORS[0].email);
   const [pharmacyEmail, setPharmacyEmail] = useState(PHARMACIES[0].email);
-
-  if (isProd) return null;
 
   return (
     <div className="mt-10 border-t border-[color:var(--rule)] pt-6">

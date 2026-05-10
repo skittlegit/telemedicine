@@ -19,8 +19,6 @@ const DEMO_ACCOUNTS: ReadonlyArray<readonly [string, string, string]> = [
 
 export default async function LoginPage({ searchParams }: PageProps) {
   const sp = await searchParams;
-  const isProd = process.env.NODE_ENV === "production";
-
   return (
     <main className="min-h-screen bg-paper text-ink">
       <div className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-10 pt-10">
@@ -63,7 +61,7 @@ export default async function LoginPage({ searchParams }: PageProps) {
 
           <LoginForm callbackUrl={sp.callbackUrl} />
 
-          <DemoQuickLogin isProd={isProd} />
+          <DemoQuickLogin />
         </div>
 
         <aside className="col-span-12 lg:col-span-3 lg:col-start-10 lg:pl-8 lg:border-l border-[color:var(--rule)]">
