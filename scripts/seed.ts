@@ -76,13 +76,7 @@ async function main() {
     );
   }
 
-  await upsertUser({
-    email: "pharmacist@vellum.test",
-    name: "Pat Pharmacy",
-    role: "pharmacist",
-    password: "password123",
-  });
-
+  // Seed pharmacies below — the individual rx-* accounts serve as pharmacist demo logins.
   // Mock dispensary network — verified pharmacies that patients can pick
   // from when sending a prescription for fulfilment.
   const pharmacies = [
