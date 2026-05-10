@@ -48,9 +48,13 @@ async function main() {
   );
 
   const docs = [
-    { email: "doc.cardio@vellum.test", name: "Dr. Ananya Krishnan", specialty: "Cardiology" },
-    { email: "doc.gp@vellum.test", name: "Dr. Arjun Sharma", specialty: "General practice" },
-    { email: "doc.derm@vellum.test", name: "Dr. Rohan Verma", specialty: "Dermatology" },
+    { email: "doc.cardio@vellum.test", name: "Ananya Krishnan", specialty: "Cardiology" },
+    { email: "doc.gp@vellum.test", name: "Arjun Sharma", specialty: "General practice" },
+    { email: "doc.derm@vellum.test", name: "Rohan Verma", specialty: "Dermatology" },
+    { email: "doc.neuro@vellum.test", name: "Vikram Nair", specialty: "Neurology" },
+    { email: "doc.ortho@vellum.test", name: "Meera Patel", specialty: "Orthopaedics" },
+    { email: "doc.peds@vellum.test", name: "Sanjay Iyer", specialty: "Paediatrics" },
+    { email: "doc.psych@vellum.test", name: "Priya Nambiar", specialty: "Psychiatry" },
   ];
   for (const d of docs) {
     const u = await upsertUser({
@@ -120,6 +124,16 @@ async function main() {
       licenseNumber: "RX-2026-0004",
       phone: "+91 44 2851 0404",
     },
+    {
+      email: "rx-5@vellum.test",
+      name: "Medlink Pharmacy",
+      city: "Hyderabad",
+      region: "TS",
+      addressLine1: "8 Banjara Hills Road No.12",
+      postalCode: "500034",
+      licenseNumber: "RX-2026-0005",
+      phone: "+91 40 6677 0505",
+    },
   ];
   for (const p of pharmacies) {
     const u = await upsertUser({
@@ -178,6 +192,10 @@ async function main() {
     { email: "rx-4@vellum.test", name: "Salbutamol Inhaler", generic: "Salbutamol", category: "rx", priceCents: 24900, stock: 70 },
     { email: "rx-4@vellum.test", name: "Magnesium Glycinate", generic: "Magnesium", category: "wellness", priceCents: 49900, stock: 110 },
     { email: "rx-4@vellum.test", name: "First Aid Kit", generic: "First Aid Kit", category: "first-aid", priceCents: 79900, stock: 50 },
+    { email: "rx-5@vellum.test", name: "Metformin 500", generic: "Metformin", category: "rx", priceCents: 12900, stock: 100 },
+    { email: "rx-5@vellum.test", name: "Azithromycin 250", generic: "Azithromycin", category: "rx", priceCents: 21900, stock: 80 },
+    { email: "rx-5@vellum.test", name: "Antacid Syrup 200ml", generic: "Aluminium Hydroxide", category: "otc", priceCents: 8900, stock: 150 },
+    { email: "rx-5@vellum.test", name: "Blood Pressure Monitor", generic: "BP Monitor", category: "devices", priceCents: 149900, stock: 30 },
   ];
   for (const item of catalog) {
     const ownerId = byEmail.get(item.email);
@@ -258,13 +276,18 @@ async function main() {
 
   console.log("✔ Seed complete. Demo accounts (password: password123):");
   console.log("  patient@vellum.test  (Priya Mehta)");
-  console.log("  doc.gp@vellum.test   (Dr. Arjun Sharma, General practice, Delhi)");
-  console.log("  doc.cardio@vellum.test (Dr. Ananya Krishnan, Cardiology, Bengaluru)");
-  console.log("  doc.derm@vellum.test (Dr. Rohan Verma, Dermatology, Mumbai)");
+  console.log("  doc.gp@vellum.test   (Arjun Sharma, General practice, Delhi)");
+  console.log("  doc.cardio@vellum.test (Ananya Krishnan, Cardiology, Bengaluru)");
+  console.log("  doc.derm@vellum.test (Rohan Verma, Dermatology, Mumbai)");
+  console.log("  doc.neuro@vellum.test (Vikram Nair, Neurology, Kerala)");
+  console.log("  doc.ortho@vellum.test (Meera Patel, Orthopaedics, Gujarat)");
+  console.log("  doc.peds@vellum.test (Sanjay Iyer, Paediatrics, Chennai)");
+  console.log("  doc.psych@vellum.test (Priya Nambiar, Psychiatry, Kerala)");
   console.log("  rx-1@vellum.test     (Apollo Medicals, Mumbai)");
   console.log("  rx-2@vellum.test     (MedPlus Pharmacy, Bengaluru)");
   console.log("  rx-3@vellum.test     (Wellness Forever, New Delhi)");
   console.log("  rx-4@vellum.test     (Netmeds Store, Chennai)");
+  console.log("  rx-5@vellum.test     (Medlink Pharmacy, Hyderabad)");
   console.log("  admin@vellum.test");
   process.exit(0);
 }

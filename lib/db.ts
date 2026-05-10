@@ -72,7 +72,7 @@ export const HARDCODED_DEMO_USERS = [
   // come from the database, not from a single canned doctor login.
   {
     email: "doc.gp@vellum.test",
-    name: "Dr. Arjun Sharma",
+    name: "Arjun Sharma",
     password: "password123",
     role: "doctor" as const,
     doctorProfile: {
@@ -88,7 +88,7 @@ export const HARDCODED_DEMO_USERS = [
   },
   {
     email: "doc.cardio@vellum.test",
-    name: "Dr. Ananya Krishnan",
+    name: "Ananya Krishnan",
     password: "password123",
     role: "doctor" as const,
     doctorProfile: {
@@ -103,7 +103,7 @@ export const HARDCODED_DEMO_USERS = [
   },
   {
     email: "doc.derm@vellum.test",
-    name: "Dr. Rohan Verma",
+    name: "Rohan Verma",
     password: "password123",
     role: "doctor" as const,
     doctorProfile: {
@@ -116,7 +116,67 @@ export const HARDCODED_DEMO_USERS = [
       consultationFeeCents: 89900,
     },
   },
-  // Pharmacies — four verified dispensaries. The first surfaces as the
+  {
+    email: "doc.neuro@vellum.test",
+    name: "Vikram Nair",
+    password: "password123",
+    role: "doctor" as const,
+    doctorProfile: {
+      specialty: "Neurology",
+      bio: "DM Neurology, SCTIMST Thiruvananthapuram. Stroke and epilepsy specialist with 15 years of experience.",
+      licenseNumber: "DEMO-DR-0004",
+      licenseRegion: "KL",
+      yearsOfExperience: 15,
+      languages: ["English", "Malayalam"],
+      consultationFeeCents: 89900,
+    },
+  },
+  {
+    email: "doc.ortho@vellum.test",
+    name: "Meera Patel",
+    password: "password123",
+    role: "doctor" as const,
+    doctorProfile: {
+      specialty: "Orthopaedics",
+      bio: "MS Orthopaedics, B.J. Medical College Ahmedabad. Joint replacement and sports injury specialist.",
+      licenseNumber: "DEMO-DR-0005",
+      licenseRegion: "GJ",
+      yearsOfExperience: 11,
+      languages: ["English", "Hindi", "Gujarati"],
+      consultationFeeCents: 89900,
+    },
+  },
+  {
+    email: "doc.peds@vellum.test",
+    name: "Sanjay Iyer",
+    password: "password123",
+    role: "doctor" as const,
+    doctorProfile: {
+      specialty: "Paediatrics",
+      bio: "MD Paediatrics, Madras Medical College Chennai. Newborn and child health specialist.",
+      licenseNumber: "DEMO-DR-0006",
+      licenseRegion: "TN",
+      yearsOfExperience: 8,
+      languages: ["English", "Tamil"],
+      consultationFeeCents: 89900,
+    },
+  },
+  {
+    email: "doc.psych@vellum.test",
+    name: "Priya Nambiar",
+    password: "password123",
+    role: "doctor" as const,
+    doctorProfile: {
+      specialty: "Psychiatry",
+      bio: "MD Psychiatry, NIMHANS Bengaluru. Specialising in anxiety, depression, and sleep disorders.",
+      licenseNumber: "DEMO-DR-0007",
+      licenseRegion: "KL",
+      yearsOfExperience: 10,
+      languages: ["English", "Malayalam", "Hindi"],
+      consultationFeeCents: 89900,
+    },
+  },
+  // Pharmacies — five verified dispensaries. The first surfaces as the
   // demo pharmacist account on the login page.
   {
     email: "rx-1@vellum.test",
@@ -184,6 +244,23 @@ export const HARDCODED_DEMO_USERS = [
       postalCode: "600002",
       country: "IN",
       phone: "+91 44 2851 0404",
+    },
+  },
+  {
+    email: "rx-5@vellum.test",
+    name: "Medlink Pharmacy",
+    password: "password123",
+    role: "pharmacist" as const,
+    pharmacyProfile: {
+      pharmacyName: "Medlink Pharmacy",
+      licenseNumber: "RX-2026-0005",
+      licenseRegion: "TS",
+      addressLine1: "8 Banjara Hills Road No.12",
+      city: "Hyderabad",
+      region: "TS",
+      postalCode: "500034",
+      country: "IN",
+      phone: "+91 40 6677 0505",
     },
   },
 ] as const;

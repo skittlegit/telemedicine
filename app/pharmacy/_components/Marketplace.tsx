@@ -232,7 +232,7 @@ export function Marketplace({
           </div>
         </div>
         {/* Category pills row */}
-        <div className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-10 pb-3 flex flex-wrap items-center gap-2">
+        <div className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-10 pb-2 flex flex-wrap items-center gap-2">
           <CategoryPill
             label="All"
             active={category === "all"}
@@ -246,6 +246,15 @@ export function Marketplace({
               onClick={() => setCategory(c)}
             />
           ))}
+        </div>
+        {/* Rx legend */}
+        <div className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-10 pb-2.5 flex items-center gap-2">
+          <span className="mono text-[9px] bg-ink text-paper w-5 h-5 inline-flex items-center justify-center shrink-0">
+            Rx
+          </span>
+          <span className="text-[11px] text-ink-faint">
+            Items marked Rx require a valid Vellum prescription at checkout
+          </span>
         </div>
       </section>
 
@@ -465,7 +474,8 @@ function SearchField({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder="Search by molecule, brand, or pharmacy"
-        className="field pl-9"
+        className="field"
+        style={{ paddingLeft: "2.25rem" }}
       />
     </label>
   );
@@ -532,24 +542,34 @@ function PharmacyCard({
   onSelect: () => void;
 }) {
   return (
-    <button
-      onClick={onSelect}
-      className="text-left group flex flex-col gap-2"
-    >
-      <div className="aspect-square w-full flex items-center justify-center bg-paper-tint border border-[color:var(--rule)] group-hover:border-ink transition-colors">
+    <article className="flex flex-col gap-2 group">
+      <Link
+        href={`/pharmacy/${ph.id}`}
+        className="block aspect-square w-full flex items-center justify-center bg-paper-tint border border-[color:var(--rule)] hover:border-ink transition-colors"
+      >
         <span className="font-display text-[clamp(1.5rem,4vw,2.25rem)] text-ink-soft tracking-tight">
           {ph.monogram}
         </span>
-      </div>
+      </Link>
       <div>
-        <p className="text-[13px] text-ink leading-tight font-medium">
+        <Link
+          href={`/pharmacy/${ph.id}`}
+          className="text-[13px] text-ink leading-tight font-medium hover:text-clay transition-colors block"
+        >
           {ph.name}
-        </p>
-        <p className="mono text-[10.5px] text-ink-mute mt-1 tabular">
+        </Link>
+        <p className="mono text-[10.5px] text-ink-mute mt-0.5 tabular">
           {ph.city.toUpperCase()} · ★ {ph.rating.toFixed(1)} · {ph.deliveryHours}h
         </p>
+        <button
+          type="button"
+          onClick={onSelect}
+          className="mono text-[10px] tracking-[0.1em] uppercase text-clay mt-1.5 hover:underline text-left"
+        >
+          Browse listings →
+        </button>
       </div>
-    </button>
+    </article>
   );
 }
 
@@ -574,8 +594,9 @@ function ProductTile({
 
   return (
     <article className="flex flex-col">
+      <Link href={`/pharmacy/product/${product.id}`} className="block">
       <div
-        className="relative aspect-square w-full flex items-center justify-center border border-[color:var(--rule)]"
+        className="relative aspect-square w-full flex items-center justify-center border border-[color:var(--rule)] hover:border-ink transition-colors"
         style={{ background: tileBg }}
       >
         <span
@@ -603,10 +624,13 @@ function ProductTile({
           </span>
         )}
       </div>
+      </Link>
 
       <div className="mt-3 flex flex-col gap-1 min-h-[120px]">
         <h3 className="text-[14px] text-ink leading-tight font-medium">
-          {product.name}{" "}
+          <Link href={`/pharmacy/product/${product.id}`} className="hover:text-clay transition-colors">
+            {product.name}
+          </Link>{" "}
           <span className="text-ink-mute font-normal">{product.strength}</span>
         </h3>
         <p className="text-[12px] text-ink-mute leading-snug">
