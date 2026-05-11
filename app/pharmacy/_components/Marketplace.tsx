@@ -3,6 +3,7 @@
 import { useMemo, useState, useTransition } from "react";
 import Link from "next/link";
 import { placeMarketplaceOrderAction } from "@/app/actions/pharmacy";
+import { CaduceusIcon } from "@/app/_components/icons";
 
 /* =============================================================
    Types & constants — the marketplace UI shape. The page-level
@@ -156,7 +157,7 @@ export function Marketplace({
       <section className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-10 pt-6">
         <div className="masthead">
           <span>
-            <span className="rx-mark" aria-hidden /> Marketplace
+            <CaduceusIcon className="inline-block align-[-3px] w-[14px] h-[14px] text-clay mr-1" /> Marketplace
             <span className="meta hidden sm:inline">§ pharmacy</span>
           </span>
           <span className="meta">

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { RegisterForm } from "./RegisterForm";
+import { CaduceusIcon } from "@/app/_components/icons";
 
 export const metadata = { title: "Register · Vellum Health" };
 
@@ -16,7 +17,7 @@ export default async function RegisterPage({ searchParams }: PageProps) {
       <div className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-10 pt-10">
         <div className="masthead">
           <span>
-            <span className="rx-mark" aria-hidden /> Begin your record
+            <CaduceusIcon className="inline-block align-[-3px] w-[14px] h-[14px] text-clay mr-1" /> Begin your record
           </span>
           <span className="meta">Vellum Health</span>
         </div>

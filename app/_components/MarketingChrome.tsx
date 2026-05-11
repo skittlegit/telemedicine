@@ -42,9 +42,15 @@ export function Wordmark({ href = "/" }: { href?: string } = {}) {
   return (
     <Link
       href={href}
-      className="flex items-baseline gap-1.5 shrink-0 text-ink hover:text-clay transition-colors"
+      className="flex items-center gap-2 shrink-0 text-ink hover:text-clay transition-colors"
     >
-      <span className="rx-mark text-clay" aria-hidden />
+      <span
+        className="inline-flex items-center justify-center text-clay"
+        aria-hidden
+        style={{ width: 22, height: 22 }}
+      >
+        <Caduceus size={20} />
+      </span>
       <span
         className="text-[18px] tracking-[-0.018em] leading-none"
         style={{

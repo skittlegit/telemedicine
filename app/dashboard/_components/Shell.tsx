@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { signOutAction } from "@/app/actions/auth";
+import { CaduceusIcon } from "@/app/_components/icons";
 
 /**
  * @deprecated The dashboard chrome is now provided by `app/dashboard/layout.tsx`
@@ -35,7 +36,7 @@ export function PageHeader({
     <header className="mb-10">
       <div className="masthead">
         <span>
-          <span className="rx-mark" aria-hidden /> {eyebrow}
+          <CaduceusIcon className="inline-block align-[-3px] w-[14px] h-[14px] text-clay mr-1" /> {eyebrow}
         </span>
       </div>
       <h1 className="serif-display mt-6 text-[clamp(2rem,4.5vw,3.25rem)] max-w-[22ch]">

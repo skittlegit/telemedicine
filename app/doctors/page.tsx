@@ -48,14 +48,14 @@ export default async function DoctorsPage({ searchParams }: PageProps) {
 
   const PAGE_SIZE = 16;
   const page = Math.max(1, Number(sp.page) || 1);
-  const sortKey = sp.sort ?? "experience";
+  const sortKey = sp.sort ?? "rating";
   const sortMap: Record<string, Record<string, 1 | -1>> = {
     rating: { rating: -1, ratingCount: -1, createdAt: -1 },
     experience: { yearsOfExperience: -1, rating: -1 },
     fee_asc: { consultationFeeCents: 1, rating: -1 },
     fee_desc: { consultationFeeCents: -1, rating: -1 },
   };
-  const sort = sortMap[sortKey] ?? sortMap.experience;
+  const sort = sortMap[sortKey] ?? sortMap.rating;
 
   const [doctors, specialties, totalCount] = await Promise.all([
     DoctorProfile.find(filter)
@@ -84,7 +84,7 @@ export default async function DoctorsPage({ searchParams }: PageProps) {
     const params = new URLSearchParams();
     if (sp.specialty) params.set("specialty", sp.specialty);
     if (sp.q) params.set("q", sp.q);
-    if (sortKey !== "experience") params.set("sort", sortKey);
+    if (sortKey !== "rating") params.set("sort", sortKey);
     if (p > 1) params.set("page", String(p));
     const qs = params.toString();
     return qs ? `/doctors?${qs}` : "/doctors";
@@ -94,7 +94,7 @@ export default async function DoctorsPage({ searchParams }: PageProps) {
     const params = new URLSearchParams();
     if (sp.specialty) params.set("specialty", sp.specialty);
     if (sp.q) params.set("q", sp.q);
-    if (key !== "experience") params.set("sort", key);
+    if (key !== "rating") params.set("sort", key);
     const qs = params.toString();
     return qs ? `/doctors?${qs}` : "/doctors";
   }

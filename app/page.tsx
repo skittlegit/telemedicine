@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { MarketingHeader, MarketingFooter } from "@/app/_components/MarketingChrome";
 import { marketingHeaderProps } from "@/app/_components/marketingHeaderProps";
 import { getSession } from "@/lib/authz";
-import { SPECIALTIES, ShieldIcon } from "@/app/_components/icons";
+import { SPECIALTIES, ShieldIcon, CaduceusIcon } from "@/app/_components/icons";
 
 /**
  * Vellum Health landing page — editorial-clinical register.
@@ -33,7 +33,7 @@ export default async function Home() {
       <section className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-10 pt-6">
         <div className="masthead">
           <span>
-            <span className="rx-mark" aria-hidden /> Vellum Health
+            <CaduceusIcon className="inline-block align-[-3px] w-[14px] h-[14px] text-clay mr-1" /> Vellum Health
             <span className="meta hidden sm:inline">Edition {issue.edition}</span>
           </span>
           <span className="meta">

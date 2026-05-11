@@ -89,14 +89,17 @@ export default async function DoctorPage({ params }: PageProps) {
           <p className="eyebrow">{doc.specialty}</p>
           <h1 className="serif-display mt-4 text-[clamp(2.5rem,7vw,5.75rem)] break-words">
             Dr. {doc.user.name}
-            {doc.ratingCount > 0 && (
-              <span className="italic-accent block text-[clamp(1.5rem,4vw,3rem)] mt-2">
-                rated {doc.rating.toFixed(1)} of five.
-              </span>
-            )}
           </h1>
           <p className="mono text-[12px] tracking-[0.14em] uppercase text-ink-mute mt-6">
             {doc.licenseRegion} #{doc.licenseNumber} · {doc.yearsOfExperience} years experience
+            {doc.ratingCount > 0 && (
+              <>
+                {" · "}
+                <span className="text-ink-soft">
+                  ★ {doc.rating.toFixed(1)} ({doc.ratingCount} reviews)
+                </span>
+              </>
+            )}
           </p>
         </div>
 

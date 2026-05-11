@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { LoginForm } from "./LoginForm";
 import { DemoQuickLogin } from "./DemoQuickLogin";
+import { CaduceusIcon } from "@/app/_components/icons";
 
 export const metadata = { title: "Sign in · Vellum Health" };
 
@@ -24,7 +25,7 @@ export default async function LoginPage({ searchParams }: PageProps) {
       <div className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-10 pt-10">
         <div className="masthead">
           <span>
-            <span className="rx-mark" aria-hidden /> Sign in
+            <CaduceusIcon className="inline-block align-[-3px] w-[14px] h-[14px] text-clay mr-1" /> Sign in
           </span>
           <span className="meta">Vellum Health · Clinic open</span>
         </div>
