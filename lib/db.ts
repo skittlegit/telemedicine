@@ -79,7 +79,7 @@ export const HARDCODED_DEMO_USERS = [
       // Must match the slug list in app/_components/icons.tsx (lowercase "p").
       specialty: "General practice",
       bio: "MBBS, MD – General Medicine. 12 years of clinical practice across Delhi NCR.",
-      licenseNumber: "DEMO-DR-0001",
+      licenseNumber: "DMC/R/2012/18743",
       licenseRegion: "DL",
       yearsOfExperience: 12,
       languages: ["English", "Hindi"],
@@ -94,7 +94,7 @@ export const HARDCODED_DEMO_USERS = [
     doctorProfile: {
       specialty: "Cardiology",
       bio: "DM Cardiology, AIIMS Bengaluru. Interventional cardiologist with 14 years of experience.",
-      licenseNumber: "DEMO-DR-0002",
+      licenseNumber: "KMC/2010/52641",
       licenseRegion: "KA",
       yearsOfExperience: 14,
       languages: ["English", "Kannada", "Tamil"],
@@ -109,7 +109,7 @@ export const HARDCODED_DEMO_USERS = [
     doctorProfile: {
       specialty: "Dermatology",
       bio: "MD Dermatology, KEM Mumbai. Specialising in medical and cosmetic dermatology.",
-      licenseNumber: "DEMO-DR-0003",
+      licenseNumber: "MMC/2015/73908",
       licenseRegion: "MH",
       yearsOfExperience: 9,
       languages: ["English", "Hindi", "Marathi"],
@@ -124,7 +124,7 @@ export const HARDCODED_DEMO_USERS = [
     doctorProfile: {
       specialty: "Neurology",
       bio: "DM Neurology, SCTIMST Thiruvananthapuram. Stroke and epilepsy specialist with 15 years of experience.",
-      licenseNumber: "DEMO-DR-0004",
+      licenseNumber: "TSNMC/2009/31024",
       licenseRegion: "KL",
       yearsOfExperience: 15,
       languages: ["English", "Malayalam"],
@@ -139,7 +139,7 @@ export const HARDCODED_DEMO_USERS = [
     doctorProfile: {
       specialty: "Orthopaedics",
       bio: "MS Orthopaedics, B.J. Medical College Ahmedabad. Joint replacement and sports injury specialist.",
-      licenseNumber: "DEMO-DR-0005",
+      licenseNumber: "GMC/2013/44817",
       licenseRegion: "GJ",
       yearsOfExperience: 11,
       languages: ["English", "Hindi", "Gujarati"],
@@ -154,7 +154,7 @@ export const HARDCODED_DEMO_USERS = [
     doctorProfile: {
       specialty: "Paediatrics",
       bio: "MD Paediatrics, Madras Medical College Chennai. Newborn and child health specialist.",
-      licenseNumber: "DEMO-DR-0006",
+      licenseNumber: "TNMC/2016/60392",
       licenseRegion: "TN",
       yearsOfExperience: 8,
       languages: ["English", "Tamil"],
@@ -169,7 +169,7 @@ export const HARDCODED_DEMO_USERS = [
     doctorProfile: {
       specialty: "Psychiatry",
       bio: "MD Psychiatry, NIMHANS Bengaluru. Specialising in anxiety, depression, and sleep disorders.",
-      licenseNumber: "DEMO-DR-0007",
+      licenseNumber: "KMC/Reg/2014/28956",
       licenseRegion: "KL",
       yearsOfExperience: 10,
       languages: ["English", "Malayalam", "Hindi"],
@@ -184,7 +184,7 @@ export const HARDCODED_DEMO_USERS = [
     doctorProfile: {
       specialty: "Sexology",
       bio: "MD Sexology, AIIMS Hyderabad. Specialising in sexual health, fertility, and relationship counselling.",
-      licenseNumber: "DEMO-DR-0008",
+      licenseNumber: "TSNMC/2018/55127",
       licenseRegion: "TS",
       yearsOfExperience: 6,
       languages: ["English", "Telugu", "Hindi"],

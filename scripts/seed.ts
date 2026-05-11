@@ -58,6 +58,16 @@ async function main() {
     { email: "doc.psych@vellum.test", name: "Rishi Pabbathi", specialty: "Psychiatry" },
     { email: "doc.sexo@vellum.test", name: "Sushan Govardhanam", specialty: "Sexology" },
   ];
+  const docMeta: Record<string, { license: string; region: string; exp: number; langs: string[]; rating: number; ratingCount: number }> = {
+    "doc.gp@vellum.test":     { license: "DMC/R/2012/18743",    region: "DL", exp: 12, langs: ["English","Hindi"],               rating: 4.7, ratingCount: 312 },
+    "doc.cardio@vellum.test": { license: "KMC/2010/52641",       region: "KA", exp: 14, langs: ["English","Kannada","Tamil"],      rating: 4.9, ratingCount: 284 },
+    "doc.derm@vellum.test":   { license: "MMC/2015/73908",       region: "MH", exp: 9,  langs: ["English","Hindi","Marathi"],      rating: 4.5, ratingCount: 196 },
+    "doc.neuro@vellum.test":  { license: "TSNMC/2009/31024",     region: "TS", exp: 15, langs: ["English","Malayalam"],            rating: 4.8, ratingCount: 241 },
+    "doc.ortho@vellum.test":  { license: "GMC/2013/44817",       region: "GJ", exp: 11, langs: ["English","Hindi","Gujarati"],     rating: 4.6, ratingCount: 178 },
+    "doc.peds@vellum.test":   { license: "TNMC/2016/60392",      region: "TN", exp: 8,  langs: ["English","Tamil"],               rating: 4.8, ratingCount: 143 },
+    "doc.psych@vellum.test":  { license: "KMC/Reg/2014/28956",   region: "KL", exp: 10, langs: ["English","Malayalam","Hindi"],   rating: 4.7, ratingCount: 209 },
+    "doc.sexo@vellum.test":   { license: "TSNMC/2018/55127",     region: "TS", exp: 6,  langs: ["English","Telugu","Hindi"],      rating: 4.4, ratingCount: 87  },
+  };
   for (const d of docs) {
     const u = await upsertUser({
       email: d.email,
@@ -65,18 +75,21 @@ async function main() {
       role: "doctor",
       password: "password123",
     });
+    const m = docMeta[d.email] ?? { license: "MCI/2015/00000", region: "IN", exp: 10, langs: ["English","Hindi"], rating: 0, ratingCount: 0 };
     await DoctorProfile.findOneAndUpdate(
       { user: u._id },
       {
         user: u._id,
         specialty: d.specialty,
         bio: `MBBS, MD – ${d.specialty}. Demo seed.`,
-        licenseNumber: "DEMO-1234",
-        licenseRegion: "IN",
+        licenseNumber: m.license,
+        licenseRegion: m.region,
         licenseVerifiedAt: new Date(),
-        yearsOfExperience: 10,
-        languages: ["English", "Hindi"],
+        yearsOfExperience: m.exp,
+        languages: m.langs,
         consultationFeeCents: 89900,
+        rating: m.rating,
+        ratingCount: m.ratingCount,
       },
       { upsert: true, new: true },
     );
