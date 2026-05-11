@@ -64,7 +64,7 @@ export const HARDCODED_ADMIN = {
 export const HARDCODED_DEMO_USERS = [
   {
     email: "patient@vellum.test",
-    name: "Priya Mehta",
+    name: "Deepak Aeleni",
     password: "password123",
     role: "patient" as const,
   },
@@ -72,7 +72,7 @@ export const HARDCODED_DEMO_USERS = [
   // come from the database, not from a single canned doctor login.
   {
     email: "doc.gp@vellum.test",
-    name: "Arjun Sharma",
+    name: "Pranav Mitta",
     password: "password123",
     role: "doctor" as const,
     doctorProfile: {
@@ -88,7 +88,7 @@ export const HARDCODED_DEMO_USERS = [
   },
   {
     email: "doc.cardio@vellum.test",
-    name: "Ananya Krishnan",
+    name: "Satyaki Tirumal",
     password: "password123",
     role: "doctor" as const,
     doctorProfile: {
@@ -103,7 +103,7 @@ export const HARDCODED_DEMO_USERS = [
   },
   {
     email: "doc.derm@vellum.test",
-    name: "Rohan Verma",
+    name: "Nishal Karmasetty",
     password: "password123",
     role: "doctor" as const,
     doctorProfile: {
@@ -118,7 +118,7 @@ export const HARDCODED_DEMO_USERS = [
   },
   {
     email: "doc.neuro@vellum.test",
-    name: "Vikram Nair",
+    name: "Ankit Shankar",
     password: "password123",
     role: "doctor" as const,
     doctorProfile: {
@@ -133,7 +133,7 @@ export const HARDCODED_DEMO_USERS = [
   },
   {
     email: "doc.ortho@vellum.test",
-    name: "Meera Patel",
+    name: "Sanvi Vajnepalli",
     password: "password123",
     role: "doctor" as const,
     doctorProfile: {
@@ -148,7 +148,7 @@ export const HARDCODED_DEMO_USERS = [
   },
   {
     email: "doc.peds@vellum.test",
-    name: "Sanjay Iyer",
+    name: "Ankita Vemavarapu",
     password: "password123",
     role: "doctor" as const,
     doctorProfile: {
@@ -163,7 +163,7 @@ export const HARDCODED_DEMO_USERS = [
   },
   {
     email: "doc.psych@vellum.test",
-    name: "Priya Nambiar",
+    name: "Rishi Pabbathi",
     password: "password123",
     role: "doctor" as const,
     doctorProfile: {
@@ -173,6 +173,21 @@ export const HARDCODED_DEMO_USERS = [
       licenseRegion: "KL",
       yearsOfExperience: 10,
       languages: ["English", "Malayalam", "Hindi"],
+      consultationFeeCents: 89900,
+    },
+  },
+  {
+    email: "doc.sexo@vellum.test",
+    name: "Sushan Govardhanam",
+    password: "password123",
+    role: "doctor" as const,
+    doctorProfile: {
+      specialty: "Sexology",
+      bio: "MD Sexology, AIIMS Hyderabad. Specialising in sexual health, fertility, and relationship counselling.",
+      licenseNumber: "DEMO-DR-0008",
+      licenseRegion: "TS",
+      yearsOfExperience: 6,
+      languages: ["English", "Telugu", "Hindi"],
       consultationFeeCents: 89900,
     },
   },

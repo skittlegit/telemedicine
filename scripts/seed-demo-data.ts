@@ -161,6 +161,7 @@ export async function seedDemoData() {
     "doc.ortho@vellum.test",
     "doc.peds@vellum.test",
     "doc.psych@vellum.test",
+    "doc.sexo@vellum.test",
   ];
   const doctors = await User.find({ email: { $in: docEmails } })
     .select("_id email")

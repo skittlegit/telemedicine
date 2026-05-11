@@ -4,13 +4,14 @@ import { useActionState, useState } from "react";
 import { loginAction } from "@/app/actions/auth";
 
 const DOCTORS = [
-  { email: "doc.gp@vellum.test", label: "Arjun Sharma — General practice" },
-  { email: "doc.cardio@vellum.test", label: "Ananya Krishnan — Cardiology" },
-  { email: "doc.derm@vellum.test", label: "Rohan Verma — Dermatology" },
-  { email: "doc.neuro@vellum.test", label: "Vikram Nair — Neurology" },
-  { email: "doc.ortho@vellum.test", label: "Meera Patel — Orthopaedics" },
-  { email: "doc.peds@vellum.test", label: "Sanjay Iyer — Paediatrics" },
-  { email: "doc.psych@vellum.test", label: "Priya Nambiar — Psychiatry" },
+  { email: "doc.gp@vellum.test", label: "Pranav Mitta — General practice" },
+  { email: "doc.cardio@vellum.test", label: "Satyaki Tirumal — Cardiology" },
+  { email: "doc.derm@vellum.test", label: "Nishal Karmasetty — Dermatology" },
+  { email: "doc.neuro@vellum.test", label: "Ankit Shankar — Neurology" },
+  { email: "doc.ortho@vellum.test", label: "Sanvi Vajnepalli — Orthopaedics" },
+  { email: "doc.peds@vellum.test", label: "Ankita Vemavarapu — Paediatrics" },
+  { email: "doc.psych@vellum.test", label: "Rishi Pabbathi — Psychiatry" },
+  { email: "doc.sexo@vellum.test", label: "Sushan Govardhanam — Sexology" },
 ];
 
 const PHARMACIES = [

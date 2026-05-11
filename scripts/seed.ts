@@ -38,7 +38,7 @@ async function main() {
 
   const patient = await upsertUser({
     email: "patient@vellum.test",
-    name: "Priya Mehta",
+    name: "Deepak Aeleni",
     role: "patient",
     password: "password123",
   });
@@ -49,13 +49,14 @@ async function main() {
   );
 
   const docs = [
-    { email: "doc.cardio@vellum.test", name: "Ananya Krishnan", specialty: "Cardiology" },
-    { email: "doc.gp@vellum.test", name: "Arjun Sharma", specialty: "General practice" },
-    { email: "doc.derm@vellum.test", name: "Rohan Verma", specialty: "Dermatology" },
-    { email: "doc.neuro@vellum.test", name: "Vikram Nair", specialty: "Neurology" },
-    { email: "doc.ortho@vellum.test", name: "Meera Patel", specialty: "Orthopaedics" },
-    { email: "doc.peds@vellum.test", name: "Sanjay Iyer", specialty: "Paediatrics" },
-    { email: "doc.psych@vellum.test", name: "Priya Nambiar", specialty: "Psychiatry" },
+    { email: "doc.cardio@vellum.test", name: "Satyaki Tirumal", specialty: "Cardiology" },
+    { email: "doc.gp@vellum.test", name: "Pranav Mitta", specialty: "General practice" },
+    { email: "doc.derm@vellum.test", name: "Nishal Karmasetty", specialty: "Dermatology" },
+    { email: "doc.neuro@vellum.test", name: "Ankit Shankar", specialty: "Neurology" },
+    { email: "doc.ortho@vellum.test", name: "Sanvi Vajnepalli", specialty: "Orthopaedics" },
+    { email: "doc.peds@vellum.test", name: "Ankita Vemavarapu", specialty: "Paediatrics" },
+    { email: "doc.psych@vellum.test", name: "Rishi Pabbathi", specialty: "Psychiatry" },
+    { email: "doc.sexo@vellum.test", name: "Sushan Govardhanam", specialty: "Sexology" },
   ];
   for (const d of docs) {
     const u = await upsertUser({
@@ -276,14 +277,15 @@ async function main() {
   }
 
   console.log("✔ Seed complete. Demo accounts (password: password123):");
-  console.log("  patient@vellum.test  (Priya Mehta)");
-  console.log("  doc.gp@vellum.test   (Arjun Sharma, General practice, Delhi)");
-  console.log("  doc.cardio@vellum.test (Ananya Krishnan, Cardiology, Bengaluru)");
-  console.log("  doc.derm@vellum.test (Rohan Verma, Dermatology, Mumbai)");
-  console.log("  doc.neuro@vellum.test (Vikram Nair, Neurology, Kerala)");
-  console.log("  doc.ortho@vellum.test (Meera Patel, Orthopaedics, Gujarat)");
-  console.log("  doc.peds@vellum.test (Sanjay Iyer, Paediatrics, Chennai)");
-  console.log("  doc.psych@vellum.test (Priya Nambiar, Psychiatry, Kerala)");
+  console.log("  patient@vellum.test  (Deepak Aeleni)");
+  console.log("  doc.gp@vellum.test   (Pranav Mitta, General practice, Delhi)");
+  console.log("  doc.cardio@vellum.test (Satyaki Tirumal, Cardiology, Bengaluru)");
+  console.log("  doc.derm@vellum.test (Nishal Karmasetty, Dermatology, Mumbai)");
+  console.log("  doc.neuro@vellum.test (Ankit Shankar, Neurology, Kerala)");
+  console.log("  doc.ortho@vellum.test (Sanvi Vajnepalli, Orthopaedics, Gujarat)");
+  console.log("  doc.peds@vellum.test (Ankita Vemavarapu, Paediatrics, Chennai)");
+  console.log("  doc.psych@vellum.test (Rishi Pabbathi, Psychiatry, Kerala)");
+  console.log("  doc.sexo@vellum.test (Sushan Govardhanam, Sexology, Hyderabad)");
   console.log("  rx-1@vellum.test     (Apollo Medicals, Mumbai)");
   console.log("  rx-2@vellum.test     (MedPlus Pharmacy, Bengaluru)");
   console.log("  rx-3@vellum.test     (Wellness Forever, New Delhi)");
