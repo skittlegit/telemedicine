@@ -8,6 +8,7 @@
     "start": "tsx --env-file-if-exists=.env.local server.ts",
     "lint": "eslint",
     "seed": "tsx --env-file-if-exists=.env.local scripts/seed.ts",
+    "seed:data": "tsx --env-file-if-exists=.env.local scripts/seed-demo-data.ts",
     "keys": "node scripts/generate-keys.mjs",
     "stripe:listen": "stripe listen --forward-to localhost:3000/api/webhooks/stripe"
   },

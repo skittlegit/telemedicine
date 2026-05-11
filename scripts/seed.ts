@@ -13,6 +13,7 @@ import { PharmacyListing } from "../lib/models/PharmacyListing";
 import { Appointment } from "../lib/models/Appointment";
 import { Prescription } from "../lib/models/Prescription";
 import { signPrescription } from "../lib/crypto";
+import { seedDemoData } from "./seed-demo-data";
 
 async function upsertUser(opts: {
   email: string;
@@ -289,6 +290,10 @@ async function main() {
   console.log("  rx-4@vellum.test     (Netmeds Store, Chennai)");
   console.log("  rx-5@vellum.test     (Medlink Pharmacy, Hyderabad)");
   console.log("  admin@vellum.test");
+
+  // Seed rich visit / prescription / order demo data
+  await seedDemoData();
+
   process.exit(0);
 }
 
