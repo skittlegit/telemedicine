@@ -43,12 +43,12 @@ export function StethIcon({ className = "" }: { className?: string }) {
 }
 export function CaduceusIcon({ className = "" }: { className?: string }) {
   return (
-    <svg viewBox="0 0 24 24" {...stroke} className={className} aria-hidden>
-      <path d="M12 3v18" />
-      <path d="M9 8h6" />
-      <path d="M8 5c-1 1.5-1 3 0 4.5s2.5 2 2.5 3.5-1 2.5-2.5 2.5" />
-      <path d="M16 5c1 1.5 1 3 0 4.5s-2.5 2-2.5 3.5 1 2.5 2.5 2.5" />
-      <path d="M5 6.5c1.5 0 2.5-1 2.5-2 0-.5-.3-1-1-1" />
+    <svg viewBox="0 0 24 24" {...stroke} strokeWidth={2} className={className} aria-hidden>
+      <path d="M12 2v20" />
+      <path d="M12 5C10 3 6 3 6 5.5C6 8 10 8.5 12 7.5" />
+      <path d="M15.5 5.5C18.5 7 18 11 15 12" />
+      <path d="M9 12C6 13.5 6.5 17.5 9.5 18.5" />
+      <path d="M13.5 18.5C16.5 19.5 16.5 22 14 22" />
     </svg>
   );
 }

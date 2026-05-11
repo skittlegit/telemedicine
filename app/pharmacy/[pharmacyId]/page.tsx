@@ -170,11 +170,10 @@ export default async function PharmacyDetailPage({
                       </span>
                       {rxRequired && (
                         <span
+                          className="rx-mark absolute top-2 right-2"
                           title="Prescription required"
-                          className="absolute top-2 right-2 mono text-[10px] tracking-[0.06em] bg-ink text-paper w-6 h-6 flex items-center justify-center"
-                        >
-                          Rx
-                        </span>
+                          aria-hidden
+                        />
                       )}
                     </div>
                   </Link>

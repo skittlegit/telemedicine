@@ -158,7 +158,7 @@ export function Marketplace({
         <div className="masthead">
           <span>
             <CaduceusIcon className="inline-block align-[-3px] w-[14px] h-[14px] text-clay mr-1" /> Marketplace
-            <span className="meta hidden sm:inline">§ pharmacy</span>
+            <span className="meta hidden sm:inline">pharmacy</span>
           </span>
           <span className="meta">
             {PHARMACIES.length} verified sellers · {PRODUCTS.length} listings
@@ -171,7 +171,7 @@ export function Marketplace({
         <div className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-10 pt-8 pb-8">
           <div className="flex flex-wrap items-end justify-between gap-6">
             <div>
-              <p className="eyebrow">Marketplace · §pharmacy</p>
+              <p className="eyebrow">Marketplace · pharmacy</p>
               <h1 className="serif-display mt-3 text-[clamp(2.25rem,5vw,3.75rem)]">
                 Verified pharmacies.{" "}
                 <span className="italic-accent">One basket.</span>
@@ -613,11 +613,10 @@ function ProductTile({
         )}
         {product.rxRequired && (
           <span
+            className="rx-mark absolute top-2 right-2"
             title="Prescription required"
-            className="absolute top-2 right-2 mono text-[10px] tracking-[0.06em] bg-ink text-paper w-6 h-6 flex items-center justify-center"
-          >
-            Rx
-          </span>
+            aria-hidden
+          />
         )}
         {!product.inStock && (
           <span className="absolute inset-0 bg-paper/80 flex items-center justify-center mono text-[11px] tracking-[0.16em] uppercase text-ink-soft">

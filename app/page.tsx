@@ -110,7 +110,7 @@ export default async function Home() {
             <span>How it runs</span>
             <span className="meta">
               <span className="hidden sm:inline">Three steps</span>
-              <span>· §02</span>
+              <span>· 02</span>
             </span>
           </div>
 
@@ -147,7 +147,7 @@ export default async function Home() {
             <span>The index</span>
             <span className="meta">
               <span className="hidden sm:inline">Specialties on file</span>
-              <span> · §03</span>
+              <span> · 03</span>
             </span>
           </div>
 
