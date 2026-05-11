@@ -250,9 +250,7 @@ export function Marketplace({
         </div>
         {/* Rx legend */}
         <div className="mx-auto w-full max-w-[1280px] px-5 sm:px-6 lg:px-10 pb-2.5 flex items-center gap-2">
-          <span className="mono text-[9px] bg-ink text-paper w-5 h-5 inline-flex items-center justify-center shrink-0">
-            Rx
-          </span>
+          <span className="rx-mark shrink-0" aria-hidden />
           <span className="text-[11px] text-ink-faint">
             Items marked Rx require a valid Vellum prescription at checkout
           </span>

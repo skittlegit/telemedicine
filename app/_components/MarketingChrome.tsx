@@ -20,7 +20,7 @@ export function Caduceus({
     <svg
       width={size}
       height={size}
-      viewBox="0 0 24 24"
+      viewBox="-1 -1 26 26"
       fill="none"
       stroke="currentColor"
       strokeWidth="2"
@@ -52,9 +52,9 @@ export function Wordmark({ href = "/" }: { href?: string } = {}) {
       <span
         className="inline-flex items-center justify-center text-clay"
         aria-hidden
-        style={{ width: 22, height: 22 }}
+        style={{ width: 22, height: 22, overflow: "visible" }}
       >
-        <Caduceus size={20} />
+        <Caduceus size={18} />
       </span>
       <span
         className="text-[18px] tracking-[-0.018em] leading-none"
@@ -103,7 +103,7 @@ export const PRODUCT_NAV_BY_ROLE: Record<string, ReadonlyArray<NavLink>> = {
   admin: [
     { href: "/dashboard/admin", label: "Overview", exact: true },
     { href: "/dashboard/admin/approvals", label: "Approvals" },
-    { href: "/dashboard/admin/clinicians", label: "Clinicians" },
+    { href: "/dashboard/admin/roster", label: "Roster" },
     { href: "/dashboard/admin/audit", label: "Audit" },
   ],
 };

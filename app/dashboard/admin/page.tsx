@@ -67,21 +67,16 @@ export default async function AdminOverviewPage() {
       </Section>
 
       <Section eyebrow="Workspaces" title="Jump to">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <AdminTile
             href="/dashboard/admin/approvals"
             label="Approvals"
             hint={`${pending} pending`}
           />
           <AdminTile
-            href="/dashboard/admin/clinicians"
-            label="Clinicians"
-            hint={`${doctors} active`}
-          />
-          <AdminTile
-            href="/dashboard/admin/pharmacies"
-            label="Pharmacies"
-            hint={`${pharmacists} active`}
+            href="/dashboard/admin/roster"
+            label="Roster"
+            hint={`${doctors + pharmacists} accounts`}
           />
           <AdminTile
             href="/dashboard/admin/audit"
