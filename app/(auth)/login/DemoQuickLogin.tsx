@@ -24,14 +24,25 @@ const PHARMACIES = [
 export function DemoQuickLogin() {
   const [doctorEmail, setDoctorEmail] = useState(DOCTORS[0].email);
   const [pharmacyEmail, setPharmacyEmail] = useState(PHARMACIES[0].email);
+  const [open, setOpen] = useState(false);
 
   return (
     <div className="mt-10 border-t border-[color:var(--rule)] pt-6">
-      <p className="eyebrow text-ink-mute mb-1">Quick access</p>
-      <p className="text-[12px] text-ink-faint mb-5 leading-[1.6]">
-        Pre-seeded demo accounts — one click to sign in.
-      </p>
-      <div className="space-y-2.5">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="flex items-center gap-2 group w-full text-left"
+        aria-expanded={open}
+      >
+        <p className="eyebrow text-ink-mute">{open ? "▾" : "▸"} Quick access</p>
+        <span className="text-[11px] text-ink-faint">(demo accounts)</span>
+      </button>
+      {open && (
+        <>
+          <p className="text-[12px] text-ink-faint mt-2 mb-5 leading-[1.6]">
+            Pre-seeded demo accounts — one click to sign in.
+          </p>
+          <div className="space-y-2.5">
         {/* Patient */}
         <QuickRow label="Patient" email="patient@vellum.test" password="password123" />
 
@@ -55,7 +66,9 @@ export function DemoQuickLogin() {
 
         {/* Admin */}
         <QuickRow label="Admin" email="admin@vellum.health" password="admin123" />
-      </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }

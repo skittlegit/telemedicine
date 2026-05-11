@@ -100,6 +100,23 @@ export function StarIcon({ className = "" }: { className?: string }) {
   );
 }
 
+export function EyeIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" {...stroke} className={className} aria-hidden>
+      <path d="M1 12S5 4 12 4s11 8 11 8-4 8-11 8S1 12 1 12z" />
+      <circle cx="12" cy="12" r="3" />
+    </svg>
+  );
+}
+export function EyeOffIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" {...stroke} className={className} aria-hidden>
+      <path d="M17.9 17.9A10.9 10.9 0 0 1 12 20C5 20 1 12 1 12a19.4 19.4 0 0 1 5.1-6.9M9.9 4.2A10.5 10.5 0 0 1 12 4c7 0 11 8 11 8a19.6 19.6 0 0 1-2.3 3.6M3 3l18 18" />
+      <path d="M10.4 10.4a3 3 0 0 0 3.2 3.2" />
+    </svg>
+  );
+}
+
 export const SPECIALTIES: Array<{
   slug: string;
   name: string;
