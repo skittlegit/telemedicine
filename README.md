@@ -1,6 +1,16 @@
 # Vellum Health
 
-A telemedicine platform: encrypted consultations, signed prescriptions, pharmacy fulfilment, and immutable audit. Built on Next.js 16 (App Router, Turbopack), MongoDB / Mongoose, NextAuth v5, Stripe, and Socket.IO + WebRTC.
+A telemedicine platform: encrypted video consultations, signed prescriptions, lab test requests, pharmacy fulfilment, insurance-compatible invoicing, and immutable audit. Built on Next.js 16 (App Router, Turbopack), MongoDB / Mongoose, NextAuth v5, Stripe, and Socket.IO + WebRTC.
+
+## Features
+
+- **Booking & video consults** — patients book a slot, pay via Stripe (or skip if Stripe is unconfigured), and join an encrypted WebRTC room
+- **Digital prescriptions** — HMAC-SHA256 signed; QR-verifiable at a public `/verify/[token]` page; PDF rendered on demand
+- **Lab test requests** — doctors order lab tests live during the consultation; PDF available to both doctor and patient
+- **Insurance invoices** — superbill-style PDF with CPT codes and Place of Service 02 (telehealth), for every completed visit
+- **Pharmacy module** — patients send prescriptions to one of five seeded dispensaries for home delivery, or order from a marketplace catalog
+- **Field-level encryption** — every PHI string at rest is AES-256-GCM ciphertext
+- **Append-only audit log** — every PHI access and mutation is recorded; meta is PHI-scrubbed
 
 ## Quick start
 
@@ -35,17 +45,22 @@ app/
   (auth)/login, (auth)/register       NextAuth credentials forms
   doctors/                            Public directory + profile
   book/[doctorId]                     Patient booking → Stripe Checkout
-  consult/[appointmentId]             WebRTC + Socket.IO video room
+  consult/[appointmentId]             WebRTC + Socket.IO video room (Lab Orders panel)
   verify/[token]                      Public Rx verification (HMAC)
   dashboard/                          Patient & doctor ledger
+  dashboard/visits                    Past visits → Invoice PDF + Lab Orders PDF
   dashboard/clinician/prescribe/[id]  Issue prescription
+  dashboard/clinician/schedule        Doctor's past visits → Invoice + Lab Orders PDFs
   dashboard/pharmacy/                 Pharmacist queue
-  pharmacy/order/[prescriptionId]    Patient → fulfilment order
+  pharmacy/order/[prescriptionId]     Patient → fulfilment order
   api/auth/[...nextauth]              NextAuth handlers
   api/files/[key]                     Authenticated file serving
-  api/prescriptions/[id]/pdf          @react-pdf/renderer output
+  api/prescriptions/[id]/pdf          Prescription PDF (HMAC signature + QR)
+  api/appointments/[id]/lab-request   Lab request PDF (decrypted on the fly)
+  api/appointments/[id]/invoice       Insurance invoice PDF (superbill)
   api/webhooks/stripe                 Checkout / payment events
-  actions/                            Server actions
+  actions/lab.ts                      saveLabRequestsAction (doctor only)
+  actions/                            Other server actions
 
 lib/
   db.ts          crypto.ts            AES-256-GCM PHI + HMAC-SHA256 Rx
@@ -54,7 +69,9 @@ lib/
   storage.ts     ratelimit.ts
   schemas.ts (zod)  env.ts (zod)
   models/                             Mongoose models
-  pdf/PrescriptionPdf.tsx
+  pdf/PrescriptionPdf.tsx             ℞ Prescription (signed + QR)
+  pdf/LabRequestPdf.tsx               Laboratory request order
+  pdf/InvoicePdf.tsx                  Insurance superbill (CPT 99213, POS 02)
 
 server.ts                             Custom Node server (Next + Socket.IO)
 proxy.ts                              Edge role-gating (Next 16 replaces middleware.ts)

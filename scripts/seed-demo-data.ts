@@ -33,6 +33,7 @@ async function createAppt(opts: {
   status: "completed" | "scheduled" | "cancelled" | "no_show";
   reasonPlain: string;
   notesPlain?: string;
+  labRequests?: Array<{ test: string; notes?: string }>;
   feeCents?: number;
 }) {
   const existing = await Appointment.findOne({
@@ -40,7 +41,19 @@ async function createAppt(opts: {
     doctor: opts.doctor,
     startAt: opts.startAt,
   });
-  if (existing) return existing;
+  if (existing) {
+    // Backfill lab orders if missing and now provided
+    if (
+      opts.labRequests &&
+      opts.labRequests.length > 0 &&
+      !(existing as unknown as { labRequestsEnc?: string }).labRequestsEnc
+    ) {
+      await Appointment.findByIdAndUpdate(existing._id, {
+        labRequestsEnc: encryptPHI(JSON.stringify(opts.labRequests)),
+      });
+    }
+    return existing;
+  }
   return Appointment.create({
     patient: opts.patient,
     doctor: opts.doctor,
@@ -51,6 +64,10 @@ async function createAppt(opts: {
     feeCents: opts.feeCents ?? 89900,
     reasonEnc: encryptPHI(opts.reasonPlain),
     notesEnc: opts.notesPlain ? encryptPHI(opts.notesPlain) : undefined,
+    labRequestsEnc:
+      opts.labRequests && opts.labRequests.length > 0
+        ? encryptPHI(JSON.stringify(opts.labRequests))
+        : undefined,
     ...(opts.status === "completed"
       ? { startedAt: opts.startAt, endedAt: addMinutes(opts.startAt, 30) }
       : {}),
@@ -191,6 +208,7 @@ export async function seedDemoData() {
     notes: string;
     diagnosis: string;
     drugs: Array<{ name: string; dose: string; freq: string; days: number; notes?: string }>;
+    labRequests?: Array<{ test: string; notes?: string }>;
   }> = [
     {
       docEmail: "doc.gp@vellum.test",
@@ -202,6 +220,10 @@ export async function seedDemoData() {
         { name: "Amoxicillin", dose: "500 mg", freq: "3× daily", days: 7 },
         { name: "Paracetamol", dose: "500 mg", freq: "as needed", days: 5, notes: "Max 4 doses/day" },
       ],
+      labRequests: [
+        { test: "Complete Blood Count (CBC)", notes: "Rule out bacterial infection" },
+        { test: "C-Reactive Protein (CRP)" },
+      ],
     },
     {
       docEmail: "doc.gp@vellum.test",
@@ -211,6 +233,13 @@ export async function seedDemoData() {
       diagnosis: "Routine health maintenance",
       drugs: [
         { name: "Vitamin D3", dose: "1000 IU", freq: "Once daily", days: 90 },
+      ],
+      labRequests: [
+        { test: "Lipid Profile (fasting)", notes: "12-hour fast required" },
+        { test: "HbA1c" },
+        { test: "Vitamin D (25-OH)" },
+        { test: "Thyroid Function (TSH, T3, T4)" },
+        { test: "Liver Function Test (LFT)" },
       ],
     },
     {
@@ -222,6 +251,12 @@ export async function seedDemoData() {
       drugs: [
         { name: "Metoprolol", dose: "25 mg", freq: "Once daily", days: 30 },
         { name: "Aspirin", dose: "75 mg", freq: "Once daily", days: 30, notes: "After breakfast" },
+      ],
+      labRequests: [
+        { test: "12-lead ECG", notes: "Rest and exertion strips" },
+        { test: "2D Echocardiogram" },
+        { test: "Troponin I" },
+        { test: "NT-proBNP", notes: "Baseline before starting beta-blocker" },
       ],
     },
     {
@@ -244,6 +279,9 @@ export async function seedDemoData() {
         { name: "Hydrocortisone cream 1%", dose: "Apply thin layer", freq: "Twice daily", days: 14 },
         { name: "Cetirizine", dose: "10 mg", freq: "Once at bedtime", days: 14 },
       ],
+      labRequests: [
+        { test: "IgE Total (Allergy panel)", notes: "If symptoms recur after 2 weeks" },
+      ],
     },
     {
       docEmail: "doc.neuro@vellum.test",
@@ -255,6 +293,10 @@ export async function seedDemoData() {
         { name: "Sumatriptan", dose: "50 mg", freq: "At onset of attack", days: 30, notes: "Max 2 doses/24h" },
         { name: "Propranolol", dose: "40 mg", freq: "Twice daily", days: 30, notes: "Prophylactic" },
       ],
+      labRequests: [
+        { test: "MRI Brain (plain)", notes: "Rule out secondary causes" },
+        { test: "Serum Magnesium" },
+      ],
     },
     {
       docEmail: "doc.ortho@vellum.test",
@@ -265,6 +307,11 @@ export async function seedDemoData() {
       drugs: [
         { name: "Diclofenac gel 1%", dose: "Apply to knee", freq: "3× daily", days: 10 },
         { name: "Ibuprofen", dose: "400 mg", freq: "Twice daily after meals", days: 7 },
+      ],
+      labRequests: [
+        { test: "X-Ray Left Knee (AP + Lateral)" },
+        { test: "Serum Uric Acid", notes: "Rule out crystal arthropathy" },
+        { test: "ESR" },
       ],
     },
     {
@@ -286,6 +333,12 @@ export async function seedDemoData() {
       diagnosis: "Moderate depressive episode (ICD-10 F32.1)",
       drugs: [
         { name: "Escitalopram", dose: "10 mg", freq: "Once daily mornings", days: 30, notes: "Review in 4 weeks" },
+      ],
+      labRequests: [
+        { test: "Thyroid Function (TSH)", notes: "Rule out organic cause of low mood" },
+        { test: "Vitamin B12" },
+        { test: "Vitamin D (25-OH)" },
+        { test: "Complete Blood Count (CBC)" },
       ],
     },
     {
@@ -331,6 +384,7 @@ export async function seedDemoData() {
       status: "completed",
       reasonPlain: v.reason,
       notesPlain: v.notes,
+      labRequests: v.labRequests,
     });
     const rx = await createRx({
       appointmentId: appt._id as unknown as Types.ObjectId,
