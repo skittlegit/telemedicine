@@ -40,11 +40,12 @@ export default async function PatientVisitsPage() {
       patient: userId,
       status: { $in: ["completed", "cancelled", "no_show"] },
     })
+      .select("+labRequestsEnc")
       .populate("doctor", "name")
       .populate("patient", "name")
       .sort({ startAt: -1 })
       .limit(20)
-      .lean<ApptRow[]>(),
+      .lean<(ApptRow & { labRequestsEnc?: string; status: string; feeCents?: number })[]>(),
     Prescription.find({ patient: userId })
       .populate("doctor", "name")
       .populate("patient", "name")
@@ -151,7 +152,37 @@ export default async function PatientVisitsPage() {
         ) : (
           <ul className="divide-y divide-[color:var(--rule)] border border-[color:var(--rule)]">
             {past.map((a) => (
-              <ApptRowItem key={a._id} appt={a} as="patient" />
+              <li key={a._id} className="px-4 py-3">
+                <div className="flex flex-wrap justify-between items-center gap-3">
+                  <div>
+                    <p className="font-medium">Dr. {a.doctor.name}</p>
+                    <p className="mono text-[11px] text-ink-mute mt-0.5">
+                      {new Date(a.startAt).toLocaleString()}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <StatusPill status={a.status} />
+                    {a.status === "completed" && (
+                      <a
+                        href={`/api/appointments/${a._id}/invoice`}
+                        target="_blank"
+                        className="btn btn-ghost text-xs"
+                      >
+                        Invoice PDF
+                      </a>
+                    )}
+                    {a.labRequestsEnc && (
+                      <a
+                        href={`/api/appointments/${a._id}/lab-request`}
+                        target="_blank"
+                        className="btn btn-ghost text-xs"
+                      >
+                        Lab Orders PDF
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </li>
             ))}
           </ul>
         )}
