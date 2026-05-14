@@ -18,6 +18,7 @@ const AppointmentSchema = new Schema(
     durationMinutes: { type: Number, default: 30 },
     reasonEnc: { type: String }, // PHI: chief complaint
     notesEnc: { type: String }, // PHI: clinician notes after consult
+    labRequestsEnc: { type: String }, // PHI: JSON array of {test,notes} lab orders
     status: { type: String, enum: APPOINTMENT_STATUS, default: "pending_payment", index: true },
     feeCents: { type: Number, required: true, min: 0 },
     paymentIntentId: { type: String, index: true },

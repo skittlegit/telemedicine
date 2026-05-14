@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useActionState } from "react";
 import Link from "next/link";
 import { io, type Socket } from "socket.io-client";
 import type SimplePeerType from "simple-peer";
 import type { Role } from "@/lib/models/User";
+import { saveLabRequestsAction, type LabRequest, type LabState } from "@/app/actions/lab";
 
 interface ChatMsg {
   from: string;
@@ -49,6 +50,11 @@ export function ConsultRoom({
   const [camOff, setCamOff] = useState(false);
   const [chat, setChat] = useState<ChatMsg[]>([]);
   const [draft, setDraft] = useState("");
+  const [labTests, setLabTests] = useState<LabRequest[]>([{ test: "" }]);
+  const [labState, labAction, labPending] = useActionState<LabState, FormData>(
+    saveLabRequestsAction,
+    {},
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -242,6 +248,67 @@ export function ConsultRoom({
             <p className="text-ink-soft">{reason}</p>
           </div>
         )}
+
+        {role === "doctor" && (
+          <div className="mb-4 border border-[color:var(--rule)] p-3 text-sm">
+            <p className="eyebrow mb-2">Lab Orders</p>
+            <form
+              action={(fd) => {
+                fd.set("appointmentId", appointmentId);
+                fd.set("labRequests", JSON.stringify(labTests.filter((t) => t.test.trim())));
+                return labAction(fd);
+              }}
+            >
+              <div className="space-y-1.5 mb-2">
+                {labTests.map((t, i) => (
+                  <div key={i} className="flex gap-1">
+                    <input
+                      value={t.test}
+                      onChange={(e) =>
+                        setLabTests((prev) => {
+                          const next = [...prev];
+                          next[i] = { ...next[i]!, test: e.target.value };
+                          return next;
+                        })
+                      }
+                      placeholder="Test name (e.g. CBC, LFT)"
+                      className="field flex-1 text-xs py-1"
+                    />
+                    {labTests.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => setLabTests((p) => p.filter((_, j) => j !== i))}
+                        className="text-oxblood text-xs px-1.5"
+                      >
+                        ×
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setLabTests((p) => [...p, { test: "" }])}
+                  className="btn btn-ghost text-xs flex-1 py-1"
+                >
+                  + Add test
+                </button>
+                <button
+                  type="submit"
+                  disabled={labPending || labTests.every((t) => !t.test.trim())}
+                  className="btn btn-clay text-xs flex-1 py-1"
+                >
+                  {labPending ? "Saving…" : labState.ok ? "Saved ✓" : "Save orders"}
+                </button>
+              </div>
+              {labState.error && (
+                <p className="text-oxblood text-xs mt-1">{labState.error}</p>
+              )}
+            </form>
+          </div>
+        )}
+
         <p className="eyebrow mb-2">Chat</p>
         <ul className="flex-1 overflow-y-auto space-y-2 text-sm">
           {chat.map((m, i) => (
