@@ -9,6 +9,7 @@ A telemedicine platform: encrypted video consultations, signed prescriptions, la
 - **Lab test requests** — doctors order lab tests live during the consultation; PDF available to both doctor and patient
 - **Insurance invoices** — superbill-style PDF with CPT codes and Place of Service 02 (telehealth), for every completed visit
 - **Pharmacy module** — patients send prescriptions to one of five seeded dispensaries for home delivery, or order from a marketplace catalog
+- **Admin console** — clinician/pharmacy approvals, unified roster, audit browser, and a runtime toggle to force payments on/off
 - **Field-level encryption** — every PHI string at rest is AES-256-GCM ciphertext
 - **Append-only audit log** — every PHI access and mutation is recorded; meta is PHI-scrubbed
 
@@ -29,13 +30,16 @@ npm run dev                     # http://localhost:3000
 
 ### Demo accounts
 
-| Role       | Email                    | Password      |
-| ---------- | ------------------------ | ------------- |
-| Patient    | `patient@vellum.test`    | `password123` |
-| Doctor     | `doc.cardio@vellum.test` | `password123` |
-| Doctor     | `doc.gp@vellum.test`     | `password123` |
-| Doctor     | `doc.derm@vellum.test`   | `password123` |
-| Pharmacist | `pharmacist@vellum.test` | `password123` |
+`npm run seed` provisions these (all share the password `password123`):
+
+| Role       | Email                       | Notes                                              |
+| ---------- | --------------------------- | -------------------------------------------------- |
+| Patient    | `patient@vellum.test`       | Seeded with an orderable prescription + past visits |
+| Doctor     | `doc.gp@vellum.test`        | General practice — plus 7 more `doc.*@vellum.test`  |
+| Doctor     | `doc.cardio@vellum.test`    | Cardiology                                          |
+| Doctor     | `doc.derm@vellum.test`      | Dermatology (also `neuro`, `ortho`, `peds`, `psych`, `sexo`) |
+| Pharmacist | `rx-1@vellum.test`          | Apollo Medicals — plus `rx-2` … `rx-5`             |
+| Admin      | `admin@vellum.test`         | Approvals, roster, audit, settings                 |
 
 ## Architecture
 
@@ -44,6 +48,7 @@ app/
   page.tsx                            Editorial landing page
   (auth)/login, (auth)/register       NextAuth credentials forms
   doctors/                            Public directory + profile
+  specialties/[slug]                  Public specialty taxonomy
   book/[doctorId]                     Patient booking → Stripe Checkout
   consult/[appointmentId]             WebRTC + Socket.IO video room (Lab Orders panel)
   verify/[token]                      Public Rx verification (HMAC)
@@ -51,7 +56,9 @@ app/
   dashboard/visits                    Past visits → Invoice PDF + Lab Orders PDF
   dashboard/clinician/prescribe/[id]  Issue prescription
   dashboard/clinician/schedule        Doctor's past visits → Invoice + Lab Orders PDFs
-  dashboard/pharmacy/                 Pharmacist queue
+  dashboard/pharmacy/                 Pharmacist queue / active / history / listings
+  dashboard/admin/                    Approvals, roster, audit, settings (payments toggle)
+  pharmacy/                           Public marketplace + product/[productId]
   pharmacy/order/[prescriptionId]     Patient → fulfilment order
   api/auth/[...nextauth]              NextAuth handlers
   api/files/[key]                     Authenticated file serving
@@ -90,7 +97,7 @@ auth.ts                               NextAuth v5 config
 
 ## Without external services
 
-If `STRIPE_SECRET_KEY` is missing, booking and pharmacy flows skip Checkout and auto-confirm — handy for local development. SMTP-less environments log emails to stdout.
+If `STRIPE_SECRET_KEY` is missing, booking and pharmacy flows skip Checkout and auto-confirm — handy for local development. Admins can also force payments off at runtime from `/dashboard/admin/settings` (same effect, no restart). SMTP-less environments log emails to stdout.
 
 ## Notes / known limits
 
