@@ -10,7 +10,7 @@ This version (Next 16.4.4 + React 19.3.1) has breaking changes — APIs, convent
 
 > **Read this first, every time.** This file is the canonical fast-context for agents working on this repo. It supersedes guesses based on training data. If you change something architecturally meaningful, **update the relevant section at the bottom of this file before finishing your turn** (see "Self-update protocol").
 
-[README.md](README.md), [PRODUCT.md](PRODUCT.md), and [DESIGN.md](DESIGN.md) are the long-form sources of truth. This document is the agent's index into them.
+[README.md](README.md), [docs/PRODUCT.md](docs/PRODUCT.md), and [docs/DESIGN.md](docs/DESIGN.md) are the long-form sources of truth. This document is the agent's index into them.
 
 ---
 
@@ -65,6 +65,7 @@ server.ts                Custom HTTP server: Next handler + Socket.IO at /api/so
 next.config.ts           CSP + security headers, serverExternalPackages
 scripts/seed.ts          Demo data seed (npm run seed)
 scripts/generate-keys.mjs  Prints fresh PHI / HMAC / NEXTAUTH secrets
+docs/                    PRODUCT.md, DESIGN.md, assets/ (source art, not served)
 
 app/
   page.tsx               Editorial landing (BRAND surface)
@@ -115,14 +116,14 @@ lib/
 
 ## 4. Two surfaces — never mix them
 
-[PRODUCT.md](PRODUCT.md) and [DESIGN.md](DESIGN.md) define the visual language. The single most important rule:
+[docs/PRODUCT.md](docs/PRODUCT.md) and [docs/DESIGN.md](docs/DESIGN.md) define the visual language. The single most important rule:
 
 - **Brand surface** (`/`, `/doctors`, `/specialties/*`, marketing): editorial, italic-Fraunces accent, atmosphere gradients on `<html>`, `MarketingChrome` header.
 - **Product surface** (`/dashboard/*`, `/book/*`, `/consult/*`, `/pharmacy`, `/(auth)/*`): clinical, functional, hairline grids, `AppShell` (`Shell.tsx`). **No** italic accent. **No** atmosphere gradients.
 
 Tokens live in [app/globals.css](app/globals.css) (`--paper`, `--paper-tint`, `--paper-deep`, `--ink`, `--ink-soft`, `--ink-mute`, `--ink-faint`, `--clay`, `--clay-deep`, `--clay-wash`, `--accent`, `--moss`, `--amber`, `--oxblood`, `--rule`, `--rule-strong`). Use them. Do not introduce new fills.
 
-Forbidden: `#000`/`#fff`, gradient buttons/text, card shadows, pill buttons (radius is 4px), animating layout properties, `lucide-react` in JSX, dark mode, stock photography. See DESIGN.md "Anti-patterns".
+Forbidden: `#000`/`#fff`, gradient buttons/text, card shadows, pill buttons (radius is 4px), animating layout properties, `lucide-react` in JSX, dark mode, stock photography. See docs/DESIGN.md "Anti-patterns".
 
 ---
 
