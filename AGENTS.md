@@ -1,7 +1,7 @@
 <!-- BEGIN:nextjs-agent-rules -->
 # This is NOT the Next.js you know
 
-This version (Next 16.2.4 + React 19.2.4) has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
+This version (Next 16.4.4 + React 19.3.1) has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
 <!-- END:nextjs-agent-rules -->
 
 ---
@@ -29,23 +29,30 @@ Three success paths:
 
 | Layer | Choice |
 |---|---|
-| Framework | **Next.js 16.2.4** (App Router, Turbopack), **React 19.2.4** |
+| Framework | **Next.js 16.4.4** (App Router, Turbopack), **React 19.3.1** |
 | Server | Custom Node server in [server.ts](server.ts) (Next + Socket.IO on same HTTP server) |
-| Auth | **NextAuth v5** (`5.0.0-beta.31`), JWT sessions, Credentials provider |
+| Auth | **NextAuth v5** (`5.0.0-beta.32`), JWT sessions, Credentials provider |
 | DB | **MongoDB** via **Mongoose 9** |
-| Forms | `react-hook-form` + `zod` (resolvers in `@hookform/resolvers`) |
+| Forms | `useActionState` + `zod` on the server (`react-hook-form` and `@hookform/resolvers` are installed but not imported) |
 | Validation | **Zod 4** (note: `z.email()`, `z.iso.datetime()` — Zod 4 syntax) |
 | Styling | **Tailwind v4** (`@tailwindcss/postcss`), CSS variables in [app/globals.css](app/globals.css) |
-| Motion | `motion` v12 (import from `motion/react`) — **NOT** `framer-motion` |
+| Motion | `motion` v14 (import from `motion/react`) — **NOT** `framer-motion` |
 | Icons | Custom SVGs in [app/_components/icons.tsx](app/_components/icons.tsx). `lucide-react` is installed but **forbidden in UI** |
-| Payments | Stripe (Checkout + webhooks) |
+| Payments | Stripe SDK v23 (Checkout + webhooks). Checkout sessions take `allowed_payment_method_types`; `payment_method_types` was removed from create params |
 | Realtime | Socket.IO 4 + `simple-peer` (WebRTC) |
 | PDF | `@react-pdf/renderer` |
 | Email | Resend (preferred) or SMTP via `nodemailer` |
 | Storage | Local FS driver (S3 driver stubbed) |
-| Tooling | `tsx` for dev/start, `vitest` for tests, ESLint 9 flat config |
+| Tooling | `tsx` for dev/start, `vitest` for tests, ESLint 9 flat config, TypeScript 6.0 |
 
 `reactStrictMode: true`. `serverExternalPackages: ["mongoose", "@react-pdf/renderer", "bcryptjs"]` in [next.config.ts](next.config.ts).
+
+Version constraints, so nobody bumps these blindly:
+- Node: pinned to 26 (`.nvmrc`, `engines.node: 26.x`) to match Vercel. Keep `@types/node` on the same major.
+- `next-auth`: stay on the `beta` dist-tag. Its `latest` tag is v4.
+- `eslint`: held at 9 because `eslint-plugin-react` (via `eslint-config-next`) does not allow 10.
+- `typescript`: held at `~6.0` because `typescript-eslint` requires `<6.1.0`, and the TS 7 package does not export the classic compiler API.
+- `nodemailer`: v10 sits outside next-auth's optional peer range (`^7 || ^8`), so `overrides` in `package.json` forces it. This is safe only while auth is Credentials-only. Adding next-auth's email provider means re-testing it against v10.
 
 ---
 
@@ -183,7 +190,7 @@ export async function fooAction(_prev: State, formData: FormData): Promise<State
 }
 ```
 
-Forms use `react-hook-form` on the client and `useActionState` on the server. JSON-encode complex sub-structures (e.g. `drugs`) into a hidden form field — this is the established pattern, do not change it.
+Forms use `useActionState` with server-side `zod` validation. JSON-encode complex sub-structures (e.g. `drugs`) into a hidden form field — this is the established pattern, do not change it.
 
 ---
 

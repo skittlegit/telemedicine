@@ -105,7 +105,7 @@ export async function bookAppointmentAction(
   // Create Stripe Checkout session for the consultation fee.
   const checkout = await stripe().checkout.sessions.create({
     mode: "payment",
-    payment_method_types: ["card"],
+    allowed_payment_method_types: ["card"],
     line_items: [
       {
         price_data: {
