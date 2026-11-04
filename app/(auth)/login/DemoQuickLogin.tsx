@@ -64,9 +64,6 @@ export function DemoQuickLogin() {
           onSelect={setPharmacyEmail}
           password="password123"
         />
-
-        {/* Admin */}
-        <QuickRow label="Admin" email="admin@vellum.health" password="admin123" />
           </div>
         </>
       )}

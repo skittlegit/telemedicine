@@ -9,15 +9,6 @@ interface PageProps {
   searchParams: Promise<{ callbackUrl?: string; pending?: string; error?: string }>;
 }
 
-const DEMO_ACCOUNTS: ReadonlyArray<readonly [string, string, string]> = [
-  ["patient",    "patient@vellum.test",     "password123"],
-  ["doctor",     "doc.gp@vellum.test",      "password123"],
-  ["pharmacist", "rx-1@vellum.test",        "password123"],
-  ["admin",      "admin@vellum.health",     "admin123"],
-];
-
-// DEMO_ACCOUNTS kept for reference only; quick login handled by DemoQuickLogin component.
-
 export default async function LoginPage({ searchParams }: PageProps) {
   const sp = await searchParams;
   return (
