@@ -1,10 +1,13 @@
 import type { NextConfig } from "next";
 
+const isDev = process.env.NODE_ENV === "development";
+
 // CSP tuned for: Stripe Checkout/JS, Google Fonts, our Socket.IO server.
-// `unsafe-inline` for styles is required by Next/CSS-in-JS during dev; tighten in prod via nonce later.
+// `unsafe-eval` is only needed by React's dev tooling. `unsafe-inline` stays
+// until the app moves to nonces, which would force every page to render dynamically.
 const ContentSecurityPolicy = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com",
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://js.stripe.com`,
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "img-src 'self' data: blob: https:",
   "font-src 'self' https://fonts.gstatic.com",
@@ -31,15 +34,10 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  poweredByHeader: false,
   // These packages must run on the Node runtime and not be bundled into the
   // server build (mongoose uses dynamic requires; @react-pdf/renderer ships native deps).
   serverExternalPackages: ["mongoose", "@react-pdf/renderer", "bcryptjs"],
-  images: {
-    remotePatterns: [
-      { protocol: "https", hostname: "images.unsplash.com" },
-      { protocol: "https", hostname: "lh3.googleusercontent.com" },
-    ],
-  },
   async headers() {
     return [
       {

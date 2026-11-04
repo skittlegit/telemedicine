@@ -1,7 +1,7 @@
 import NextAuth, { type NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
-import { Types } from "mongoose";
+import type { Types } from "mongoose";
 import { connectDB } from "@/lib/db";
 import { User, type Role } from "@/lib/models/User";
 import { LoginSchema } from "@/lib/schemas";
@@ -28,7 +28,7 @@ declare module "next-auth/jwt" {
   }
 }
 
-export const authConfig: NextAuthConfig = {
+const authConfig: NextAuthConfig = {
   session: { strategy: "jwt", maxAge: 60 * 60 * 8 }, // 8h
   pages: { signIn: "/login" },
   trustHost: true,
@@ -80,8 +80,8 @@ export const authConfig: NextAuthConfig = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.sub = (user as { id: string }).id;
-        token.role = (user as { role: Role }).role;
+        token.sub = user.id;
+        token.role = user.role;
       }
       return token;
     },
@@ -89,10 +89,6 @@ export const authConfig: NextAuthConfig = {
       if (token.sub) session.user.id = token.sub;
       if (token.role) session.user.role = token.role;
       return session;
-    },
-    authorized({ auth: a }) {
-      // Used by `proxy.ts` middleware integration if desired.
-      return !!a?.user;
     },
   },
 };

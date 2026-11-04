@@ -15,6 +15,8 @@ A telemedicine platform: encrypted video consultations, signed prescriptions, la
 
 ## Quick start
 
+Requires Node 26.
+
 ```powershell
 npm install
 npm run keys                    # prints fresh secrets
@@ -81,8 +83,9 @@ lib/
   pdf/InvoicePdf.tsx                  Insurance superbill (CPT 99213, POS 02)
 
 server.ts                             Custom Node server (Next + Socket.IO)
-proxy.ts                              Edge role-gating (Next 16 replaces middleware.ts)
+proxy.ts                              Role gating (Next 16 replaces middleware.ts)
 auth.ts                               NextAuth v5 config
+docs/                                 Product and design references
 ```
 
 ## Security model
@@ -101,7 +104,8 @@ If `STRIPE_SECRET_KEY` is missing, booking and pharmacy flows skip Checkout and 
 
 ## Notes / known limits
 
-- `simple-peer` may need a `process` shim under Turbopack. If you see `process is not defined` in the consult room, add a `<Script>` setting `window.process = { env: {} }` before the room mounts.
-- S3 storage driver in `lib/storage.ts` is stubbed; the local FS driver is fully wired.
+- **Video consults don't work on Vercel.** Signalling runs on Socket.IO in `server.ts`, and Vercel doesn't run custom servers, so `/api/socket` returns 404 there. Everything else deploys normally. Consults need a host that runs `npm start` as a long-lived process.
+- `simple-peer` needs a `process` shim under Turbopack. `app/consult/[appointmentId]/ProcessShim.tsx` provides it.
+- Uploads go to local disk by default. Set `STORAGE_DRIVER=s3` on hosts without a persistent disk, such as Vercel.
 - This is a portfolio implementation, not a real medical service.
 

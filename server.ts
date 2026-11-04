@@ -1,27 +1,29 @@
 /**
  * Custom Next.js server with attached Socket.IO signalling.
- * Used because Next.js route handlers don't expose the underlying HTTP
- * server needed to upgrade WebSocket connections.
+ * Route handlers can't upgrade WebSocket connections, so the consult room needs
+ * this long-running process. It does not run on Vercel, which only serves the
+ * `next build` output.
  *
  * Run: `tsx server.ts` (handled by `npm run dev` / `npm start`).
  */
 import { createServer } from "node:http";
 import next from "next";
-import { Server, type Socket } from "socket.io";
-import { parse as parseCookie } from "node:querystring";
 import { decode as decodeJwt } from "next-auth/jwt";
+import { Server, type DefaultEventsMap } from "socket.io";
 
 const port = Number(process.env.PORT ?? 3000);
 const dev = process.env.NODE_ENV !== "production";
 const socketPath = process.env.SOCKET_PATH ?? "/api/socket";
 
+// Auth.js uses the __Secure- name only over HTTPS, and salts the JWT with
+// whichever cookie name it used.
+const SESSION_COOKIES = ["__Secure-authjs.session-token", "authjs.session-token"];
+
 const app = next({ dev });
 const handle = app.getRequestHandler();
 
-interface Peer {
-  userId: string;
-  role: string;
-  socketId: string;
+interface SocketData {
+  user: { userId: string; role: string };
 }
 
 async function main() {
@@ -31,11 +33,14 @@ async function main() {
     handle(req, res);
   });
 
-  const io = new Server(httpServer, {
-    path: socketPath,
-    cors: { origin: false },
-    serveClient: false,
-  });
+  const io = new Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, SocketData>(
+    httpServer,
+    {
+      path: socketPath,
+      cors: { origin: false },
+      serveClient: false,
+    },
+  );
 
   /* -------- Auth middleware: extract user from auth cookie ----------- */
   io.use(async (socket, nextFn) => {
@@ -47,27 +52,19 @@ async function main() {
           return [k, decodeURIComponent(v.join("="))];
         }),
       );
-      void parseCookie; // satisfy import
-      const tokenCookie =
-        cookies["__Secure-authjs.session-token"] ??
-        cookies["authjs.session-token"] ??
-        cookies["next-auth.session-token"] ??
-        cookies["__Secure-next-auth.session-token"];
-      if (!tokenCookie) return nextFn(new Error("unauthorized"));
+      const cookieName = SESSION_COOKIES.find((name) => cookies[name]);
+      if (!cookieName) return nextFn(new Error("unauthorized"));
       const secret = process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET;
       if (!secret) return nextFn(new Error("server misconfigured"));
       const payload = await decodeJwt({
-        token: tokenCookie,
+        token: cookies[cookieName],
         secret,
-        salt: process.env.NODE_ENV === "production"
-          ? "__Secure-authjs.session-token"
-          : "authjs.session-token",
+        salt: cookieName,
       });
       if (!payload?.sub) return nextFn(new Error("unauthorized"));
-      (socket.data as { user: Peer }).user = {
-        userId: String(payload.sub),
-        role: String((payload as { role?: string }).role ?? "patient"),
-        socketId: socket.id,
+      socket.data.user = {
+        userId: payload.sub,
+        role: payload.role ?? "patient",
       };
       nextFn();
     } catch {
@@ -76,8 +73,8 @@ async function main() {
   });
 
   /* -------- Room signalling ------------------------------------------ */
-  io.on("connection", (socket: Socket) => {
-    const me = (socket.data as { user: Peer }).user;
+  io.on("connection", (socket) => {
+    const me = socket.data.user;
 
     socket.on("room:join", (roomId: string) => {
       if (typeof roomId !== "string" || roomId.length < 4 || roomId.length > 64) return;

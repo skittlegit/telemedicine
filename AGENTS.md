@@ -33,22 +33,22 @@ Three success paths:
 | Server | Custom Node server in [server.ts](server.ts) (Next + Socket.IO on same HTTP server) |
 | Auth | **NextAuth v5** (`5.0.0-beta.32`), JWT sessions, Credentials provider |
 | DB | **MongoDB** via **Mongoose 9** |
-| Forms | `useActionState` + `zod` on the server (`react-hook-form` and `@hookform/resolvers` are installed but not imported) |
+| Forms | `useActionState` + `zod` on the server |
 | Validation | **Zod 4** (note: `z.email()`, `z.iso.datetime()` — Zod 4 syntax) |
 | Styling | **Tailwind v4** (`@tailwindcss/postcss`), CSS variables in [app/globals.css](app/globals.css) |
 | Motion | `motion` v14 (import from `motion/react`) — **NOT** `framer-motion` |
-| Icons | Custom SVGs in [app/_components/icons.tsx](app/_components/icons.tsx). `lucide-react` is installed but **forbidden in UI** |
+| Icons | Custom SVGs in [app/_components/icons.tsx](app/_components/icons.tsx). Do not add an icon library. |
 | Payments | Stripe SDK v23 (Checkout + webhooks). Checkout sessions take `allowed_payment_method_types`; `payment_method_types` was removed from create params |
 | Realtime | Socket.IO 4 + `simple-peer` (WebRTC) |
 | PDF | `@react-pdf/renderer` |
 | Email | Resend (preferred) or SMTP via `nodemailer` |
-| Storage | Local FS driver (S3 driver stubbed) |
+| Storage | Local FS driver by default, S3 with `STORAGE_DRIVER=s3` |
 | Tooling | `tsx` for dev/start, `vitest` for tests, ESLint 9 flat config, TypeScript 6.0 |
 
 `reactStrictMode: true`. `serverExternalPackages: ["mongoose", "@react-pdf/renderer", "bcryptjs"]` in [next.config.ts](next.config.ts).
 
 Version constraints, so nobody bumps these blindly:
-- Node: pinned to 26 (`.nvmrc`, `engines.node: 26.x`) to match Vercel. Keep `@types/node` on the same major.
+- Node: pinned to 26 (`engines.node: 26.x`) to match Vercel. Keep `@types/node` on the same major.
 - `next-auth`: stay on the `beta` dist-tag. Its `latest` tag is v4.
 - `eslint`: held at 9 because `eslint-plugin-react` (via `eslint-config-next`) does not allow 10.
 - `typescript`: held at `~6.0` because `typescript-eslint` requires `<6.1.0`, and the TS 7 package does not export the classic compiler API.
@@ -132,7 +132,7 @@ Forbidden: `#000`/`#fff`, gradient buttons/text, card shadows, pill buttons (rad
 1. **PHI at rest is encrypted.** Any free-text clinical field stored in Mongo uses `encryptPHI()` / `decryptPHI()` from [lib/crypto.ts](lib/crypto.ts). Field naming convention: **`*Enc` suffix** (`reasonEnc`, `notesEnc`, `diagnosisEnc`, `deliveryAddressEnc`). Keyed by `PHI_ENCRYPTION_KEY` (32-byte base64).
 2. **Prescriptions are HMAC-signed.** `signPrescription()` over canonical `{id,doctor,patient,issuedAt,drugs[]}`. Public `/verify/[token]` recomputes via `verifyPrescription()`. Keyed by `PRESCRIPTION_HMAC_KEY`.
 3. **Audit trail is append-only and PHI-free.** Use `audit()` from [lib/audit.ts](lib/audit.ts). It drops forbidden meta keys (`diagnosis`, `reason`, `notes`, `drugs`, `address`, `phone`, `dob`, `password`, `token`, `signature`, …). Never put PHI in audit meta.
-4. **Authz everywhere.** [proxy.ts](proxy.ts) does coarse cookie/role gating (cannot touch DB on edge). Every server action / route handler **must** call `requireRole("...")` from [lib/authz.ts](lib/authz.ts). Roles: `"patient" | "doctor" | "pharmacist" | "admin"`.
+4. **Authz everywhere.** [proxy.ts](proxy.ts) does coarse cookie/role gating on `/dashboard`, `/consult` and `/book` only, with no DB access. It runs on the Node runtime. Every server action / route handler **must** call `requireRole("...")` from [lib/authz.ts](lib/authz.ts). Roles: `"patient" | "doctor" | "pharmacist" | "admin"`.
 5. **No PHI in URLs, query params, log output, or cookies.**
 6. **CSP + security headers** are set in [next.config.ts](next.config.ts). Do not loosen without justification.
 7. **Rate limiting** lives in [lib/ratelimit.ts](lib/ratelimit.ts) (token bucket, optional Upstash).
@@ -143,7 +143,7 @@ Forbidden: `#000`/`#fff`, gradient buttons/text, card shadows, pill buttons (rad
 
 - Session cookie name flips with HTTPS detection in `proxy.ts`: `__Secure-authjs.session-token` (https) vs `authjs.session-token` (http). Same logic in [server.ts](server.ts) for socket auth.
 - Credentials only. Email + password. Status must be `"active"` to log in. Doctors register as `"pending"` until admin approval.
-- Demo accounts and a hardcoded admin (`admin@vellum.health`) are auto-provisioned by [lib/db.ts](lib/db.ts) on first connect. In production `ADMIN_PASSWORD` env var is **required** — refuses to boot otherwise.
+- Demo accounts and a hardcoded admin (`admin@vellum.health`) are auto-provisioned by [lib/db.ts](lib/db.ts) on first connect. In production `ADMIN_PASSWORD` env var is **required**. Without it, provisioning logs an error and is skipped on every connect, while the rest of the app keeps serving.
 - JWT contains `sub` (user id) and `role`. Augmented types are declared in [auth.ts](auth.ts).
 
 ---
@@ -166,7 +166,7 @@ All ObjectIds via Mongoose. Timestamps on every collection.
 
 ## 8. Realtime / consult room
 
-- Socket.IO mounted by [server.ts](server.ts) at `SOCKET_PATH` (default `/api/socket`).
+- Socket.IO mounted by [server.ts](server.ts) at `SOCKET_PATH` (default `/api/socket`). Vercel doesn't run `server.ts`, so this endpoint returns 404 there and consults can't connect.
 - Auth middleware in `server.ts` decodes the NextAuth JWT cookie itself (because socket connections don't run through Next).
 - Events: `room:join`, `room:members`, `peer:joined`, `peer:left`, `signal`, `chat`, `disconnecting`.
 - WebRTC peer connection driven by `simple-peer` in `app/consult/[appointmentId]/ConsultRoom.tsx`.
@@ -224,7 +224,7 @@ Use **PowerShell**-compatible commands on Windows. Never chain with `&&` — use
 ## 12. Conventions an agent must follow
 
 - Path alias: `@/*` → repo root. Use it.
-- **No** new `lucide-react` imports in JSX. Add icons to `app/_components/icons.tsx` matching `stroke-width="1.5"`, `stroke="currentColor"`, `fill="none"`.
+- **No** `lucide-react` or other icon libraries. Add icons to `app/_components/icons.tsx` matching `stroke-width="1.5"`, `stroke="currentColor"`, `fill="none"`.
 - Encrypted fields end in `Enc`. Never read/write them without going through [lib/crypto.ts](lib/crypto.ts).
 - Server actions live under `app/actions/`. Page-local actions are acceptable when single-use.
 - Mongoose models always guard against re-registration: `(models.Foo as Model<X>) || model<X>("Foo", schema)`.

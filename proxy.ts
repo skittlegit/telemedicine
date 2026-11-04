@@ -1,20 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 
-const PUBLIC_PREFIXES = [
-  "/_next",
-  "/favicon",
-  "/api/auth",
-  "/api/health",
-  "/api/webhooks",
-  "/api/socket",
-  "/api/files",
-  "/verify",
-  "/login",
-  "/register",
-  "/doctors", // public directory; booking checked server-side
-];
-
 const ROLE_RULES: Array<{ prefix: string; roles: string[] }> = [
   { prefix: "/dashboard/clinician", roles: ["doctor"] },
   { prefix: "/dashboard/pharmacy", roles: ["pharmacist"] },
@@ -26,10 +12,6 @@ const ROLE_RULES: Array<{ prefix: string; roles: string[] }> = [
 
 export default async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
-
-  if (pathname === "/" || PUBLIC_PREFIXES.some((p) => pathname.startsWith(p))) {
-    return NextResponse.next();
-  }
 
   const rule = ROLE_RULES.find((r) => pathname.startsWith(r.prefix));
   if (!rule) return NextResponse.next();
@@ -56,8 +38,7 @@ export default async function proxy(req: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  const role = (token as { role?: string }).role;
-  if (!role || !rule.roles.includes(role)) {
+  if (!token.role || !rule.roles.includes(token.role)) {
     const url = req.nextUrl.clone();
     url.pathname = "/login";
     url.searchParams.set("error", "forbidden");
@@ -67,6 +48,8 @@ export default async function proxy(req: NextRequest) {
   return NextResponse.next();
 }
 
+// Keep in sync with ROLE_RULES. Everything else is public at this layer, and
+// routes outside these paths do their own checks with requireRole().
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)"],
+  matcher: ["/dashboard/:path*", "/consult/:path*", "/book/:path*"],
 };
